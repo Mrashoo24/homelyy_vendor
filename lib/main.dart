@@ -12,6 +12,7 @@ import 'package:homelyvendor/product/category.dart';
 import 'Orders/orderpage.dart';
 import 'Orders/preparing.dart';
 import 'Orders/ready.dart';
+import 'product/add_products.dart';
 
 void main() {
   runApp(const MyApp());
@@ -79,11 +80,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   leading: const Icon(Icons.monetization_on),
                   title: const Text('Payments'),
                   onTap: () => {
-                    Get.to(const OrderHistory(
-                        // businessName:
-                        // widget.businessName ?? businessName1,
-                        ))
+                    Get.to(
+                      const OrderHistory(
+                          // businessName:
+                          // widget.businessName ?? businessName1,
+                          ),
+                    ),
                   },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.add),
+                  title: const Text('Add Product'),
+                  onTap: () => {Get.to(const AddProduct())},
                 ),
                 ListTile(
                   leading: const Icon(Icons.door_back_door),
@@ -194,12 +202,13 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Image.asset(img),
             Positioned(
-                right: 50,
-                top: 90,
-                child: Text(
-                  count,
-                  style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
-                ))
+              right: 50,
+              top: 90,
+              child: Text(
+                count,
+                style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
+              ),
+            )
           ],
         ),
         onTap: press,

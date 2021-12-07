@@ -61,4 +61,43 @@ class AllApi {
       return null;
     }
   }
+
+  Future<void> addProduct({
+    @required String productName,
+    @required String productId,
+    @required String productCategory,
+    @required String productSubCategory,
+    @required String productDescription,
+    @required String vendorId,
+    @required String productImage,
+    @required String productPrice,
+    @required String productVarient,
+    @required String varientId,
+    @required String cutPrice,
+    @required String requestDate,
+  }) async {
+    var addProductUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/addProductVendor");
+    var response = await http.post(
+      addProductUrl,
+      body: {
+        "category": productCategory,
+        "subcategory": productSubCategory,
+        "description": productDescription,
+        "vendorid": vendorId,
+        "productid": productId,
+        "name": productName,
+        "image": productImage,
+        "price": productPrice,
+        "varient": productVarient,
+        "cutprice": cutPrice,
+        "status": "Pending",
+        "varientid": varientId,
+        "requestDate": requestDate,
+      },
+    );
+    if (response.statusCode != 200) {
+      print(response.body);
+    }
+  }
 }
