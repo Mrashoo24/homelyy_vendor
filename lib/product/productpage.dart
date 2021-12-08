@@ -3,94 +3,125 @@ import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/model.dart';
 
 class Products extends StatefulWidget {
-  final String businessName ;
-  const Products({Key key, this.businessName}) : super(key: key);
+  final String businessName, categoryId, vendorId;
 
-
+  const Products({
+    Key key,
+    this.businessName,
+    this.categoryId,
+    this.vendorId,
+  }) : super(key: key);
 
   @override
   _ProductsState createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Products> {
+  final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Product List"),),
-      body:   Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-         
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              var img = "https://firebasestorage.googleapis.com/v0/b/food-app-b497c.appspot.com/o/images%2FCELsGClUsAAPvEX.jpg?alt=media&token=e735799d-bc9a-4cb6-8832-5de796086f9f";
-              var title = "Burger Adda";
-              var price = "100";
-              var cutprice = "50";
-              var recipe = "Mayo,Chicken";
-              var category = "Pizza";
-              var stock = true;
-              return Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: createCartListItem(
-                      img,
-                      title,
-                      price,
-                      "product[index].id",
-                      cutprice == "" ? false : true,
-                      cutprice == "" ? "" : cutprice,
-                      cutprice == ""
-                          ? ""
-                          : (int.parse(price) - int.parse(cutprice))
-                          .toString(),
-                      recipe,
-                      category,
-                      index,
-                      context,
-                      stock));
-            },
-
-          )
+        title: const Text("Product List"),
       ),
-
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FutureBuilder<List<ProductModel>>(
+          future: _allApi.getProducts(
+            vendorId: widget.vendorId,
+            categoryId: widget.categoryId,
+          ),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              var productList = snapshot.data;
+              return ListView.builder(
+                itemCount: productList.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: createCartListItem(
+                      category: productList[index].category,
+                      context: context,
+                      cutprice: productList[index].cutprice,
+                      img: productList[index].image,
+                      itemnumber: index.toString(),
+                      price: productList[index].price,
+                      stock: productList[index].status,
+                      title: productList[index].name,
+                      discountVisibility: true,
+                      productId: productList[index].productId,
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 
-  createCartListItem(
-      String img,
-      String title,
-      String price,
-      String itemnumber,
-      bool discountVisibility,
-      String cutprice,
-      String discount,
-      String recipe,
-      String category,
-      int index,
-      // AsyncSnapshot<QuerySnapshot> prodDocument,
-      BuildContext context,
-      bool stock) {
+  createCartListItem({
+    String img,
+    String title,
+    String price,
+    String itemnumber,
+    bool discountVisibility,
+    String cutprice,
+    String discount,
+    String recipe,
+    String category,
+    int index,
+    BuildContext context,
+    bool stock,
+    String productId,
+  }) {
     return Card(
       child: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(16))),
+            margin: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
             child: Row(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                  margin: const EdgeInsets.only(
+                    right: 8,
+                    left: 8,
+                    top: 8,
+                    bottom: 8,
+                  ),
                   width: 80,
                   height: 80,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(14)),
-                      color: Colors.white,
-                      image: DecorationImage(image: NetworkImage(img))),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(14),
+                    ),
+                    color: Colors.white,
+                    // image: DecorationImage(
+                    //   image: NetworkImage(img),
+                    // ),
+                  ),
                 ),
                 Expanded(
                   child: Container(
@@ -100,15 +131,21 @@ class _ProductsState extends State<Products> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(right: 8, top: 4),
+                          padding: const EdgeInsets.only(
+                            right: 8,
+                            top: 4,
+                          ),
                           child: Text(
                             title,
                             maxLines: 2,
                             softWrap: true,
                           ),
                         ),
-                        SizedBox(height: 6, width: 0),
-                        Container(
+                        const SizedBox(
+                          height: 6,
+                          width: 0,
+                        ),
+                        SizedBox(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -121,24 +158,26 @@ class _ProductsState extends State<Products> {
                                             ? ""
                                             : "Rs.${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.purple.shade400),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
                                       Text(
                                         "Rs.$price",
                                         style: discountVisibility
-                                            ? TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.blueGrey,
-                                          decoration:
-                                          TextDecoration.lineThrough,
-                                        )
+                                            ? const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blueGrey,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              )
                                             : TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.purple.shade400),
+                                                fontSize: 16,
+                                                color: Colors.purple.shade400,
+                                              ),
                                       ),
                                     ],
                                   ),
@@ -147,21 +186,17 @@ class _ProductsState extends State<Products> {
                                     child: CustomSwitch(
                                       value: stock,
                                       activeColor: Colors.blue,
-                                      onChanged: (value) {
-                                        print("title : ${widget.businessName}");
-                                        print("title : $title");
-                                        print("VALUE : $value");
-                                        FirebaseFirestore.instance
-                                            .collection("Restaurant")
-                                            .doc(widget.businessName)
-                                            .collection("products")
-                                            .doc(title)
-                                            .update({"instock": value});
+                                      onChanged: (value) async {
+                                        stock = !stock;
+                                        _allApi.putProductStatus(
+                                          productId: productId,
+                                          status: stock,
+                                        );
                                       },
                                     ),
                                   )
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -176,25 +211,30 @@ class _ProductsState extends State<Products> {
           Visibility(
             visible: discountVisibility,
             child: Positioned(
-                top: 10,
-                left: 20,
-                child: Container(
-                  width: 60,
-                  height: 25,
-                  child: Center(
-                      child: Text(
-                        "₹ $discount OFF",
-                        style: GoogleFonts.arvo(fontSize: 12, color: Colors.white),
-                      )),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                    color: Colors.green,
+              top: 10,
+              left: 20,
+              child: Container(
+                width: 60,
+                height: 25,
+                child: Center(
+                    child: Text(
+                  "₹ $discount OFF",
+                  style: GoogleFonts.arvo(
+                    fontSize: 12,
+                    color: Colors.white,
                   ),
                 )),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(6),
+                  ),
+                  color: Colors.green,
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-
 }

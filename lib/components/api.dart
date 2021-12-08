@@ -100,4 +100,71 @@ class AllApi {
       print(response.body);
     }
   }
+
+  Future<VendorModel> getVendor({@required String email}) async {
+    var getVendorUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getVendor?email=$email");
+    var response = await http.get(getVendorUrl);
+    if (response.body != "null") {
+      Map<String, dynamic> vendor = json.decode(response.body);
+      VendorModel vendorDetails = VendorModel().fromJson(vendor);
+      return vendorDetails;
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> putShopStatus(
+      {@required String vendorId, @required bool status}) async {
+    var putShopStatusUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/putShopStatusVendor");
+    var response = await http.put(putShopStatusUrl, body: {
+      'vendorId': vendorId,
+      'status': status.toString(),
+    });
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<List<CategoryModel>> getCategory({@required String vendorId}) async {
+    var getCategoryUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getCategoryVendor?vendorId=$vendorId");
+    var response = await http.get(getCategoryUrl);
+    if (response.body != "null") {
+      List categoryList = json.decode(response.body);
+      Iterable<CategoryModel> category = categoryList.map((e) {
+        return CategoryModel().fromJson(e);
+      });
+      return category.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<ProductModel>> getProducts(
+      {@required String vendorId, @required String categoryId}) async {
+    var getProductsUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getProductsVendor?vendorId=$vendorId&categoryId=$categoryId");
+    var response = await http.get(getProductsUrl);
+    if (response.body != "[]") {
+      List productList = json.decode(response.body);
+      Iterable<ProductModel> products = productList.map((e) {
+        return ProductModel().fromJson(e);
+      });
+      return products.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> putProductStatus(
+      {@required String productId, @required bool status}) async {
+    var putProductStatusUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/putProductStatusVendor?productId=$productId&status=$status");
+    var response = await http.put(putProductStatusUrl);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
 }

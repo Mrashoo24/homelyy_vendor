@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
-import 'package:homelyvendor/main.dart';
 import 'package:intl/intl.dart';
 
 class AddProduct extends StatefulWidget {
