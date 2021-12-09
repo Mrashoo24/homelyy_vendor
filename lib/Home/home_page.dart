@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/Membership/membership.dart';
 import 'package:homelyvendor/Orders/cancelled.dart';
 import 'package:homelyvendor/Orders/delivered.dart';
 import 'package:homelyvendor/Orders/orderpage.dart';
@@ -27,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final allAPi = AllApi();
   final _appBarKey = GlobalKey();
-  var _shopStatus = false;
+  var _shopStatus = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +76,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ListTile(
                   leading: const Icon(Icons.add),
                   title: const Text('Add Product'),
-                  onTap: () => {Get.to(const AddProduct())},
+                  onTap: () => {
+                    Get.to(AddProduct(
+                      vendorId: widget.vendorDetails.vendorId,
+                    ))
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.money),
+                  title: const Text('Membership'),
+                  onTap: () => {
+                    Get.to(
+                      const Membership(),
+                    ),
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.door_back_door),

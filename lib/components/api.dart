@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class AllApi {
   Future<List<OrderTotalModel>> getOrderTotal() async {
@@ -163,6 +164,29 @@ class AllApi {
     var putProductStatusUrl = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/putProductStatusVendor?productId=$productId&status=$status");
     var response = await http.put(putProductStatusUrl);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> addCategory({
+    @required String name,
+    @required String image,
+    @required String type,
+    @required String categoryId,
+    @required String vendorId,
+  }) async {
+    var addCategoryUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/addCategoryVendor");
+    var response = await http.post(addCategoryUrl, body: {
+      'name': name,
+      'image': image,
+      'type': type,
+      'catid': categoryId,
+      'vendorid': vendorId,
+      'status': 'Pending',
+      'date': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+    });
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
     }

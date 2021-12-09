@@ -188,7 +188,7 @@ class _ProductsState extends State<Products> {
                                       activeColor: Colors.blue,
                                       onChanged: (value) async {
                                         stock = !stock;
-                                        _allApi.putProductStatus(
+                                        await _allApi.putProductStatus(
                                           productId: productId,
                                           status: stock,
                                         );
