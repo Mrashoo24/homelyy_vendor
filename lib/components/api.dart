@@ -191,4 +191,14 @@ class AllApi {
       print(response.reasonPhrase);
     }
   }
+
+  Future<void> putToken(
+      {@required String vendorId, @required String token}) async {
+    var putTokenUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/putTokenVendor?vendorId=$vendorId&token=$token");
+    var response = await http.put(putTokenUrl);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
 }

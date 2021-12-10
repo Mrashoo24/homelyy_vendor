@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/Home/home_page.dart';
@@ -125,6 +126,9 @@ class _AuthenticationState extends State<Authentication> {
                             ),
                           ),
                           onPressed: () async {
+                            var token =
+                                await FirebaseMessaging.instance.getToken();
+                            print('token: $token');
                             final canSignIn = _trySubmit();
                             if (canSignIn) {
                               setState(() {
@@ -137,6 +141,10 @@ class _AuthenticationState extends State<Authentication> {
                                   setState(() {
                                     loading = false;
                                   });
+                                  await allApi.putToken(
+                                    vendorId: vendorDetails.vendorId,
+                                    token: token,
+                                  );
                                   Get.to(
                                     MyHomePage(
                                       vendorDetails: vendorDetails,
