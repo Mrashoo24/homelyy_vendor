@@ -29,7 +29,7 @@ class _MembershipState extends State<Membership> {
 
   _openCheckout() async {
     var options = {
-      'key': 'rzp_test_1DP5mmOlF5G5ag',
+      'key': 'rzp_test_u8g13PFaeMNHNf',
       'amount': 2000,
       'name': 'Homelyy Vendor',
       'description': 'Membership Renewal',
