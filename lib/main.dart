@@ -11,7 +11,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'This channel is used for important notifications.', // description
   importance: Importance.max,
   playSound: true,
-  // sound: RawResourceAndroidNotificationSound('notification'),
+  sound: RawResourceAndroidNotificationSound('notification'),
   enableLights: true,
 );
 
@@ -66,8 +66,8 @@ class _MyAppState extends State<MyApp> {
                 channel.name,
                 channel.description,
                 // icon: 'zayka_pizza_hub',
-                // sound:
-                //     const RawResourceAndroidNotificationSound('notification'),
+                sound:
+                    const RawResourceAndroidNotificationSound('notification'),
                 // other properties...
                 importance: channel.importance,
               ),

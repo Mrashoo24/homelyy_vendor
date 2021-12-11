@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddProduct extends StatefulWidget {
@@ -23,12 +26,12 @@ class _AddProductState extends State<AddProduct> {
   var _productSubCategory = '';
   var _productDescription = '';
   var _vendorId = '';
-  var _productImage = '';
   var _productPrice = '';
   var _productVarient = '';
   var _varientId = '';
   var _cutPrice = '';
   var _isLoading = false;
+  File image;
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -37,6 +40,22 @@ class _AddProductState extends State<AddProduct> {
       _formKey.currentState.save();
     }
     return isValid;
+  }
+
+  Future _imagePicker() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      }
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
   }
 
   @override
@@ -186,21 +205,38 @@ class _AddProductState extends State<AddProduct> {
                                 _vendorId = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Image'),
-                                hintText: 'Upload image of the product',
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin:
+                                  const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              child: InkWell(
+                                child: image != null
+                                    ? Image.file(image)
+                                    : const Text('Upload Image'),
+                                onTap: _imagePicker,
                               ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please upload image of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productImage = value;
-                              },
                             ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Image'),
+                            //     hintText: 'Upload image of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please upload image of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _productImage = value;
+                            //   },
+                            // ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 label: Text('Price'),
@@ -267,7 +303,7 @@ class _AddProductState extends State<AddProduct> {
                             ElevatedButton(
                               onPressed: () async {
                                 final canSubmit = _trySubmit();
-                                if (canSubmit) {
+                                if (canSubmit && image != null) {
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });
@@ -278,7 +314,7 @@ class _AddProductState extends State<AddProduct> {
                                     productSubCategory: _productSubCategory,
                                     productDescription: _productDescription,
                                     vendorId: _vendorId,
-                                    productImage: _productImage,
+                                    productImage: image.path,
                                     productPrice: _productPrice,
                                     productVarient: _productVarient,
                                     varientId: _varientId,
@@ -287,6 +323,8 @@ class _AddProductState extends State<AddProduct> {
                                         DateFormat('dd-MM-yyyy hh:mm a')
                                             .format(DateTime.now()),
                                   );
+
+                                  await _allApi.setImageProduct(image);
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });

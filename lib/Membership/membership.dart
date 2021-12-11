@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/model.dart';
+import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class Membership extends StatefulWidget {
-  const Membership({Key key}) : super(key: key);
+  final VendorModel vendorDetails;
+  const Membership({Key key, this.vendorDetails}) : super(key: key);
 
   @override
   _MembershipState createState() => _MembershipState();
@@ -11,6 +15,7 @@ class Membership extends StatefulWidget {
 
 class _MembershipState extends State<Membership> {
   Razorpay _razorpay;
+  final _allApi = AllApi();
 
   @override
   void initState() {
@@ -27,13 +32,16 @@ class _MembershipState extends State<Membership> {
     _razorpay.clear();
   }
 
-  _openCheckout() async {
+  void _openCheckout() async {
     var options = {
       'key': 'rzp_test_u8g13PFaeMNHNf',
       'amount': 2000,
       'name': 'Homelyy Vendor',
       'description': 'Membership Renewal',
-      'prefill': {'contact': '', 'email': ''},
+      'prefill': {
+        'contact': '',
+        'email': widget.vendorDetails.email,
+      },
       'external': {
         'wallets': ['paytm']
       }
@@ -46,7 +54,13 @@ class _MembershipState extends State<Membership> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    await _allApi.putLastPaymentDate(
+      vendorId: widget.vendorDetails.vendorId,
+      paymentDate: DateFormat('dd-MM-yyyy').format(
+        DateTime.now(),
+      ),
+    );
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
   }
@@ -65,6 +79,10 @@ class _MembershipState extends State<Membership> {
 
   @override
   Widget build(BuildContext context) {
+    var lastPaymentDate =
+        DateFormat('dd-MM-yyy').parse(widget.vendorDetails.lastPaymentDate);
+    var difference = lastPaymentDate.difference(DateTime.now()).inDays;
+    print(difference);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Membership'),
@@ -73,29 +91,53 @@ class _MembershipState extends State<Membership> {
       body: Column(
         children: [
           Card(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+            ),
+            elevation: 5,
             child: Container(
               width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.2,
               padding: const EdgeInsets.all(12.0),
-              child: const Text('Your membership has expired'),
+              child: Center(
+                child: Text(
+                  difference > -30
+                      ? 'You have paid the membership fee on ${widget.vendorDetails.lastPaymentDate}'
+                      : 'Your membership has expired',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(
-            onPressed: _openCheckout,
-            child: const Text('Renew'),
-          ),
+          if (difference > -30)
+            ElevatedButton(
+              onPressed: _openCheckout,
+              child: const Text(
+                'Renew',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                  const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
-      // : Center(
-      //     child: Container(
-      //       padding: const EdgeInsets.all(12.0),
-      //       child: const Text(
-      //         'Your membership will expire on 2nd of the month',
-      //       ),
-      //     ),
-      //   ),
     );
   }
 }

@@ -169,7 +169,9 @@ class VendorModel {
       inPromotion,
       name,
       rating,
-      verify;
+      verify,
+      token,
+      lastPaymentDate;
   Map<String, dynamic> location;
   List cuisine, category;
   bool status;
@@ -191,6 +193,8 @@ class VendorModel {
     this.user,
     this.vendorId,
     this.verify,
+    this.lastPaymentDate,
+    this.token,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -211,6 +215,8 @@ class VendorModel {
       user: json['user'],
       vendorId: json['vendorid'],
       verify: json['verify'],
+      lastPaymentDate: json['last_payment_date'],
+      token: json['token'],
     );
   }
 
@@ -233,6 +239,8 @@ class VendorModel {
     data['user'] = user;
     data['vendorid'] = vendorId;
     data['verify'] = verify;
+    data['last_payment_date'] = lastPaymentDate;
+    data['token'] = token;
 
     return data;
   }
@@ -328,6 +336,24 @@ class ProductModel {
     data['varient'] = varient;
     data['varientid'] = varientId;
     data['vendorid'] = vendorId;
+    return data;
+  }
+}
+
+class CuisineModel {
+  String name;
+
+  CuisineModel({this.name});
+
+  fromJson(Map<String, dynamic> json) {
+    return CuisineModel(
+      name: json['name'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = name;
     return data;
   }
 }

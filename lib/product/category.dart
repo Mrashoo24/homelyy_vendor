@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/product/productpage.dart';
-import 'package:intent/category.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CategoryPage extends StatefulWidget {
   final String businessName;
@@ -26,11 +28,11 @@ class _CategoryPageState extends State<CategoryPage> {
   final _allApi = AllApi();
   final _formKey = GlobalKey<FormState>();
   var _categoryName = '';
-  var _categoryImage = '';
   var _categoryType = '';
   var _categoryId = '';
   var _vendorId = '';
   bool _isLoading = false;
+  File image;
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -39,6 +41,22 @@ class _CategoryPageState extends State<CategoryPage> {
       _formKey.currentState.save();
     }
     return isValid;
+  }
+
+  Future _imagePicker() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      }
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
   }
 
   Widget _floatingActionButton() {
@@ -72,21 +90,37 @@ class _CategoryPageState extends State<CategoryPage> {
                             _categoryName = value;
                           },
                         ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Image'),
-                            hintText: 'Upload image of the category',
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0)),
+                          child: InkWell(
+                            child: image != null
+                                ? Image.file(image)
+                                : const Text('Upload Image'),
+                            onTap: _imagePicker,
                           ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please upload image of the category';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _categoryImage = value;
-                          },
                         ),
+                        // TextFormField(
+                        //   decoration: const InputDecoration(
+                        //     label: Text('Image'),
+                        //     hintText: 'Upload image of the category',
+                        //   ),
+                        //   validator: (value) {
+                        //     if (value.isEmpty) {
+                        //       return 'Please upload image of the category';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onSaved: (value) {
+                        //     _categoryImage = value;
+                        //   },
+                        // ),
                         TextFormField(
                           decoration: const InputDecoration(
                             label: Text('Type'),
@@ -140,17 +174,18 @@ class _CategoryPageState extends State<CategoryPage> {
                   TextButton(
                     onPressed: () async {
                       final canSumbit = _trySubmit();
-                      if (canSumbit) {
+                      if (canSumbit && image != null) {
                         setState(() {
                           _isLoading = true;
                         });
                         await _allApi.addCategory(
                           name: _categoryName,
-                          image: _categoryImage,
+                          image: image.path,
                           type: _categoryType,
                           categoryId: _categoryId,
                           vendorId: _vendorId,
                         );
+                        await _allApi.setImage(image);
                         setState(() {
                           _isLoading = false;
                         });

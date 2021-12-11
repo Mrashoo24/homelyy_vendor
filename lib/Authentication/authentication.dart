@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/Home/home_page.dart';
+import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/api.dart';
 
 class Authentication extends StatefulWidget {
@@ -173,6 +174,12 @@ class _AuthenticationState extends State<Authentication> {
                             }
                           },
                         ),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => const Registration());
+                    },
+                    child: const Text('Register as a vendor'),
+                  ),
                 ],
               ),
             ),
