@@ -1,73 +1,68 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:custom_switch/custom_switch.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 
-class Products extends StatefulWidget {
-  final String businessName, categoryId, vendorId;
-
-  const Products({
+class PendingProducts extends StatefulWidget {
+  final String categoryId, vendorId;
+  const PendingProducts({
     Key key,
-    this.businessName,
     this.categoryId,
     this.vendorId,
   }) : super(key: key);
 
   @override
-  _ProductsState createState() => _ProductsState();
+  _PendingProductsState createState() => _PendingProductsState();
 }
 
-class _ProductsState extends State<Products> {
+class _PendingProductsState extends State<PendingProducts> {
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Product List"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder<List<ProductModel>>(
-          future: _allApi.getProducts(
-            vendorId: widget.vendorId,
-            categoryId: widget.categoryId,
-          ),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              var productList = snapshot.data;
-              return ListView.builder(
-                itemCount: productList.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: createCartListItem(
-                      category: productList[index].category,
-                      context: context,
-                      cutprice: productList[index].cutprice,
-                      img: productList[index].image,
-                      itemnumber: index.toString(),
-                      price: productList[index].price,
-                      stock: productList[index].status,
-                      title: productList[index].name,
-                      discountVisibility: true,
-                      productId: productList[index].productId,
-                    ),
-                  );
-                },
-              );
-            }
-          },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: FutureBuilder<List<ProductModel>>(
+        future: _allApi.getProducts(
+          vendorId: widget.vendorId,
+          categoryId: widget.categoryId,
+          verify: 'pending',
         ),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data.isEmpty) {
+            return const Center(
+              child: Text("No products to show."),
+            );
+          } else {
+            var productList = snapshot.data;
+            return ListView.builder(
+              itemCount: productList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: createCartListItem(
+                    category: productList[index].category,
+                    context: context,
+                    cutprice: productList[index].cutprice,
+                    img: productList[index].image,
+                    itemnumber: index.toString(),
+                    price: productList[index].price,
+                    stock: productList[index].status,
+                    title: productList[index].name,
+                    discountVisibility: true,
+                    productId: productList[index].productId,
+                  ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
@@ -181,20 +176,20 @@ class _ProductsState extends State<Products> {
                                       ),
                                     ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomSwitch(
-                                      value: stock,
-                                      activeColor: Colors.blue,
-                                      onChanged: (value) async {
-                                        stock = !stock;
-                                        await _allApi.putProductStatus(
-                                          productId: productId,
-                                          status: stock,
-                                        );
-                                      },
-                                    ),
-                                  )
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(8.0),
+                                  //   child: CustomSwitch(
+                                  //     value: stock,
+                                  //     activeColor: Colors.blue,
+                                  //     onChanged: (value) async {
+                                  //       stock = !stock;
+                                  //       await _allApi.putProductStatus(
+                                  //         productId: productId,
+                                  //         status: stock,
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // )
                                 ],
                               ),
                             ],

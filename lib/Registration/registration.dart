@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,8 +26,9 @@ class _RegistrationState extends State<Registration> {
       address = '',
       email = '',
       password = '',
-      type = '',
       phoneNumber = '';
+  String type;
+  var types = ['Restaurant', 'Lifestyle'];
 
   String cuisine;
   String category;
@@ -165,22 +165,22 @@ class _RegistrationState extends State<Registration> {
                         address = value;
                       },
                     ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Type'),
-                        hintText:
-                            'Enter your shop type Eg. Restaurant, Lifestyle',
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter shop type';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        type = value;
-                      },
-                    ),
+                    // TextFormField(
+                    //   decoration: const InputDecoration(
+                    //     label: Text('Type'),
+                    //     hintText:
+                    //         'Enter your shop type Eg. Restaurant, Lifestyle',
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value.isEmpty) {
+                    //       return 'Please enter shop type';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onSaved: (value) {
+                    //     type = value;
+                    //   },
+                    // ),
                     TextFormField(
                       decoration: const InputDecoration(
                         label: Text('Shop Name'),
@@ -210,6 +210,36 @@ class _RegistrationState extends State<Registration> {
                       onSaved: (value) {
                         phoneNumber = value;
                       },
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          hint: const Text('Select Type'),
+                          value: type,
+                          onChanged: (value) {
+                            setState(() {
+                              type = value;
+                            });
+                          },
+                          isExpanded: true,
+                          items: types.map(
+                            (e) {
+                              return DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
@@ -312,7 +342,7 @@ class _RegistrationState extends State<Registration> {
                             address: address,
                             email: email,
                             password: password,
-                            type: type,
+                            type: type == 'Restaurant' ? 'restro' : 'lifestyle',
                             cuisine: cuisine,
                             category: category,
                             phoneNumber: phoneNumber,

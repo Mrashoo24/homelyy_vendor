@@ -21,14 +21,14 @@ class _AddProductState extends State<AddProduct> {
   final _allApi = AllApi();
 
   var _productName = '';
-  var _productId = '';
+  final _productId = 'PRODUCT' + DateTime.now().microsecond.toString();
   String _productCategory;
   var _productSubCategory = '';
   var _productDescription = '';
   var _vendorId = '';
   var _productPrice = '';
   var _productVarient = '';
-  var _varientId = '';
+  final _varientId = 'PRODUCT' + DateTime.now().microsecond.toString();
   var _cutPrice = '';
   var _isLoading = false;
   File image;
@@ -99,21 +99,21 @@ class _AddProductState extends State<AddProduct> {
                                 _productName = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Product Id'),
-                                hintText: 'Enter id of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter id of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productId = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Product Id'),
+                            //     hintText: 'Enter id of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter id of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _productId = value;
+                            //   },
+                            // ),
                             Container(
                               width: MediaQuery.of(context).size.width,
                               margin:
@@ -267,21 +267,21 @@ class _AddProductState extends State<AddProduct> {
                                 _productVarient = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Vareint Id'),
-                                hintText: 'Enter varient id of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter varient id of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _varientId = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Vareint Id'),
+                            //     hintText: 'Enter varient id of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter varient id of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _varientId = value;
+                            //   },
+                            // ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 label: Text('Cut Price'),

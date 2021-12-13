@@ -53,29 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           children: [
                             ListTile(
-                              leading: const Icon(Icons.grid_4x4),
-                              title: const Text('Category List'),
-                              onTap: () {
-                                Get.to(
-                                  () => CategoryPage(
-                                    vendorId: widget.vendorDetails.vendorId,
-                                  ),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.list),
-                              title: const Text('Product List'),
-                              onTap: () => {
-                                Get.to(
-                                  const CategoryPage(
-                                      // businessName:
-                                      // (widget.businessName ?? businessName1),
-                                      ),
-                                ),
-                              },
-                            ),
-                            ListTile(
                               leading: const Icon(Icons.monetization_on),
                               title: const Text('Payments'),
                               onTap: () => {
@@ -87,15 +64,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               },
                             ),
-                            ListTile(
-                              leading: const Icon(Icons.add),
-                              title: const Text('Add Product'),
-                              onTap: () => {
-                                Get.to(AddProduct(
-                                  vendorId: widget.vendorDetails.vendorId,
-                                ))
-                              },
-                            ),
+                            if (vendorDetails.type == 'restro')
+                              ListTile(
+                                leading: const Icon(Icons.add),
+                                title: const Text('Add Product'),
+                                onTap: () => {
+                                  Get.to(AddProduct(
+                                    vendorId: widget.vendorDetails.vendorId,
+                                  ))
+                                },
+                              ),
+                            if (vendorDetails.type == 'lifestyle')
+                              ListTile(
+                                leading: const Icon(
+                                    Icons.production_quantity_limits_rounded),
+                                title: const Text('Product Management'),
+                                onTap: () => {
+                                  Get.to(
+                                    () => CategoryPage(
+                                      vendorId: widget.vendorDetails.vendorId,
+                                      vendorType: widget.vendorDetails.type,
+                                    ),
+                                  )
+                                },
+                              ),
                             ListTile(
                               leading: const Icon(Icons.money),
                               title: const Text('Membership'),

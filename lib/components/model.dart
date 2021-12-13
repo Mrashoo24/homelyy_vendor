@@ -287,7 +287,8 @@ class ProductModel {
       price,
       varient,
       cutprice,
-      varientId;
+      varientId,
+      verify;
   bool status;
 
   ProductModel({
@@ -303,6 +304,7 @@ class ProductModel {
     this.varient,
     this.varientId,
     this.vendorId,
+    this.verify,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -319,6 +321,7 @@ class ProductModel {
       varient: json['varient'],
       varientId: json['varientid'],
       vendorId: json['vendorid'],
+      verify: json['verify'],
     );
   }
 
@@ -336,6 +339,7 @@ class ProductModel {
     data['varient'] = varient;
     data['varientid'] = varientId;
     data['vendorid'] = vendorId;
+    data['verify'] = verify;
     return data;
   }
 }
@@ -354,6 +358,67 @@ class CuisineModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = name;
+    return data;
+  }
+}
+
+class ProductMainModel {
+  String category,
+      subCategory,
+      description,
+      vendorId,
+      name,
+      image,
+      price,
+      varient,
+      cutprice,
+      varientId;
+
+  bool status;
+
+  ProductMainModel({
+    this.category,
+    this.cutprice,
+    this.description,
+    this.image,
+    this.name,
+    this.price,
+    this.status,
+    this.subCategory,
+    this.varient,
+    this.varientId,
+    this.vendorId,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return ProductMainModel(
+      category: json['category'],
+      cutprice: json['cutprice'],
+      description: json['description'],
+      image: json['image'],
+      name: json['name'],
+      price: json['price'],
+      status: json['status'],
+      subCategory: json['subcategory'],
+      varient: json['varient'],
+      varientId: json['varientid'],
+      vendorId: json['vendorid'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['category'] = category;
+    data['cutprice'] = cutprice;
+    data['description'] = description;
+    data['image'] = image;
+    data['name'] = name;
+    data['price'] = price;
+    data['status'] = status;
+    data['subcategory'] = subCategory;
+    data['varient'] = varient;
+    data['varientid'] = varientId;
+    data['vendorid'] = vendorId;
     return data;
   }
 }

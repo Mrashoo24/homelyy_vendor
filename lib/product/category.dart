@@ -8,16 +8,19 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
-import 'package:homelyvendor/product/productpage.dart';
+import 'package:homelyvendor/product/Lifestyle/lifestyle_products_main_page.dart';
+import 'package:homelyvendor/product/Restaurant/product_page.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CategoryPage extends StatefulWidget {
   final String businessName;
   final String vendorId;
+  final String vendorType;
   const CategoryPage({
     Key key,
     this.businessName,
     this.vendorId,
+    this.vendorType,
   }) : super(key: key);
 
   @override
@@ -297,11 +300,22 @@ class _CategoryPageState extends State<CategoryPage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Get.to(Products(
-                            businessName: widget.businessName,
-                            categoryId: categoryId,
-                            vendorId: vendorId,
-                          ));
+                          if (widget.vendorType == 'restro') {
+                            Get.to(
+                              Products(
+                                businessName: widget.businessName,
+                                categoryId: categoryId,
+                                vendorId: vendorId,
+                              ),
+                            );
+                          } else {
+                            Get.to(
+                              LifestyleProductsMain(
+                                categoryId: categoryId,
+                                vendorId: vendorId,
+                              ),
+                            );
+                          }
                         },
                         child: const Text("VIEW PRODUCTS"),
                       )
