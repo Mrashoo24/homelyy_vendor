@@ -23,6 +23,7 @@ class _AddProductVarientState extends State<AddProductVarient> {
   var _size = '';
   var _color = '';
   var _isLoading = false;
+  final productId = 'PRODUCT' + DateTime.now().microsecond.toString();
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -85,20 +86,23 @@ class _AddProductVarientState extends State<AddProductVarient> {
                         _isLoading = !_isLoading;
                       });
                       await _allApi.addProductVarient(
-                        productName: widget.productMainModel.name,
-                        productId:
-                            'PRODUCT' + DateTime.now().microsecond.toString(),
+                        productName:
+                            widget.productMainModel.name + _size + _color,
+                        productId: productId,
                         productCategory: widget.productMainModel.category,
                         productSubCategory: widget.productMainModel.subCategory,
                         productDescription: widget.productMainModel.description,
                         vendorId: widget.vendorId,
                         productPrice: widget.productMainModel.price,
                         productVarient: widget.productMainModel.varient,
-                        varientId:
-                            'PRODUCT' + DateTime.now().microsecond.toString(),
+                        varientId: widget.productMainModel.varientId,
                         cutPrice: widget.productMainModel.cutprice,
                       );
-
+                      await _allApi.putProductVarientStatus(
+                        productId: productId,
+                        status: false,
+                        varientId: widget.productMainModel.varientId,
+                      );
                       showDialog(
                         context: context,
                         builder: (ctx) {

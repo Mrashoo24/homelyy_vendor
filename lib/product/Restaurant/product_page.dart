@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:homelyvendor/product/Restaurant/accepted_products.dart';
 import 'package:homelyvendor/product/Restaurant/pending_products.dart';
 import 'package:homelyvendor/product/Restaurant/rejected_products.dart';
+import 'package:homelyvendor/product/add_products.dart';
 
 class Products extends StatefulWidget {
-  final String businessName, categoryId, vendorId;
+  final String businessName, categoryId, vendorId, vendorType;
 
   const Products({
     Key key,
     this.businessName,
     this.categoryId,
     this.vendorId,
+    this.vendorType,
   }) : super(key: key);
 
   @override
@@ -24,6 +27,18 @@ class _ProductsState extends State<Products> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            Get.to(
+              AddProduct(
+                vendorId: widget.vendorId,
+                vendorType: widget.vendorType,
+                categoryId: widget.categoryId,
+              ),
+            );
+          },
+        ),
         appBar: AppBar(
           title: const Text("Product List"),
           bottom: const TabBar(

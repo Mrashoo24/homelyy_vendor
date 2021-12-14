@@ -22,16 +22,20 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder<List<ProductModel>>(
+      child: FutureBuilder<List<FoodModel>>(
         future: _allApi.getProducts(
           vendorId: widget.vendorId,
           categoryId: widget.categoryId,
-          verify: '1',
+          verify: 'Verified',
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data.isEmpty) {
+            return const Center(
+              child: Text('No products to show'),
             );
           } else {
             var productList = snapshot.data;

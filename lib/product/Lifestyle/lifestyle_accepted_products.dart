@@ -27,7 +27,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
       child: FutureBuilder<List<ProductModel>>(
         future: _allApi.getProductsVarient(
           varientId: widget.varientId,
-          verify: '1',
+          verify: 'Verified',
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

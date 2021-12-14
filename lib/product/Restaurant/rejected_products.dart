@@ -21,7 +21,7 @@ class _RejectedProductsState extends State<RejectedProducts> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder<List<ProductModel>>(
+      child: FutureBuilder<List<FoodModel>>(
         future: _allApi.getProducts(
           vendorId: widget.vendorId,
           categoryId: widget.categoryId,

@@ -218,6 +218,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                                             vendorId: widget.vendorId,
                                             categoryId: widget.categoryId,
                                             varientId: varientId,
+                                            productMainModel: productMainModel,
                                           ),
                                         );
                                       },

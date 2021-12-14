@@ -64,30 +64,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               },
                             ),
-                            if (vendorDetails.type == 'restro')
-                              ListTile(
-                                leading: const Icon(Icons.add),
-                                title: const Text('Add Product'),
-                                onTap: () => {
-                                  Get.to(AddProduct(
+                            // if (vendorDetails.type == 'restro')
+                            //   ListTile(
+                            //     leading: const Icon(Icons.add),
+                            //     title: const Text('Add Product'),
+                            //     onTap: () => {
+                            //       Get.to(AddProduct(
+                            //         vendorId: widget.vendorDetails.vendorId,
+                            //       ))
+                            //     },
+                            //   ),
+                            // if (vendorDetails.type == 'lifestyle')
+                            ListTile(
+                              leading: const Icon(
+                                  Icons.production_quantity_limits_rounded),
+                              title: const Text('Product Management'),
+                              onTap: () => {
+                                Get.to(
+                                  () => CategoryPage(
                                     vendorId: widget.vendorDetails.vendorId,
-                                  ))
-                                },
-                              ),
-                            if (vendorDetails.type == 'lifestyle')
-                              ListTile(
-                                leading: const Icon(
-                                    Icons.production_quantity_limits_rounded),
-                                title: const Text('Product Management'),
-                                onTap: () => {
-                                  Get.to(
-                                    () => CategoryPage(
-                                      vendorId: widget.vendorDetails.vendorId,
-                                      vendorType: widget.vendorDetails.type,
-                                    ),
-                                  )
-                                },
-                              ),
+                                    vendorType: widget.vendorDetails.type,
+                                  ),
+                                )
+                              },
+                            ),
                             ListTile(
                               leading: const Icon(Icons.money),
                               title: const Text('Membership'),

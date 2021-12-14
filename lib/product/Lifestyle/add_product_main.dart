@@ -28,7 +28,7 @@ class _AddProductMainState extends State<AddProductMain> {
   var _vendorId = '';
   var _productPrice = '';
   var _productVarient = '';
-  final _varientId = 'PRODUCT' + DateTime.now().microsecond.toString();
+  final _varientId = 'VAR' + DateTime.now().microsecond.toString();
   var _cutPrice = '';
   var _isLoading = false;
   File image;
@@ -190,21 +190,21 @@ class _AddProductMainState extends State<AddProductMain> {
                                 _productDescription = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Vendor Id'),
-                                hintText: 'Enter the vendor\'s id',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter vendor\'s id for the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _vendorId = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Vendor Id'),
+                            //     hintText: 'Enter the vendor\'s id',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter vendor\'s id for the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _vendorId = value;
+                            //   },
+                            // ),
                             Container(
                               width: MediaQuery.of(context).size.width,
                               margin:
@@ -313,7 +313,7 @@ class _AddProductMainState extends State<AddProductMain> {
                                     productCategory: _productCategory,
                                     productSubCategory: _productSubCategory,
                                     productDescription: _productDescription,
-                                    vendorId: _vendorId,
+                                    vendorId: widget.vendorId,
                                     productImage: image.path,
                                     productPrice: _productPrice,
                                     productVarient: _productVarient,
@@ -323,7 +323,10 @@ class _AddProductMainState extends State<AddProductMain> {
                                         DateFormat('dd-MM-yyyy hh:mm a')
                                             .format(DateTime.now()),
                                   );
-
+                                  await _allApi.putProductMainStatus(
+                                    status: false,
+                                    varientId: _varientId,
+                                  );
                                   await _allApi.setImageProduct(image);
                                   setState(() {
                                     _isLoading = !_isLoading;

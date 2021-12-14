@@ -73,13 +73,11 @@ class AllApi {
     @required String vendorId,
     @required String productImage,
     @required String productPrice,
-    @required String productVarient,
-    @required String varientId,
     @required String cutPrice,
     @required String requestDate,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/addProductVendor");
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/foodsadd");
     var response = await http.post(
       addProductUrl,
       body: {
@@ -87,14 +85,12 @@ class AllApi {
         "subcategory": productSubCategory,
         "description": productDescription,
         "vendorid": vendorId,
-        "productid": productId,
+        "foodid": productId,
         "name": productName,
         "image": productImage,
         "price": productPrice,
-        "varient": productVarient,
         "cutprice": cutPrice,
         "status": "stock_status_pending",
-        "varientid": varientId,
         "requestDate": requestDate,
         "verify": "pending",
         "recommendation": "0",
@@ -142,6 +138,16 @@ class AllApi {
     }
   }
 
+  Future<void> putProductVarientStatus(
+      {String varientId, String productId, bool status}) async {
+    var url = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/putProductVarientStatus?varientId=$varientId&productId=$productId&status=$status");
+    var response = await http.put(url);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
   Future<void> addProductMain({
     @required String productName,
     @required String productId,
@@ -156,7 +162,8 @@ class AllApi {
     @required String cutPrice,
     @required String requestDate,
   }) async {
-    var addProductUrl = Uri.parse("");
+    var addProductUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/addProductMain");
     var response = await http.post(
       addProductUrl,
       body: {
@@ -179,6 +186,24 @@ class AllApi {
     );
     if (response.statusCode != 200) {
       print(response.body);
+    }
+  }
+
+  Future<void> putProductMainStatus({String varientId, bool status}) async {
+    var url = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/putProductMainStatus?varientId=$varientId&status=$status");
+    var response = await http.put(url);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> putProductFoodStatus({String foodId, bool status}) async {
+    var url = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/putProductFoodStatus?foodId=$foodId&status=$status");
+    var response = await http.put(url);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
     }
   }
 
@@ -223,7 +248,7 @@ class AllApi {
     }
   }
 
-  Future<List<ProductModel>> getProducts({
+  Future<List<FoodModel>> getProducts({
     @required String vendorId,
     @required String categoryId,
     @required String verify,
@@ -233,8 +258,8 @@ class AllApi {
     var response = await http.get(getProductsUrl);
     if (response.body != "null") {
       List productList = json.decode(response.body);
-      Iterable<ProductModel> products = productList.map((e) {
-        return ProductModel().fromJson(e);
+      Iterable<FoodModel> products = productList.map((e) {
+        return FoodModel().fromJson(e);
       });
       return products.toList();
     } else {

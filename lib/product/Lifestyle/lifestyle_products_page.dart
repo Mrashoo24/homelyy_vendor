@@ -35,7 +35,9 @@ class _LifestyleProductsState extends State<LifestyleProducts> {
           child: const Icon(Icons.add),
           onPressed: () {
             Get.to(
-              () => AddProductVarient(),
+              () => AddProductVarient(
+                productMainModel: widget.productMainModel,
+              ),
             );
           },
         ),

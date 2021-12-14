@@ -9,8 +9,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddProduct extends StatefulWidget {
-  final String vendorId;
-  const AddProduct({Key key, this.vendorId}) : super(key: key);
+  final String vendorId, vendorType, categoryId;
+  const AddProduct({
+    Key key,
+    this.vendorId,
+    this.vendorType,
+    this.categoryId,
+  }) : super(key: key);
 
   @override
   _AddProductState createState() => _AddProductState();
@@ -20,18 +25,15 @@ class _AddProductState extends State<AddProduct> {
   final _formKey = GlobalKey<FormState>();
   final _allApi = AllApi();
 
+  File image;
+
   var _productName = '';
-  final _productId = 'PRODUCT' + DateTime.now().microsecond.toString();
-  String _productCategory;
-  var _productSubCategory = '';
+  final _foodId = 'FOOD' + DateTime.now().microsecond.toString();
+  final _productSubCategory = 'SUBCAT' + DateTime.now().microsecond.toString();
   var _productDescription = '';
-  var _vendorId = '';
   var _productPrice = '';
-  var _productVarient = '';
-  final _varientId = 'VAR' + DateTime.now().microsecond.toString();
   var _cutPrice = '';
   var _isLoading = false;
-  File image;
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -114,37 +116,37 @@ class _AddProductState extends State<AddProduct> {
                             //     _productId = value;
                             //   },
                             // ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin:
-                                  const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  hint: const Text('Select Category'),
-                                  value: _productCategory,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _productCategory = value;
-                                    });
-                                  },
-                                  isExpanded: true,
-                                  items: categoryList.map(
-                                    (e) {
-                                      return DropdownMenuItem(
-                                        value: e.name,
-                                        child: Text(e.name),
-                                      );
-                                    },
-                                  ).toList(),
-                                ),
-                              ),
-                            ),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width,
+                            //   margin:
+                            //       const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   decoration: BoxDecoration(
+                            //       border: Border.all(
+                            //         color: Colors.black,
+                            //       ),
+                            //       borderRadius: BorderRadius.circular(12.0)),
+                            //   child: DropdownButtonHideUnderline(
+                            //     child: DropdownButton(
+                            //       hint: const Text('Select Category'),
+                            //       value: _productCategory,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           _productCategory = value;
+                            //         });
+                            //       },
+                            //       isExpanded: true,
+                            //       items: categoryList.map(
+                            //         (e) {
+                            //           return DropdownMenuItem(
+                            //             value: e.name,
+                            //             child: Text(e.name),
+                            //           );
+                            //         },
+                            //       ).toList(),
+                            //     ),
+                            //   ),
+                            // ),
                             // TextFormField(
                             //   decoration: const InputDecoration(
                             //     label: Text('Category'),
@@ -160,21 +162,21 @@ class _AddProductState extends State<AddProduct> {
                             //     _productCategory = value;
                             //   },
                             // ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Sub Category'),
-                                hintText: 'Enter sub category of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter sub category of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productSubCategory = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Sub Category'),
+                            //     hintText: 'Enter sub category of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter sub category of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _productSubCategory = value;
+                            //   },
+                            // ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 label: Text('Description'),
@@ -190,21 +192,21 @@ class _AddProductState extends State<AddProduct> {
                                 _productDescription = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Vendor Id'),
-                                hintText: 'Enter the vendor\'s id',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter vendor\'s id for the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _vendorId = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Vendor Id'),
+                            //     hintText: 'Enter the vendor\'s id',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter vendor\'s id for the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _vendorId = value;
+                            //   },
+                            // ),
                             Container(
                               width: MediaQuery.of(context).size.width,
                               margin:
@@ -252,21 +254,21 @@ class _AddProductState extends State<AddProduct> {
                                 _productPrice = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Varient'),
-                                hintText: 'Enter varient of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter varient of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productVarient = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Varient'),
+                            //     hintText: 'Enter varient of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter varient of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _productVarient = value;
+                            //   },
+                            // ),
                             // TextFormField(
                             //   decoration: const InputDecoration(
                             //     label: Text('Vareint Id'),
@@ -309,21 +311,22 @@ class _AddProductState extends State<AddProduct> {
                                   });
                                   await _allApi.addProduct(
                                     productName: _productName,
-                                    productId: _productId,
-                                    productCategory: _productCategory,
+                                    productId: _foodId,
+                                    productCategory: widget.categoryId,
                                     productSubCategory: _productSubCategory,
                                     productDescription: _productDescription,
-                                    vendorId: _vendorId,
+                                    vendorId: widget.vendorId,
                                     productImage: image.path,
                                     productPrice: _productPrice,
-                                    productVarient: _productVarient,
-                                    varientId: _varientId,
                                     cutPrice: _cutPrice,
                                     requestDate:
                                         DateFormat('dd-MM-yyyy hh:mm a')
                                             .format(DateTime.now()),
                                   );
-
+                                  await _allApi.putProductFoodStatus(
+                                    foodId: _foodId,
+                                    status: false,
+                                  );
                                   await _allApi.setImageProduct(image);
                                   setState(() {
                                     _isLoading = !_isLoading;

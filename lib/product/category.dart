@@ -32,8 +32,8 @@ class _CategoryPageState extends State<CategoryPage> {
   final _formKey = GlobalKey<FormState>();
   var _categoryName = '';
   var _categoryType = '';
-  var _categoryId = '';
-  var _vendorId = '';
+  final _categoryId = 'CAT' + DateTime.now().microsecond.toString();
+
   bool _isLoading = false;
   File image;
 
@@ -139,36 +139,36 @@ class _CategoryPageState extends State<CategoryPage> {
                             _categoryType = value;
                           },
                         ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Category Id'),
-                            hintText: 'Enter id of the category',
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter id of the category';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _categoryId = value;
-                          },
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Vendor Id'),
-                            hintText: 'Enter id of the vendor',
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter id of the vendor';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _vendorId = value;
-                          },
-                        ),
+                        // TextFormField(
+                        //   decoration: const InputDecoration(
+                        //     label: Text('Category Id'),
+                        //     hintText: 'Enter id of the category',
+                        //   ),
+                        //   validator: (value) {
+                        //     if (value.isEmpty) {
+                        //       return 'Please enter id of the category';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onSaved: (value) {
+                        //     _categoryId = value;
+                        //   },
+                        // ),
+                        // TextFormField(
+                        //   decoration: const InputDecoration(
+                        //     label: Text('Vendor Id'),
+                        //     hintText: 'Enter id of the vendor',
+                        //   ),
+                        //   validator: (value) {
+                        //     if (value.isEmpty) {
+                        //       return 'Please enter id of the vendor';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onSaved: (value) {
+                        //     _vendorId = value;
+                        //   },
+                        // ),
                       ],
                     ),
                   ),
@@ -186,7 +186,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           image: image.path,
                           type: _categoryType,
                           categoryId: _categoryId,
-                          vendorId: _vendorId,
+                          vendorId: widget.vendorId,
                         );
                         await _allApi.setImage(image);
                         setState(() {
@@ -306,6 +306,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 businessName: widget.businessName,
                                 categoryId: categoryId,
                                 vendorId: vendorId,
+                                vendorType: widget.vendorType,
                               ),
                             );
                           } else {
