@@ -28,7 +28,7 @@ class _AddProductState extends State<AddProduct> {
   var _vendorId = '';
   var _productPrice = '';
   var _productVarient = '';
-  final _varientId = 'PRODUCT' + DateTime.now().microsecond.toString();
+  final _varientId = 'VAR' + DateTime.now().microsecond.toString();
   var _cutPrice = '';
   var _isLoading = false;
   File image;
