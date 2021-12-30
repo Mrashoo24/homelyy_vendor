@@ -2,14 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/components/constants.dart';
 
 class OrderHistory extends StatefulWidget {
+
   final String businessName;
 
   const OrderHistory({Key key, this.businessName}) : super(key: key);
 
   @override
   _OrderHistoryState createState() => _OrderHistoryState();
+
 }
 
 class _OrderHistoryState extends State<OrderHistory> {
@@ -46,7 +49,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Revenue")),
+        appBar: AppBar(title: Text("Revenue"),backgroundColor: kgreen,),
         body: ListView(children: [
           SizedBox(
             height: 20,

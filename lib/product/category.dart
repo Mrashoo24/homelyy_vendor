@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_products_main_page.dart';
 import 'package:homelyvendor/product/Restaurant/product_page.dart';
@@ -234,7 +235,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: _floatingActionButton(),
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: kgreen,
         title: const Text("Category List"),
       ),
       body: FutureBuilder<List<CategoryModel>>(

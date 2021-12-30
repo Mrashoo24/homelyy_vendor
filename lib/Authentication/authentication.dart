@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 
 class Authentication extends StatefulWidget {
   const Authentication({Key key}) : super(key: key);
@@ -33,7 +34,7 @@ class _AuthenticationState extends State<Authentication> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: const Text('Sign In'),backgroundColor: kgreen,
         centerTitle: true,
       ),
       body: Center(
@@ -85,7 +86,9 @@ class _AuthenticationState extends State<Authentication> {
                       return null;
                     },
                     onSaved: (value) {
+
                       _userPassword = value;
+
                     },
                     decoration: const InputDecoration(
                       prefixIcon: Icon(

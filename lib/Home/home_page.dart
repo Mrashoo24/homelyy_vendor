@@ -11,6 +11,7 @@ import 'package:homelyvendor/Orders/orderpage.dart';
 import 'package:homelyvendor/Orders/preparing.dart';
 import 'package:homelyvendor/Orders/ready.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/notifications/notifications.dart';
 import 'package:homelyvendor/payment/orderhistory.dart';
@@ -117,7 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   appBar: AppBar(
                     key: _appBarKey,
-                    title: const Text("Vendor"),
+                    title: const Text("Vendor")
+                      ,backgroundColor: kgreen,
                     actions: [
                       if (difference > -30)
                         Padding(

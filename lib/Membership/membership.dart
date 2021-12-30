@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Membership extends StatefulWidget {
   final VendorModel vendorDetails;
@@ -33,25 +35,29 @@ class _MembershipState extends State<Membership> {
   }
 
   void _openCheckout() async {
-    var options = {
-      'key': 'rzp_test_u8g13PFaeMNHNf',
-      'amount': 2000,
-      'name': 'Homelyy Vendor',
-      'description': 'Membership Renewal',
-      'prefill': {
-        'contact': '',
-        'email': widget.vendorDetails.email,
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
+    // var options = {
+    //   'key': 'rzp_test_u8g13PFaeMNHNf',
+    //   'amount': 2000,
+    //   'name': 'Homelyy Vendor',
+    //   'description': 'Membership Renewal',
+    //   'prefill': {
+    //     'contact': '',
+    //     'email': widget.vendorDetails.email,
+    //   },
+    //   'external': {
+    //     'wallets': ['paytm']
+    //   }
+    // };
+    //
+    // try {
+    //   _razorpay.open(options);
+    // } catch (e) {
+    //   debugPrint('Error: e');
+    // }
 
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: e');
-    }
+    launch("https://portal.myfatoorah.com/KWT/le/05068804425629858");
+
+
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
@@ -81,11 +87,12 @@ class _MembershipState extends State<Membership> {
   Widget build(BuildContext context) {
     var lastPaymentDate =
         DateFormat('dd-MM-yyy').parse(widget.vendorDetails.lastPaymentDate);
-    var difference = lastPaymentDate.difference(DateTime.now()).inDays;
+    var difference = DateTime.now().difference(lastPaymentDate).inDays;
     print(difference);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Membership'),
+        title: const Text('Membership')
+        ,backgroundColor: kgreen,
         centerTitle: true,
       ),
       body: Column(
@@ -103,7 +110,7 @@ class _MembershipState extends State<Membership> {
               padding: const EdgeInsets.all(12.0),
               child: Center(
                 child: Text(
-                  difference > -30
+                  difference < 33
                       ? 'You have paid the membership fee on ${widget.vendorDetails.lastPaymentDate}'
                       : 'Your membership has expired',
                   style: const TextStyle(
@@ -117,7 +124,7 @@ class _MembershipState extends State<Membership> {
           const SizedBox(
             height: 20,
           ),
-          if (difference > -30)
+          difference > 33 ?
             ElevatedButton(
               onPressed: _openCheckout,
               child: const Text(
@@ -135,7 +142,7 @@ class _MembershipState extends State<Membership> {
                   ),
                 ),
               ),
-            ),
+            ) : SizedBox()
         ],
       ),
     );

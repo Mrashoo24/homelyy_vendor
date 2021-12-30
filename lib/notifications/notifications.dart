@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homelyvendor/components/constants.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key key}) : super(key: key);
@@ -12,7 +13,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Important Notifications"),),
+        appBar: AppBar(title: Text("Important Notifications"),backgroundColor: kgreen),
        body: Padding(
          padding: const EdgeInsets.all(8.0),
          child: ListView(
