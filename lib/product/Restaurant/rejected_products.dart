@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
 class RejectedProducts extends StatefulWidget {
@@ -55,7 +56,12 @@ class _RejectedProductsState extends State<RejectedProducts> {
                     price: productList[index].price,
                     stock: productList[index].status,
                     title: productList[index].name,
-                    discountVisibility: true,
+                    discountVisibility: productList[index].cutprice == '0' ? false : true ,
+                    discount: (int.parse(
+                        productList[index].price) -
+                        int.parse(
+                            productList[index].cutprice))
+                        .toString(),
                     productId: productList[index].productId,
                   ),
                 );
@@ -108,14 +114,14 @@ class _RejectedProductsState extends State<RejectedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('${imgurl}products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(

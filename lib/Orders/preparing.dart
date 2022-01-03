@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'order_detail.dart';
 
 class Preparing extends StatefulWidget {
-  const Preparing({Key key}) : super(key: key);
+  final VendorModel vendorDetails;
+
+  const Preparing({Key key, this.vendorDetails}) : super(key: key);
 
   @override
   _PreparingState createState() => _PreparingState();
@@ -20,12 +23,12 @@ class _PreparingState extends State<Preparing> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Orders"),
+        title: const Text("Your Orders"),backgroundColor: kgreen,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder<List<OrderTotalModel>>(
-          future: allApi.getOrderStatus(status: "Preparing"),
+          future: allApi.getOrderStatus(status: "Preparing",vid: widget.vendorDetails.vendorId),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(

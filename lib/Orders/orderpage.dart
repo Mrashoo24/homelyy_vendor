@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/Orders/order_detail.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderPage extends StatefulWidget {
-  const OrderPage({Key key}) : super(key: key);
+  final VendorModel vendorDetails;
+  const OrderPage({Key key, this.vendorDetails}) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -19,13 +21,13 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: kgreen,
         title: const Text("Your Orders"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder<List<OrderTotalModel>>(
-          future: allApi.getOrderTotal(),
+          future: allApi.getOrderStatus(vid:widget.vendorDetails.vendorId,status: 'Pending'),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(

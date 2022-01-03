@@ -8,16 +8,41 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class AllApi {
-  Future<List<OrderTotalModel>> getOrderTotal() async {
+  Future<List<OrderTotalModel>>   getOrderTotal( String vid) async {
     var getOrderTotalUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getOrderTotalVendor");
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getOrderTotalVendor?vid=$vid");
+  
     var response = await http.get(getOrderTotalUrl);
+
     if (response.statusCode == 200) {
+      
       List orderTotalList = json.decode(response.body);
+
       Iterable<OrderTotalModel> orderTotal = orderTotalList.map((e) {
+        
         return OrderTotalModel().fromJson(e);
+        
       });
-      return orderTotal.toList();
+
+      print(DateFormat('dd/MM/yyyy').format(DateTime.now()));
+
+      print((orderTotal.toList()[0].date.substring(0,10)));
+
+      List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
+        return element.date.substring(0,10) ==  DateFormat('dd/MM/yyyy').format(DateTime.now());
+      }).toList();
+
+      print('response of orders1 ${orderTotalList1}');
+      // orderTotal.toList().where((element) {
+      //   return DateFormat("yyyy-MM-dd").parse(element.date).isAfter(
+      //       DateFormat("yyyy-MM-dd")
+      //           .parse(FromDate)
+      //           .subtract(Duration(days: 1))) &&
+      //       DateFormat("yyyy-MM-dd").parse(element['date']).isBefore(
+      //           DateFormat("yyyy-MM-dd").parse(ToDate).add(Duration(days: 1)));
+      // });
+      
+      return orderTotalList1;
     } else {
       return null;
     }
@@ -49,9 +74,9 @@ class AllApi {
   }
 
   Future<List<OrderTotalModel>> getOrderStatus(
-      {@required String status}) async {
+      {@required String status,@required String vid}) async {
     var getOrderStatusUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getOrderStatusVendor?status=$status");
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getOrderStatusVendor?status=$status&vid=$vid");
     var response = await http.get(getOrderStatusUrl);
     if (response.statusCode == 200) {
       List orderTotalList = json.decode(response.body);
@@ -483,9 +508,11 @@ class AllApi {
     String value1 = "";
 
     var request = http.MultipartRequest('POST', url);
+
     request.files.add(http.MultipartFile(
         'image', file.readAsBytes().asStream(), file.lengthSync(),
         filename: file.path));
+
     await request.send().then((response) async {
       if (response.statusCode == 200) {
         response.stream.transform(utf8.decoder).listen((value) {

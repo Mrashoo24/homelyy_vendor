@@ -8,7 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'order_detail.dart';
 
 class Cancelled extends StatefulWidget {
-  const Cancelled({Key key}) : super(key: key);
+  final VendorModel vendorDetails;
+  const Cancelled({Key key, this.vendorDetails}) : super(key: key);
 
   @override
   _CancelledState createState() => _CancelledState();
@@ -25,7 +26,7 @@ class _CancelledState extends State<Cancelled> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder<List<OrderTotalModel>>(
-          future: allApi.getOrderStatus(status: "Cancelled"),
+          future: allApi.getOrderStatus(status: "Cancelled",vid: widget.vendorDetails.vendorId),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -84,11 +85,6 @@ class _CancelledState extends State<Cancelled> {
     String deliverynumber,
     String deliveryname,
   }) {
-    // print("commision1 ${widget.commision}");
-
-    var earning = ((double.parse(subTotal) - double.parse(savings)) -
-            ((double.parse(subTotal)) * 1))
-        .toString();
 
     return InkWell(
       onTap: () {
@@ -106,6 +102,7 @@ class _CancelledState extends State<Cancelled> {
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(
           children: [
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -118,7 +115,9 @@ class _CancelledState extends State<Cancelled> {
             // Text("Time: $time"),
             Text("Customer Name: $deliveryname"),
             const SizedBox(
+
               height: 5,
+
             ),
             InkWell(
                 onTap: () {
@@ -135,7 +134,7 @@ class _CancelledState extends State<Cancelled> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Payment Method: $payment"),
-                Text("Total: $earning"),
+                Text("Total: $total"),
               ],
             ),
             const Divider(

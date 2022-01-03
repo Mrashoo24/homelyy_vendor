@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -65,6 +67,7 @@ class _AddProductState extends State<AddProduct> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Products'),
+        backgroundColor: kgreen,
       ),
       body: _isLoading
           ? const Center(
@@ -309,47 +312,58 @@ class _AddProductState extends State<AddProduct> {
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });
-                                  await _allApi.addProduct(
-                                    productName: _productName,
-                                    productId: _foodId,
-                                    productCategory: widget.categoryId,
-                                    productSubCategory: _productSubCategory,
-                                    productDescription: _productDescription,
-                                    vendorId: widget.vendorId,
-                                    productImage: image.path,
-                                    productPrice: _productPrice,
-                                    cutPrice: _cutPrice,
-                                    requestDate:
-                                        DateFormat('dd-MM-yyyy hh:mm a')
-                                            .format(DateTime.now()),
-                                  );
-                                  await _allApi.putProductFoodStatus(
-                                    foodId: _foodId,
-                                    status: false,
-                                  );
-                                  await _allApi.setImageProduct(image);
-                                  setState(() {
-                                    _isLoading = !_isLoading;
+
+                                  await _allApi.setImageProduct(image).then((value) async {
+
+
+                                    await _allApi.addProduct(
+                                      productName: _productName,
+                                      productId: _foodId,
+                                      productCategory: widget.categoryId,
+                                      productSubCategory: _productSubCategory,
+                                      productDescription: _productDescription,
+                                      vendorId: widget.vendorId,
+                                      productImage: json.decode(value),
+                                      productPrice: _productPrice,
+                                      cutPrice: _cutPrice,
+                                      requestDate:
+                                      DateFormat('dd-MM-yyyy hh:mm a')
+                                          .format(DateTime.now()),
+                                    );
+
+                                    await _allApi.putProductFoodStatus(
+                                      foodId: _foodId,
+                                      status: false,
+                                    );
+
+
+                                    setState(() {
+                                      _isLoading = !_isLoading;
+                                    });
+                                    Get.back();
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Product Sent for Approval'),
+                                          content: const Text(
+                                              'Your product will be added once admin approves it.'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              child: const Text('Ok'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+
                                   });
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Product Sent for Approval'),
-                                        content: const Text(
-                                            'Your product will be added once admin approves it.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            child: const Text('Ok'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
+
                                 }
                               },
                               child: const Text('Add'),

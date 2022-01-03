@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/Orders/orderpage.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/main.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,12 +24,14 @@ class OrderTotal extends StatefulWidget {
   _OrderTotalState createState() => _OrderTotalState();
 }
 
+
+
 class _OrderTotalState extends State<OrderTotal> {
   var allApi = AllApi();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: kgreen,
         title: const Text("Order Detail"),
       ),
       body: FutureBuilder<OrderModel>(
@@ -82,6 +85,9 @@ class _OrderTotalState extends State<OrderTotal> {
                             },
                           );
                         },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(kgreen)
+                        ),
                         child: Text("ACCEPT",
                             style: GoogleFonts.basic(color: Colors.white))),
                     const SizedBox(
@@ -145,7 +151,7 @@ class _OrderTotalState extends State<OrderTotal> {
                     ),
                     cartListNew(
                       cutprice: orders.cutprice,
-                      discount: orders.discount,
+                      discount: (double.parse(orders.price) - double.parse(orders.cutprice)).toString(),
                       itemNumber: orders.itemnumber,
                       ogcutprice: orders.ogcutprice,
                       price: orders.price,
@@ -175,9 +181,7 @@ class _OrderTotalState extends State<OrderTotal> {
 
   footer(BuildContext context, String subTotal, String wallet, String discount,
       String total, String delivery, String savings) {
-    var earning = ((double.parse(subTotal) - double.parse(savings)) -
-            ((double.parse(subTotal)) * 1))
-        .toString();
+
     return Card(
       margin: const EdgeInsets.only(top: 15, left: 10, right: 10),
       elevation: 1,
@@ -194,7 +198,7 @@ class _OrderTotalState extends State<OrderTotal> {
             // billRow("Commision",
             //     ((double.parse(subTotal) * 1)).toString()),
             const SizedBox(height: 8, width: 0),
-            billRow("Total", earning.toString()),
+            billRow("Total", total.toString()),
             const SizedBox(height: 8, width: 0),
             const SizedBox(height: 8, width: 0),
           ],

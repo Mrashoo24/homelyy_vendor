@@ -319,6 +319,9 @@ class _CategoryPageState extends State<CategoryPage> {
                             );
                           }
                         },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(kgreen)
+                        ),
                         child: const Text("VIEW PRODUCTS"),
                       )
                     ],
@@ -327,7 +330,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: CustomSwitch(
                       value: stock,
-                      activeColor: Colors.blue,
+                      activeColor: kgreen,
                       onChanged: (value) {
                         //
                       },

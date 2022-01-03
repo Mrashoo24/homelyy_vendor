@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/product/Restaurant/accepted_products.dart';
 import 'package:homelyvendor/product/Restaurant/pending_products.dart';
 import 'package:homelyvendor/product/Restaurant/rejected_products.dart';
@@ -28,6 +29,7 @@ class _ProductsState extends State<Products> {
       length: 3,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
+          backgroundColor: kgreen,
           child: const Icon(Icons.add),
           onPressed: () {
             Get.to(
@@ -40,8 +42,10 @@ class _ProductsState extends State<Products> {
           },
         ),
         appBar: AppBar(
-          title: const Text("Product List"),
+          backgroundColor: kgreen,
+          title: const Text("Product List",),
           bottom: const TabBar(
+
             tabs: [
               Tab(
                 text: 'Accepted',

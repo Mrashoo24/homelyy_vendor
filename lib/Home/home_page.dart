@@ -1,6 +1,7 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,72 +50,72 @@ class _MyHomePageState extends State<MyHomePage> {
               ? Scaffold(
                   drawer: Drawer(
                     child: Container(
-                      margin: const EdgeInsets.only(top: 50),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: const Icon(Icons.monetization_on),
-                              title: const Text('Payments'),
-                              onTap: () => {
-                                Get.to(
-                                  const OrderHistory(
-                                      // businessName:
-                                      // widget.businessName ?? businessName1,
-                                      ),
-                                ),
-                              },
-                            ),
-                            // if (vendorDetails.type == 'restro')
-                            //   ListTile(
-                            //     leading: const Icon(Icons.add),
-                            //     title: const Text('Add Product'),
-                            //     onTap: () => {
-                            //       Get.to(AddProduct(
-                            //         vendorId: widget.vendorDetails.vendorId,
-                            //       ))
-                            //     },
-                            //   ),
-                            // if (vendorDetails.type == 'lifestyle')
-                            ListTile(
-                              leading: const Icon(
-                                  Icons.production_quantity_limits_rounded),
-                              title: const Text('Product Management'),
-                              onTap: () => {
-                                Get.to(
-                                  () => CategoryPage(
-                                    vendorId: widget.vendorDetails.vendorId,
-                                    vendorType: widget.vendorDetails.type,
+                        margin: const EdgeInsets.only(top: 50),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.monetization_on),
+                                title: const Text('Payments'),
+                                onTap: () => {
+                                  Get.to(
+                                    const OrderHistory(
+                                        // businessName:
+                                        // widget.businessName ?? businessName1,
+                                        ),
                                   ),
-                                )
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.money),
-                              title: const Text('Membership'),
-                              onTap: () => {
-                                Get.to(
-                                  Membership(
-                                    vendorDetails: widget.vendorDetails,
+                                },
+                              ),
+                              // if (vendorDetails.type == 'restro')
+                              //   ListTile(
+                              //     leading: const Icon(Icons.add),
+                              //     title: const Text('Add Product'),
+                              //     onTap: () => {
+                              //       Get.to(AddProduct(
+                              //         vendorId: widget.vendorDetails.vendorId,
+                              //       ))
+                              //     },
+                              //   ),
+                              // if (vendorDetails.type == 'lifestyle')
+                              ListTile(
+                                leading: const Icon(
+                                    Icons.production_quantity_limits_rounded),
+                                title: const Text('Product Management'),
+                                onTap: () => {
+                                  Get.to(
+                                    () => CategoryPage(
+                                      vendorId: widget.vendorDetails.vendorId,
+                                      vendorType: widget.vendorDetails.type,
+                                    ),
+                                  )
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.money),
+                                title: const Text('Membership'),
+                                onTap: () => {
+                                  Get.to(
+                                    Membership(
+                                      vendorDetails: widget.vendorDetails,
+                                    ),
                                   ),
-                                ),
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.door_back_door),
-                              title: const Text('Logout'),
-                              onTap: () => {
-                                // SharedPreferences.getInstance().then((value) {
-                                //   value.clear().then((value) {
-                                //     Get.offAll(FirstScreen());
-                                //   });
-                                // })
-                              },
-                            ),
-                          ],
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.door_back_door),
+                                title: const Text('Logout'),
+                                onTap: () => {
+                                  // SharedPreferences.getInstance().then((value) {
+                                  //   value.clear().then((value) {
+                                  //     Get.offAll(FirstScreen());
+                                  //   });
+                                  // })
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      )
                   ),
                   appBar: AppBar(
                     key: _appBarKey,
@@ -126,89 +127,105 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: CustomSwitch(
                             value: _shopStatus,
-                            activeColor: Colors.green,
+                            activeColor: Colors.red,
                             onChanged: (value) async {
                               setState(() {
-                                _shopStatus = !_shopStatus;
+                                _shopStatus = value;
                               });
                               await allAPi.putShopStatus(
                                 vendorId: widget.vendorDetails.vendorId,
                                 status: _shopStatus,
-                              );
+                              ).then((value) {
+                                _shopStatus ?Fluttertoast.showToast(msg: 'Shop is On Now') :   Fluttertoast.showToast(msg: 'Shop is Off Now');
+                              });
                             },
                           ),
                         ),
                       const SizedBox(
                         width: 50,
                       ),
-                      InkWell(
-                        onTap: () {
-                          Get.to(const NotificationPage());
-                        },
-                        child: Stack(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(FontAwesomeIcons.bell),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "3",
-                                style: TextStyle(
-                                    color: Colors.green.shade900, fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                      // InkWell(
+                      //   onTap: () {
+                      //     Get.to(const NotificationPage());
+                      //   },
+                      //   child: Stack(
+                      //     children: [
+                      //       const Padding(
+                      //         padding: EdgeInsets.all(8.0),
+                      //         child: Icon(FontAwesomeIcons.bell),
+                      //       ),
+                      //       Align(
+                      //         alignment: Alignment.centerLeft,
+                      //         child: Text(
+                      //           "3",
+                      //           style: TextStyle(
+                      //               color: Colors.green.shade900, fontSize: 18),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // )
                     ],
                   ),
                   body: difference > -30
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView(
-                            children: <Widget>[
-                              buildDashCards(
-                                  img: "assets/images/pending.png",
-                                  press: () {
-                                    Get.to(
-                                      const OrderPage(
-                                          // fromScreen: "Pending",
-                                          // businessName:
-                                          // widget.businessName ?? businessName1,
-                                          ),
-                                    );
-                                  },
-                                  count: 1.toString()),
-                              buildDashCards(
-                                  img: "assets/images/processed.png",
-                                  count: 0.toString(),
-                                  press: () {
-                                    Get.to(const Preparing());
-                                  }),
-                              buildDashCards(
-                                  img: "assets/images/ready.png",
-                                  count: 0.toString(),
-                                  press: () {
-                                    Get.to(const Ready());
-                                  }),
-                              buildDashCards(
-                                  img: "assets/images/delivered.png",
-                                  count: 0.toString(),
-                                  press: () {
-                                    Get.to(const Delivered());
-                                  }),
-                              buildDashCards(
-                                img: "assets/images/cancelled.png",
-                                count: 0.toString(),
-                                press: () {
-                                  Get.to(const Cancelled());
-                                },
+                      ? FutureBuilder(
+                      future: allAPi.getOrderTotal(widget.vendorDetails.vendorId),
+                      builder: (context,snapshot){
+
+                        if(!snapshot.hasData){
+
+                          return CircularProgressIndicator(color: kgreen,);
+                        }
+
+                        List<OrderTotalModel> listoforders= snapshot.requireData;
+
+                          return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView(
+                                children: <Widget>[
+                                  buildDashCards(
+                                      img: "assets/images/pending.png",
+                                      press: () {
+                                        Get.to(
+                                           OrderPage(
+                                            vendorDetails: widget.vendorDetails,
+                                              // fromScreen: "Pending",
+                                              // businessName:
+                                              // widget.businessName ?? businessName1,
+                                              ),
+                                        );
+                                      },
+                                      count: listoforders.where((element) => element.status == 'Pending').toList().length.toString()),
+                                  buildDashCards(
+                                      img: "assets/images/processed.png",
+                                      count: listoforders.where((element) => element.status == 'Accepted').toList().length.toString(),
+                                      press: () {
+                                        Get.to( Preparing( vendorDetails: widget.vendorDetails,));
+                                      }),
+                                  buildDashCards(
+                                      img: "assets/images/ready.png",
+                                      count: listoforders.where((element) => element.status == 'Ready').toList().length.toString(),
+                                      press: () {
+                                        Get.to( Ready( vendorDetails: widget.vendorDetails,));
+                                      }),
+                                  buildDashCards(
+                                      img: "assets/images/delivered.png",
+                                      count: listoforders.where((element) => element.status == 'Delivered').toList().length.toString(),
+                                      press: () {
+                                        Get.to( Delivered(vendorDetails: widget.vendorDetails));
+                                      }),
+                                  buildDashCards(
+                                    img: "assets/images/cancelled.png",
+                                    count:  listoforders.where((element) => element.status == 'Cancelled').toList().length.toString(),
+                                    press: () {
+                                      Get.to(Cancelled(vendorDetails: widget.vendorDetails));
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )
+                            );
+                        }
+                      )
                       : Center(
                           child: Card(
                             shape: const RoundedRectangleBorder(

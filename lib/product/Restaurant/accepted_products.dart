@@ -2,6 +2,7 @@ import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
 class AcceptedProducts extends StatefulWidget {
@@ -56,7 +57,12 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                     price: productList[index].price,
                     stock: productList[index].status,
                     title: productList[index].name,
-                    discountVisibility: true,
+                    discountVisibility: productList[index].cutprice == '0' ? false : true ,
+                    discount: (int.parse(
+                        productList[index].price) -
+                        int.parse(
+                            productList[index].cutprice))
+                        .toString(),
                     productId: productList[index].productId,
                   ),
                 );
@@ -109,14 +115,14 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('${imgurl}products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -181,7 +187,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: CustomSwitch(
                                       value: stock,
-                                      activeColor: Colors.blue,
+                                      activeColor: kgreen,
                                       onChanged: (value) async {
                                         stock = !stock;
                                         await _allApi.putProductStatus(
