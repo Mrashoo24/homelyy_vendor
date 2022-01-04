@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/Orders/orderpage.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
@@ -10,7 +13,8 @@ import 'package:homelyvendor/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderTotal extends StatefulWidget {
-  final String orderId, wallet, total, delivery, savings;
+  final String orderId, wallet, total, delivery, savings, status,address;
+  final VendorModel vendorDetails;
   const OrderTotal({
     Key key,
     this.orderId,
@@ -18,20 +22,22 @@ class OrderTotal extends StatefulWidget {
     this.savings,
     this.total,
     this.wallet,
+    this.vendorDetails,
+    this.status, this.address,
   }) : super(key: key);
 
   @override
   _OrderTotalState createState() => _OrderTotalState();
 }
 
-
-
 class _OrderTotalState extends State<OrderTotal> {
   var allApi = AllApi();
   @override
   Widget build(BuildContext context) {
+    print('pending ${widget.status != 'Delivered'}');
     return Scaffold(
-      appBar: AppBar(backgroundColor: kgreen,
+      appBar: AppBar(
+        backgroundColor: kgreen,
         title: const Text("Order Detail"),
       ),
       body: FutureBuilder<OrderModel>(
@@ -39,7 +45,7 @@ class _OrderTotalState extends State<OrderTotal> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: kgreen,),
             );
           } else {
             var orders = snapshot.data;
@@ -60,62 +66,29 @@ class _OrderTotalState extends State<OrderTotal> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          await allApi.putOrderStatus(
-                            orderId: widget.orderId,
-                            status: 'Accepted',
-                          );
-                          showDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return AlertDialog(
-                                title: const Text('Order Accepted'),
-                                content:
-                                    Image.asset("assets/images/accepted.jpg"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Get.off(const OrderPage());
-                                    },
-                                    child: const Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(kgreen)
-                        ),
-                        child: Text("ACCEPT",
-                            style: GoogleFonts.basic(color: Colors.white))),
-                    const SizedBox(
-                      width: 20,
-                    ),
                     Visibility(
-                      visible: true,
+                      visible: widget.status != 'Delivered' && widget.status != 'Cancelled',
                       child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.red),
-                          ),
-                          onPressed: () async {
+                        onPressed: () async {
+                          if (widget.status == "Pending") {
+                            ///////end
                             await allApi.putOrderStatus(
                               orderId: widget.orderId,
-                              status: "Cancelled",
+                              status: 'Accepted',
                             );
                             showDialog(
                               context: context,
                               builder: (ctx) {
                                 return AlertDialog(
-                                  title: const Text('Order Cancelled'),
-                                  content: Image.asset(
-                                      "assets/images/order_cancelled.png"),
+                                  title: const Text('Order Accepted'),
+                                  content:
+                                      Image.asset("assets/images/accepted.jpg"),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Get.off(const OrderPage());
+                                        Get.off(MyHomePage(
+                                          vendorDetails: widget.vendorDetails,
+                                        ));
                                       },
                                       child: const Text('Ok'),
                                     ),
@@ -123,25 +96,158 @@ class _OrderTotalState extends State<OrderTotal> {
                                 );
                               },
                             );
+                          }
+                          if (widget.status == "Accepted") {
+                            ///////end
+                            await allApi.putOrderStatus(
+                              orderId: widget.orderId,
+                              status: 'Ready',
+                            );
+                            showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  title: const Text('Order Ready'),
+                                  content:
+                                      Image.asset("assets/images/accepted.jpg"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.off(MyHomePage(
+                                          vendorDetails: widget.vendorDetails,
+                                        ));
+                                      },
+                                      child: const Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          if (widget.status == "Ready") {
+                            ///////end
+                            await allApi.putOrderStatus(
+                              orderId: widget.orderId,
+                              status: 'Delivered',
+                            );
+                            showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  title: const Text('Order Delivered'),
+                                  content:
+                                  Image.asset("assets/images/accepted.jpg"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.off(MyHomePage(
+                                          vendorDetails: widget.vendorDetails,
+                                        ));
+                                      },
+                                      child: const Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(kgreen)),
+                        child: widget.status == "Pending"
+                            ? Text("ACCEPT",
+                                style: GoogleFonts.basic(color: Colors.white))
+                            : widget.status == "Accepted"
+                                ? Text("READY",
+                                    style: GoogleFonts.basic(color: Colors.white))
+                                : widget.status == "Ready"
+                                    ? Text("Delivered",
+                                        style: GoogleFonts.basic(
+                                            color: Colors.white))
+                                    : Text(widget.status,
+                                        style: GoogleFonts.basic(
+                                            color: Colors.white)),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Visibility(
+                      visible: widget.status == 'Pending',
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red),
+                          ),
+                          onPressed: () async {
+
+                            showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  title: const Text('Do you want to cancel this order ?'),
+                                  content: Image.asset(
+                                      "assets/images/order_cancelled.png"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                       Get.back();
+                                      },
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+
+                                        await allApi.putOrderStatus(
+                                          orderId: widget.orderId,
+                                          status: "Cancelled",
+                                        );
+
+                                        Get.off(MyHomePage(
+                                          vendorDetails: widget.vendorDetails,
+                                        ));
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
                           },
                           child: Text("CANCEL",
                               style: GoogleFonts.basic(color: Colors.white))),
                     ),
-                    InkWell(
-                      onTap: () {
-                        launch('tel:${orders.ref}');
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Customer Number: ${orders.ref}"),
-                        ),
-                      ),
+                    const SizedBox(
+                      width: 50,
                     ),
+                    InkWell(
+                        onTap: () {
+                          launch('tel:${orders.ref}');
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blue),
+                                color: Colors.blueGrey),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(FontAwesomeIcons.phoneAlt),
+                                  Text(
+                                    'Call Customer',
+                                    style: TextStyle(),
+                                  ),
+                                ],
+                              ),
+                            ))),
                     const SizedBox(height: 50),
-                    const Text("Customer Address: "),
+                     Text("Customer Address: ${widget.address}"),
                     const Divider(
                       thickness: 1,
                     ),
@@ -150,8 +256,11 @@ class _OrderTotalState extends State<OrderTotal> {
                       style: GoogleFonts.basic(fontSize: 18),
                     ),
                     cartListNew(
+                      img:orders.img,
                       cutprice: orders.cutprice,
-                      discount: (double.parse(orders.price) - double.parse(orders.cutprice)).toString(),
+                      discount: (double.parse(orders.price) -
+                              double.parse(orders.cutprice))
+                          .toString(),
                       itemNumber: orders.itemnumber,
                       ogcutprice: orders.ogcutprice,
                       price: orders.price,
@@ -181,7 +290,6 @@ class _OrderTotalState extends State<OrderTotal> {
 
   footer(BuildContext context, String subTotal, String wallet, String discount,
       String total, String delivery, String savings) {
-
     return Card(
       margin: const EdgeInsets.only(top: 15, left: 10, right: 10),
       elevation: 1,
@@ -224,7 +332,7 @@ class _OrderTotalState extends State<OrderTotal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "₹",
+                "\$",
                 style:
                     TextStyle(color: Colors.deepOrange.shade700, fontSize: 14),
               ),
@@ -243,6 +351,7 @@ class _OrderTotalState extends State<OrderTotal> {
   }
 
   cartListNew({
+    String img,
     String title,
     String requirement,
     String price,
@@ -258,7 +367,7 @@ class _OrderTotalState extends State<OrderTotal> {
       child: Container(
         margin: const EdgeInsets.only(top: 10, bottom: 10),
         child: createCartListItem(
-            "https://firebasestorage.googleapis.com/v0/b/food-app-b497c.appspot.com/o/Burger-webp-Clipart%20(1).webp?alt=media&token=7ccdbf05-e37d-4da4-b784-f6882ac0084e",
+            '${imgurl}/products/$img'  ,
             title,
             requirement,
             price,
@@ -360,7 +469,7 @@ class _OrderTotalState extends State<OrderTotal> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
+                                            : "\$${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -370,7 +479,7 @@ class _OrderTotalState extends State<OrderTotal> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "\$$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
@@ -404,11 +513,11 @@ class _OrderTotalState extends State<OrderTotal> {
               top: 10,
               left: 20,
               child: Container(
-                width: 60,
+                width: 90,
                 height: 25,
                 child: Center(
                     child: Text(
-                  "₹ $discount OFF",
+                  "\$ $discount OFF",
                   style: GoogleFonts.arvo(fontSize: 12, color: Colors.white),
                 )),
                 decoration: const BoxDecoration(

@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text('Payments'),
                                 onTap: () => {
                                   Get.to(
-                                    const OrderHistory(
+                                     OrderHistory(vendorDetails: widget.vendorDetails,
                                         // businessName:
                                         // widget.businessName ?? businessName1,
                                         ),
@@ -189,6 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Get.to(
                                            OrderPage(
                                             vendorDetails: widget.vendorDetails,
+                                              orderTotal: listoforders.where((element) => element.status == 'Pending').toList(),
                                               // fromScreen: "Pending",
                                               // businessName:
                                               // widget.businessName ?? businessName1,
@@ -200,25 +201,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                       img: "assets/images/processed.png",
                                       count: listoforders.where((element) => element.status == 'Accepted').toList().length.toString(),
                                       press: () {
-                                        Get.to( Preparing( vendorDetails: widget.vendorDetails,));
+                                        Get.to( Preparing( vendorDetails: widget.vendorDetails,orderTotal: listoforders.where((element) => element.status == 'Accepted').toList(),));
                                       }),
                                   buildDashCards(
                                       img: "assets/images/ready.png",
                                       count: listoforders.where((element) => element.status == 'Ready').toList().length.toString(),
                                       press: () {
-                                        Get.to( Ready( vendorDetails: widget.vendorDetails,));
+                                        Get.to( Ready( vendorDetails: widget.vendorDetails,orderTotal: listoforders.where((element) => element.status == 'Ready').toList(),));
                                       }),
                                   buildDashCards(
                                       img: "assets/images/delivered.png",
                                       count: listoforders.where((element) => element.status == 'Delivered').toList().length.toString(),
                                       press: () {
-                                        Get.to( Delivered(vendorDetails: widget.vendorDetails));
+                                        Get.to( Delivered(vendorDetails: widget.vendorDetails,orderTotal: listoforders.where((element) => element.status == 'Delivered').toList(),));
                                       }),
                                   buildDashCards(
                                     img: "assets/images/cancelled.png",
                                     count:  listoforders.where((element) => element.status == 'Cancelled').toList().length.toString(),
                                     press: () {
-                                      Get.to(Cancelled(vendorDetails: widget.vendorDetails));
+                                      Get.to(Cancelled(vendorDetails: widget.vendorDetails,orderTotal: listoforders.where((element) => element.status == 'Cancelled').toList(),));
                                     },
                                   ),
                                 ],

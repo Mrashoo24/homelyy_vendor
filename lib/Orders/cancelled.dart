@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
@@ -9,7 +10,8 @@ import 'order_detail.dart';
 
 class Cancelled extends StatefulWidget {
   final VendorModel vendorDetails;
-  const Cancelled({Key key, this.vendorDetails}) : super(key: key);
+  final List<OrderTotalModel> orderTotal;
+  const Cancelled({Key key, this.vendorDetails, this.orderTotal}) : super(key: key);
 
   @override
   _CancelledState createState() => _CancelledState();
@@ -38,21 +40,21 @@ class _CancelledState extends State<Cancelled> {
             } else {
               var orders = snapshot.data;
               return ListView.builder(
-                itemCount: orders.length,
+                itemCount: widget.orderTotal.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.only(top: 10, bottom: 10),
                     child: createOrderListItem(
-                      orderId: orders[index].orderId,
-                      status: orders[index].status,
-                      payment: orders[index].paymentMethod,
-                      total: orders[index].total,
-                      date: orders[index].date,
-                      subTotal: orders[index].subtotal,
-                      discount: orders[index].discount,
-                      savings: orders[index].savings,
-                      deliverynumber: orders[index].phone,
-                      deliveryname: orders[index].name,
+                      orderId: widget.orderTotal[index].orderId,
+                      status: widget.orderTotal[index].status,
+                      payment: widget.orderTotal[index].paymentMethod,
+                      total: widget.orderTotal[index].total,
+                      date: widget.orderTotal[index].date,
+                      subTotal: widget.orderTotal[index].subtotal,
+                      discount: widget.orderTotal[index].discount,
+                      savings: widget.orderTotal[index].savings,
+                      deliverynumber: widget.orderTotal[index].phone,
+                      deliveryname: widget.orderTotal[index].name,address: widget.orderTotal[index].address
                     ),
                   );
                 },
@@ -83,7 +85,7 @@ class _CancelledState extends State<Cancelled> {
     String businessName,
     GeoPoint userLocation,
     String deliverynumber,
-    String deliveryname,
+    String deliveryname,address
   }) {
 
     return InkWell(
@@ -94,7 +96,7 @@ class _CancelledState extends State<Cancelled> {
             delivery: "0",
             savings: savings,
             total: total,
-            wallet: wallet,
+            wallet: wallet,      vendorDetails:widget.vendorDetails,status: 'Cancelled',address: address,
           ),
         );
       },
@@ -121,19 +123,30 @@ class _CancelledState extends State<Cancelled> {
             ),
             InkWell(
                 onTap: () {
-                  launch('tel:$deliverynumber');
+                  launch('tel:${deliverynumber}');
                 },
                 child: Container(
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.blue)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blue),
+                        color: Colors.blueGrey),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Customer Number: $deliverynumber"),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.phoneAlt),
+                          Text(
+                            'Call Customer',
+                            style: TextStyle(),
+                          ),
+                        ],
+                      ),
                     ))),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Payment Method: $payment"),
+                
                 Text("Total: $total"),
               ],
             ),

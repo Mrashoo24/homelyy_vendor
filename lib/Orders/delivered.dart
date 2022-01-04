@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
@@ -10,7 +11,8 @@ import 'order_detail.dart';
 
 class Delivered extends StatefulWidget {
   final VendorModel vendorDetails;
-  const Delivered({Key key, this.vendorDetails}) : super(key: key);
+  final List<OrderTotalModel> orderTotal;
+  const Delivered({Key key, this.vendorDetails, this.orderTotal}) : super(key: key);
 
   @override
   _DeliveredState createState() => _DeliveredState();
@@ -26,43 +28,29 @@ class _DeliveredState extends State<Delivered> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder<List<OrderTotalModel>>(
-          future: allApi.getOrderStatus(vid:widget.vendorDetails.vendorId,status: "Delivered"),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.isBlank) {
-              return const Text(
-                  'There are no orders being prepared at the moment.');
-            } else {
-              var orders = snapshot.data;
-              return ListView.builder(
-                itemCount: orders.length,
+        child: ListView.builder(
+                itemCount: widget.orderTotal.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.only(top: 10, bottom: 10),
                     child: createOrderListItem(
-                      orderId: orders[index].orderId,
-                      status: orders[index].status,
-                      payment: orders[index].paymentMethod,
-                      total: orders[index].total,
-                      date: orders[index].date,
-                      subTotal: orders[index].subtotal,
-                      discount: orders[index].discount,
-                      savings: orders[index].savings,
-                      deliverynumber: orders[index].phone,
-                      deliveryname: orders[index].name,
+                      orderId: widget.orderTotal[index].orderId,
+                      status: widget.orderTotal[index].status,
+                      payment: widget.orderTotal[index].paymentMethod,
+                      total: widget.orderTotal[index].total,
+                      date: widget.orderTotal[index].date,
+                      subTotal: widget.orderTotal[index].subtotal,
+                      discount: widget.orderTotal[index].discount,
+                      savings: widget.orderTotal[index].savings,
+                      deliverynumber: widget.orderTotal[index].phone,
+                      deliveryname: widget.orderTotal[index].name,address: widget.orderTotal[index].address
                     ),
                   );
                 },
-              );
-            }
-          },
+              )
+
         ),
-      ),
-    );
+      );
   }
 
   Widget createOrderListItem({
@@ -84,13 +72,9 @@ class _DeliveredState extends State<Delivered> {
     String businessName,
     GeoPoint userLocation,
     String deliverynumber,
-    String deliveryname,
+    String deliveryname,String address
   }) {
     // print("commision1 ${widget.commision}");
-
-    var earning = ((double.parse(subTotal) - double.parse(savings)) -
-            ((double.parse(subTotal)) * 1))
-        .toString();
 
     return InkWell(
       onTap: () {
@@ -100,7 +84,7 @@ class _DeliveredState extends State<Delivered> {
             delivery: "0",
             savings: savings,
             total: total,
-            wallet: wallet,
+            wallet: wallet,      vendorDetails:widget.vendorDetails,status: 'Delivered',address: address,
           ),
         );
       },
@@ -124,20 +108,31 @@ class _DeliveredState extends State<Delivered> {
             ),
             InkWell(
                 onTap: () {
-                  launch('tel:$deliverynumber');
+                  launch('tel:${deliverynumber}');
                 },
                 child: Container(
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.blue)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blue),
+                        color: Colors.blueGrey),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Customer Number: $deliverynumber"),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.phoneAlt),
+                          Text(
+                            'Call Customer',
+                            style: TextStyle(),
+                          ),
+                        ],
+                      ),
                     ))),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Payment Method: $payment"),
-                Text("Total: $earning"),
+                
+                Text("Total: $total"),
               ],
             ),
             const Divider(

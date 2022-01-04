@@ -18,21 +18,24 @@ class AllApi {
       
       List orderTotalList = json.decode(response.body);
 
+
+      print('response of orders1 ${orderTotalList}');
+
       Iterable<OrderTotalModel> orderTotal = orderTotalList.map((e) {
         
         return OrderTotalModel().fromJson(e);
         
       });
 
-      print(DateFormat('dd/MM/yyyy').format(DateTime.now()));
+      print(DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
 
-      print((orderTotal.toList()[0].date.substring(0,10)));
+      print(DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
 
       List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
-        return element.date.substring(0,10) ==  DateFormat('dd/MM/yyyy').format(DateTime.now());
+        return element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now());
       }).toList();
 
-      print('response of orders1 ${orderTotalList1}');
+
       // orderTotal.toList().where((element) {
       //   return DateFormat("yyyy-MM-dd").parse(element.date).isAfter(
       //       DateFormat("yyyy-MM-dd")
@@ -41,12 +44,88 @@ class AllApi {
       //       DateFormat("yyyy-MM-dd").parse(element['date']).isBefore(
       //           DateFormat("yyyy-MM-dd").parse(ToDate).add(Duration(days: 1)));
       // });
-      
+
+      // orderTotalList1.toList().sort((a,b){
+      //   return DateFormat('yyyy-MM-dd HH:mm').format(DateFormat('dd/MM/yyyy HH:mm').parse(b.date)).compareTo(DateFormat('yyyy/MM/dd HH:mm').format(DateFormat('dd/MM/yyyy HH:mm').parse(a.date)));
+      // });
+      //
+      // print(
+      //     'DATE ${
+      //         DateFormat('yyyy/MM/dd HH:mm').format(DateFormat('dd/MM/yyyy HH:mm').parse(orderTotal.toList()[0].date))
+      //     }');
+      // print(
+      //     'orders ${
+      //         orderTotalList1.toList()
+      //     }');
+
       return orderTotalList1;
     } else {
       return null;
     }
   }
+
+  Future<List<OrderTotalModel>>   getOrderTotaldate(String vid,from,to) async {
+    var getOrderTotalUrl = Uri.parse(
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getOrderTotalVendor?vid=$vid");
+
+    var response = await http.get(getOrderTotalUrl);
+
+
+
+    if (response.statusCode == 200) {
+
+      List orderTotalList = json.decode(response.body);
+
+      // print('from and todate ${from} $to');
+      print('response of ordersdate ${orderTotalList}');
+
+      Iterable<OrderTotalModel> orderTotal = orderTotalList.map((e) {
+
+        return OrderTotalModel().fromJson(e);
+
+      });
+
+      print(DateFormat('yyyy-MM-dd HH:mm').parse(from));
+
+      print(DateFormat('yyyy-MM-dd HH:mm').parse(to));
+
+
+
+      List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
+        return element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }).toList();
+
+      print(DateFormat("yyyy-MM-dd HH:mm")
+          .parse(orderTotalList1[0].date));
+
+      print(DateFormat("yyyy-MM-dd HH:mm")
+          .parse(orderTotalList1[0].date)
+          .isAfter(DateFormat("yyyy-MM-dd HH:mm").parse(from)));
+
+     print( DateFormat("yyyy-MM-dd HH:mm")
+          .parse(orderTotalList1[0].date)
+          .isBefore(DateFormat("yyyy-MM-dd HH:mm").parse(to)));
+
+
+      List<OrderTotalModel>   orderTotalList2 = orderTotalList1.where((element) {
+        return DateFormat("yyyy-MM-dd HH:mm")
+            .parse(element.date)
+            .isAfter(DateFormat("yyyy-MM-dd HH:mm").parse(from)) &&
+            DateFormat("yyyy-MM-dd HH:mm")
+                .parse(element.date)
+                .isBefore(DateFormat("yyyy-MM-dd HH:mm").parse(to));
+      }).toList();
+
+      print('filtered = ${orderTotalList2}');
+
+
+
+      return orderTotalList2;
+    } else {
+      return null;
+    }
+  }
+
 
   Future<OrderModel> getOrders(String orderId) async {
     var getOrdersUrl = Uri.parse(
@@ -83,6 +162,8 @@ class AllApi {
       Iterable<OrderTotalModel> orderTotal = orderTotalList.map((e) {
         return OrderTotalModel().fromJson(e);
       });
+
+
       return orderTotal.toList();
     } else {
       return null;

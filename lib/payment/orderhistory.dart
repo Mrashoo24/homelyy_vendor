@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/Orders/cancelled.dart';
+import 'package:homelyvendor/Orders/delivered.dart';
+import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
+import 'package:homelyvendor/components/model.dart';
 
 class OrderHistory extends StatefulWidget {
 
-  final String businessName;
+  final VendorModel vendorDetails;
 
-  const OrderHistory({Key key, this.businessName}) : super(key: key);
+  const OrderHistory({Key key, this.vendorDetails}) : super(key: key);
 
   @override
   _OrderHistoryState createState() => _OrderHistoryState();
@@ -16,6 +20,7 @@ class OrderHistory extends StatefulWidget {
 }
 
 class _OrderHistoryState extends State<OrderHistory> {
+
   var currentDate = DateTime.now();
   var currentEndDate = DateTime.now().add(Duration(days: 1));
   var commission = 0.0;
@@ -106,121 +111,116 @@ class _OrderHistoryState extends State<OrderHistory> {
           SizedBox(
             height: 20,
           ),
-          Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                  child: Text(
-                "Total Earnings : ₹${100}",
-                style: GoogleFonts.basic(fontSize: 18),
-              )),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Expanded(
-                  child: GridView.count(
-                    mainAxisSpacing: 10,
-                    shrinkWrap: true,
-                    crossAxisCount: 1,
-                    childAspectRatio: 3.5,
-                    children: [
-                      InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20.0),
-                              ),
-                              color: Colors.green),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Total Orders Delivered",
-                                  style: GoogleFonts.basic(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  0.toString(),
-                                  style: GoogleFonts.basic(
-                                      color: Colors.white, fontSize: 18),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          // Get.to(FilteredOrderScreen(
-                          //   status: "Delivered",
-                          //   businessName: widget.businessName,
-                          //   currentDate: currentDate
-                          //       .toLocal()
-                          //       .toString()
-                          //       .split(' ')[0],
-                          //   currentEndDate: currentEndDate
-                          //       .toLocal()
-                          //       .toString()
-                          //       .split(' ')[0],
-                          //   commision: commission,
-                          // ));
-                        },
-                      ),
-                      InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20.0),
-                              ),
-                              color: Colors.red),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Total Orders Cancelled",
-                                  style: GoogleFonts.basic(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  0.toString(),
-                                  style: GoogleFonts.basic(
-                                      color: Colors.white, fontSize: 18),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          // Get.to(FilteredOrderScreen(
-                          // status: "Cancelled",
-                          // businessName: widget.businessName,
-                          // currentDate: currentDate
-                          //     .toLocal()
-                          //     .toString()
-                          //     .split(' ')[0],
-                          // currentEndDate: currentEndDate
-                          //     .toLocal()
-                          //     .toString()
-                          //     .split(' ')[0],
-                          // commision: commission,
-                          // ));
-                        },
-                      )
-                    ],
+          FutureBuilder<List<OrderTotalModel>>(
+            future: AllApi().getOrderTotaldate(widget.vendorDetails.vendorId,currentDate.toString(),currentEndDate.toString()),
+            builder: (context, snapshot) {
+
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(color: kgreen,),
+                );
+              }
+
+              var orders = snapshot.data;
+             var deliveredorders =orders.where((element) => element.status == 'Delivered').toList();
+              var cancelledorders =orders.where((element) => element.status == 'Cancelled').toList();
+             var  totalEarnings = 0.0;
+
+              deliveredorders.forEach((element) {
+                totalEarnings += double.parse(element.total);
+              });
+
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-              )
-            ],
+                  Center(
+                      child: Text(
+                    "Total Earnings : \$${totalEarnings}",
+                    style: GoogleFonts.basic(fontSize: 18),
+                  )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GridView.count(
+                      mainAxisSpacing: 10,
+                      shrinkWrap: true,
+                      crossAxisCount: 1,
+                      childAspectRatio: 3.5,
+                      children: [
+                        InkWell(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
+                                color: Colors.green),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Total Orders Delivered",
+                                    style: GoogleFonts.basic(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    deliveredorders.length.toString(),
+                                    style: GoogleFonts.basic(
+                                        color: Colors.white, fontSize: 18),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Get.to(Delivered(vendorDetails: widget.vendorDetails,orderTotal: deliveredorders,));
+                          },
+                        ),
+                        InkWell(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
+                                color: Colors.red),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Total Orders Cancelled",
+                                    style: GoogleFonts.basic(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    cancelledorders.length.toString(),
+                                    style: GoogleFonts.basic(
+                                        color: Colors.white, fontSize: 18),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Get.to(Cancelled(vendorDetails: widget.vendorDetails,orderTotal: cancelledorders,));
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }
           )
         ]));
   }
