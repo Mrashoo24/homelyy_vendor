@@ -446,30 +446,38 @@ class AllApi {
     }
   }
 
-  Future<List<CuisineModel>> getCuisine() async {
+  Future<List<CuisineModel>> getCuisine(String type) async {
     var getCuisineUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getCuisines");
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getCuisines?type=$type");
     var response = await http.get(getCuisineUrl);
+
     if (response.body != "null") {
       List cuisineList = json.decode(response.body);
       Iterable<CuisineModel> cuisine = cuisineList.map((e) {
         return CuisineModel().fromJson(e);
       });
+      print('finale ${cuisine.toList()}');
+
       return cuisine.toList();
     } else {
       return null;
     }
   }
 
-  Future<List<CategoryModel>> getAllCategories() async {
+  Future<List<CategoryModel>> getAllCategories(String type) async {
     var getCategoryUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getAllCategories");
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getAllCategories?type=$type");
     var response = await http.get(getCategoryUrl);
+
+    print('url $getCategoryUrl');
+    print('url ${response.body}');
+
     if (response.body != "null") {
       List categoryList = json.decode(response.body);
       Iterable<CategoryModel> category = categoryList.map((e) {
         return CategoryModel().fromJson(e);
       });
+      print('finale ${category.toList()}');
       return category.toList();
     } else {
       return null;
@@ -488,6 +496,9 @@ class AllApi {
     @required String cuisine,
     @required String category,
     @required String phoneNumber,
+    @required String latitude,
+    @required String longitude
+
   }) async {
     var date = DateFormat('dd-MM-yyyy').format(
       DateTime.now().subtract(
@@ -515,15 +526,18 @@ class AllApi {
       'status': 'false',
       'last_payment_date': date,
     });
+    if(response.statusCode == 200){
+
+    }
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
     }
   }
 
-  Future<void> putLocation(String vendorId) async {
+  Future<void> putLocation(String vendorId,String latitude,String longitude) async {
     // LocationData locationData = await Location().getLocation();
-    var lat = 19.0760; //locationData.latitude;
-    var lon = 72.8777; //locationData.longitude;
+    var lat = latitude; //locationData.latitude;
+    var lon = longitude; //locationData.longitude;
     var url = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/putLocationVendor?vendorId=$vendorId&lat=$lat&lon=$lon");
     var response = await http.put(url);

@@ -1,5 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.an.vendorhomely.homelyvendor">
+
+    <!-- Always include this permission -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Include only if your app benefits from precise location access. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
    <application
         android:label="homelyvendor"
         android:icon="@mipmap/ic_launcher">
@@ -43,6 +51,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyDXJWSjuWFHIcN5UPXziATTzCc6mTvj8Sw"/>
+
         <service
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"        
             android:exported="false"

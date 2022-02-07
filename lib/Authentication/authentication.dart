@@ -30,6 +30,10 @@ class _AuthenticationState extends State<Authentication> {
     return isValid;
   }
 
+  String type;
+
+  var types = ['Restaurant', 'Lifestyle'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +63,7 @@ class _AuthenticationState extends State<Authentication> {
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.person,
-                        color: Colors.blue,
+                        color:kgreen,
                       ),
                       label: Text(
                         'Email',
@@ -93,7 +97,7 @@ class _AuthenticationState extends State<Authentication> {
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.lock,
-                        color: Colors.blue,
+                        color: kgreen,
                       ),
                       label: Text(
                         'Password',
@@ -128,6 +132,7 @@ class _AuthenticationState extends State<Authentication> {
                                 ),
                               ),
                             ),
+                            backgroundColor: MaterialStateProperty.all(kdarkgreen)
                           ),
                           onPressed: () async {
                             var token =
@@ -179,7 +184,57 @@ class _AuthenticationState extends State<Authentication> {
                         ),
                   TextButton(
                     onPressed: () {
-                      Get.to(() => const Registration());
+
+                      showDialog(context: context, builder: (context){
+                        return StatefulBuilder(
+                          builder: (context, setState1) {
+                            return AlertDialog(
+                              title: Text("Select Type"),
+                              content:  Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0)),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    hint: const Text('Select Type'),
+                                    value: type,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        type = value;
+                                      });
+                                      setState1(() {
+
+                                      });
+                                    },
+                                    isExpanded: true,
+                                    items: types.map(
+                                          (e) {
+                                        return DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e),
+                                        );
+                                      },
+                                    ).toList(),
+                                  ),
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(onPressed: (){
+                                  type == null ? Get.snackbar('Error', 'Select Type',backgroundColor: Colors.redAccent):
+                                  Get.to(() =>  Registration(type: type == 'Restaurant' ? 'restro' : 'lifestyle',));
+                                }, child: Text('Continue'))
+                              ],
+                            );
+                          }
+                        );
+                      });
+
+
                     },
                     child: const Text('Register as a vendor'),
                   ),

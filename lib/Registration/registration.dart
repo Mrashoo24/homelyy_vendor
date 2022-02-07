@@ -1,14 +1,24 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
+import 'package:homelyvendor/components/map.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 
 class Registration extends StatefulWidget {
-  const Registration({Key key}) : super(key: key);
+  final LatLng latlng;
+  final String address;
+  final String type;
+
+  const Registration({Key key, this.address, this.latlng, this.type}) : super(key: key);
 
   @override
   _RegistrationState createState() => _RegistrationState();
@@ -20,6 +30,47 @@ class _RegistrationState extends State<Registration> {
   final _emailRegExp = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
+
+
+
+
+  Location location = Location();
+
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+  var userLatitude = "";
+  var userLongitude = "";
+  GeoPoint userGeoPoint;
+
+
+
+  Future<LocationData> getLocation() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        Get.snackbar("Error",
+            "'Location service is disabled. Please enable it to check-in.'");
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        Get.snackbar("Error",
+            "'Location service is disabled. Please enable it to check-in.'");
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    return _locationData;
+  }
+
   var description = '',
       userName = '',
       shopName = '',
@@ -27,7 +78,6 @@ class _RegistrationState extends State<Registration> {
       email = '',
       password = '',
       phoneNumber = '';
-  String type;
   var types = ['Restaurant', 'Lifestyle'];
 
   String cuisine;
@@ -60,13 +110,23 @@ class _RegistrationState extends State<Registration> {
   }
 
   @override
+  void initState() {
+    setState(() {
+      userLatitude = widget.latlng == null ? ""  : (widget.latlng.latitude).toString();
+      userLongitude = widget.latlng == null ? ""  : (widget.latlng.longitude).toString();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Future.wait([
-        _allApi.getCuisine(),
-        _allApi.getAllCategories(),
+        _allApi.getCuisine(widget.type),
+        _allApi.getAllCategories(widget.type),
       ]),
       builder: (context, snapshot) {
+
         if (!snapshot.hasData) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -74,10 +134,12 @@ class _RegistrationState extends State<Registration> {
         }
         List<CuisineModel> cuisineList = snapshot.data[0];
         List<CategoryModel> categoryList = snapshot.data[1];
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Sign up as a vendor'),
             centerTitle: true,
+            backgroundColor: kgreen,
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -119,6 +181,7 @@ class _RegistrationState extends State<Registration> {
                       },
                     ),
                     TextFormField(
+                      obscureText: true,
                       decoration: const InputDecoration(
                         label: Text('Password'),
                         hintText: 'Set up your password',
@@ -137,7 +200,7 @@ class _RegistrationState extends State<Registration> {
                     ),
                     TextFormField(
                       decoration: const InputDecoration(
-                        label: Text('Description'),
+                        label: Text('Shop Description'),
                         hintText: 'Enter your description',
                       ),
                       validator: (value) {
@@ -211,36 +274,7 @@ class _RegistrationState extends State<Registration> {
                         phoneNumber = value;
                       },
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          hint: const Text('Select Type'),
-                          value: type,
-                          onChanged: (value) {
-                            setState(() {
-                              type = value;
-                            });
-                          },
-                          isExpanded: true,
-                          items: types.map(
-                            (e) {
-                              return DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                    ),
+
                     Container(
                       width: MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
@@ -313,12 +347,39 @@ class _RegistrationState extends State<Registration> {
                       child: InkWell(
                         child: image != null
                             ? Image.file(image)
-                            : const Text('Upload Image'),
+                            : const Text('Upload Logo'),
                         onTap: _imagePicker,
                       ),
                     ),
                     const SizedBox(
                       height: 20,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: InkWell(
+                        child: Row(
+                          children: [
+                            Icon(FontAwesomeIcons.mapMarkerAlt,color: kgreen,),
+                            SizedBox(width: 20),
+                            widget.address == null ? Text('Select Location') : Container(
+                                width: Get.width*0.6,
+                                child: Text(widget.address,overflow: TextOverflow.ellipsis,)
+                            ),
+                          ],
+                        ),
+                        onTap: (){
+                        getLocation().then((value) {
+                          Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),));
+                        });
+                        },
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -326,7 +387,7 @@ class _RegistrationState extends State<Registration> {
                         if (canSubmit == false ||
                             category == null ||
                             cuisine == null ||
-                            image == null) {
+                            image == null || widget.latlng == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content:
@@ -335,6 +396,8 @@ class _RegistrationState extends State<Registration> {
                           );
                         } else {
                           await _allApi.addVendor(
+
+
                             description: description,
                             user: userName,
                             image: image.path,
@@ -342,14 +405,18 @@ class _RegistrationState extends State<Registration> {
                             address: address,
                             email: email,
                             password: password,
-                            type: type == 'Restaurant' ? 'restro' : 'lifestyle',
+                            type: widget.type == 'Restaurant' ? 'restro' : 'lifestyle',
                             cuisine: cuisine,
                             category: category,
                             phoneNumber: phoneNumber,
+                            latitude: userLatitude,
+                            longitude: userLongitude
+
                           );
                           var lastDigits = phoneNumber.substring(6);
                           var vendorId = 'VENDOR' + lastDigits;
-                          await _allApi.putLocation(vendorId);
+                          await _allApi.putLocation(vendorId,userLatitude,
+                              userLongitude);
                           await _allApi.putNewVendorStatus(vendorId, false);
                           await _allApi.putNewVendorCuisCat(
                               vendorId, cuisine, category);
