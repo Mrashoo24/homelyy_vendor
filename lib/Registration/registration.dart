@@ -265,7 +265,7 @@ class _RegistrationState extends State<Registration> {
                         hintText: 'Enter your phone number',
                       ),
                       validator: (value) {
-                        if (value.isEmpty || value.length != 10) {
+                        if (value.isEmpty) {
                           return 'Please enter valid phone number';
                         }
                         return null;
@@ -286,7 +286,7 @@ class _RegistrationState extends State<Registration> {
                           borderRadius: BorderRadius.circular(12.0)),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton(
-                          hint: const Text('Select Cuisine'),
+                          hint: widget.type == 'restro' ?Text('Select Cuisine') : Text('Select Parent Category'),
                           value: cuisine,
                           onChanged: (value) {
                             setState(() {
