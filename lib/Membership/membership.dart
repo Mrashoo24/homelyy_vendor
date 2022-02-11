@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:forex_conversion/forex_conversion.dart';
+import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
@@ -35,27 +37,35 @@ class _MembershipState extends State<Membership> {
   }
 
   void _openCheckout() async {
-    // var options = {
-    //   'key': 'rzp_test_u8g13PFaeMNHNf',
-    //   'amount': 2000,
-    //   'name': 'Homelyy Vendor',
-    //   'description': 'Membership Renewal',
-    //   'prefill': {
-    //     'contact': '',
-    //     'email': widget.vendorDetails.email,
-    //   },
-    //   'external': {
-    //     'wallets': ['paytm']
-    //   }
-    // };
-    //
-    // try {
-    //   _razorpay.open(options);
-    // } catch (e) {
-    //   debugPrint('Error: e');
-    // }
 
-    launch("https://portal.myfatoorah.com/KWT/le/05068804425629858");
+    final fx = Forex();
+    print("2.99USD in PKR: ${widget.vendorDetails.country}");
+
+    double myPriceInPKR = await fx.getCurrencyConverted("USD",'INR', 2.99);
+
+    print("2.99USD in PKR: ${myPriceInPKR*100}");
+
+    var options = {
+      'key': 'rzp_test_ihkYabNRZci5vW',
+      'amount': (myPriceInPKR*100).round(),
+      'name': 'Homelyy Vendor',
+      'description': 'Membership Renewal',
+      'prefill': {
+        'contact': '',
+        'email': widget.vendorDetails.email,
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
+
+    // launch("https://portal.myfatoorah.com/KWT/le/05068804425629858");
 
 
   }
@@ -67,8 +77,10 @@ class _MembershipState extends State<Membership> {
         DateTime.now(),
       ),
     );
+    Get.snackbar('Payment Successfull', 'Please Restart your App',backgroundColor: kgreen,colorText: Colors.white,snackPosition: SnackPosition.BOTTOM);
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
+
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -112,7 +124,7 @@ class _MembershipState extends State<Membership> {
                 child: Text(
                   difference < 33
                       ? 'You have paid the membership fee on ${widget.vendorDetails.lastPaymentDate}'
-                      : 'Your membership has expired',
+                      : 'Your membership is expired',
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -134,6 +146,7 @@ class _MembershipState extends State<Membership> {
                 ),
               ),
               style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(kgreen),
                 shape: MaterialStateProperty.all(
                   const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(

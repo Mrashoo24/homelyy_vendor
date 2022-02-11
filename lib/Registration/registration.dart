@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -84,6 +85,18 @@ class _RegistrationState extends State<Registration> {
   String category;
   File image;
 
+  var country;
+  var symbol ;
+
+  List countryList = [
+    {'no': 1, 'keyword': 'India'},
+    {'no': 2, 'keyword': 'Kuwait'},
+    {'no': 3, 'keyword': 'Canada'},
+    {'no': 4, 'keyword': 'UK'},
+    {'no': 5, 'keyword': 'United States'},
+    {'no': 6, 'keyword': 'Dubai'},
+  ];
+
   bool _trySubmit() {
     FocusScope.of(context).unfocus();
     final isValid = _formKey.currentState.validate();
@@ -117,7 +130,7 @@ class _RegistrationState extends State<Registration> {
     });
     super.initState();
   }
-
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -142,12 +155,85 @@ class _RegistrationState extends State<Registration> {
             backgroundColor: kgreen,
           ),
           body: SingleChildScrollView(
-            child: Container(
+            child: loading ? Center(child: CircularProgressIndicator(color: Colors.green,)) : Container(
               padding: const EdgeInsets.all(12.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: InkWell(
+                        child: Row(
+                          children: [
+                            Icon(FontAwesomeIcons.mapMarkerAlt,color: kgreen,),
+                            SizedBox(width: 20),
+                            widget.address == null ? Text('Select Location') : Container(
+                                width: Get.width*0.6,
+                                child: Text(widget.address,overflow: TextOverflow.ellipsis,)
+                            ),
+                          ],
+                        ),
+                        onTap: (){
+                          getLocation().then((value) {
+                            Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),type : widget.type));
+                          });
+                        },
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        showCurrencyPicker(
+                          context: context,
+                          showFlag: true,
+                          showCurrencyName: true,
+                          showCurrencyCode: true,
+                          onSelect: (Currency currency) {
+                            print('Select currency: ${currency.name}');
+                            setState(() {
+
+                              country = currency.code;
+                              symbol = currency.symbol;
+                            });
+
+                          },
+                          favorite: ['INR'],
+                        );
+                      },
+                      child: Container(
+                        child: TextFormField(
+                          enabled: false,
+                          // The validator receives the text that the user has entered.
+                          decoration: InputDecoration(
+                            hintText:  country == "" || country == null ? "Your Country" : country,
+                            labelText: country == "" || country == null ? "Your Country" : country,
+                            // hintStyle: TextStyle(color: Colors.white30),
+                            labelStyle: TextStyle(color: Colors.grey),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            disabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            // errorText: isdiscountAvailable ? erroText : null
+                          ),
+                          validator: (value) {
+                            return null;
+                          },
+
+                        ),
+                      ),
+                    ),
                     TextFormField(
                       decoration: const InputDecoration(
                         label: Text('Username'),
@@ -314,36 +400,6 @@ class _RegistrationState extends State<Registration> {
                             color: Colors.black,
                           ),
                           borderRadius: BorderRadius.circular(12.0)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          hint: const Text('Select Category'),
-                          value: category,
-                          onChanged: (value) {
-                            setState(() {
-                              category = value;
-                            });
-                          },
-                          isExpanded: true,
-                          items: categoryList.map(
-                            (e) {
-                              return DropdownMenuItem(
-                                value: e.name,
-                                child: Text(e.name),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
                       child: InkWell(
                         child: image != null
                             ? Image.file(image)
@@ -354,47 +410,26 @@ class _RegistrationState extends State<Registration> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: InkWell(
-                        child: Row(
-                          children: [
-                            Icon(FontAwesomeIcons.mapMarkerAlt,color: kgreen,),
-                            SizedBox(width: 20),
-                            widget.address == null ? Text('Select Location') : Container(
-                                width: Get.width*0.6,
-                                child: Text(widget.address,overflow: TextOverflow.ellipsis,)
-                            ),
-                          ],
-                        ),
-                        onTap: (){
-                        getLocation().then((value) {
-                          Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),));
-                        });
-                        },
-                      ),
-                    ),
                     ElevatedButton(
                       onPressed: () async {
                         final canSubmit = _trySubmit();
                         if (canSubmit == false ||
-                            category == null ||
                             cuisine == null ||
                             image == null || widget.latlng == null) {
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content:
                                   Text('Please complete registration details.'),
                             ),
                           );
+
                         } else {
+
+                          setState(() {
+                            loading = true;
+                          });
+
                           await _allApi.addVendor(
 
 
@@ -407,10 +442,11 @@ class _RegistrationState extends State<Registration> {
                             password: password,
                             type: widget.type == 'Restaurant' ? 'restro' : 'lifestyle',
                             cuisine: cuisine,
-                            category: category,
                             phoneNumber: phoneNumber,
                             latitude: userLatitude,
-                            longitude: userLongitude
+                            longitude: userLongitude,
+                            country: country,
+                            symbol: symbol
 
                           );
                           var lastDigits = phoneNumber.substring(6);
@@ -419,8 +455,14 @@ class _RegistrationState extends State<Registration> {
                               userLongitude);
                           await _allApi.putNewVendorStatus(vendorId, false);
                           await _allApi.putNewVendorCuisCat(
-                              vendorId, cuisine, category);
+                              vendorId, cuisine, cuisine);
+                          setState(() {
+                            loading = false;
+                          });
                           Get.back();
+                          Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+
                         }
                       },
                       child: const Text(

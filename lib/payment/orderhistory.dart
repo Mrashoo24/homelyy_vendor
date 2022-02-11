@@ -212,7 +212,9 @@ class _OrderHistoryState extends State<OrderHistory> {
                             ),
                           ),
                           onTap: () {
+
                             Get.to(Cancelled(vendorDetails: widget.vendorDetails,orderTotal: cancelledorders,));
+
                           },
                         )
                       ],

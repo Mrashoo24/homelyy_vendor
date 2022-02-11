@@ -6,10 +6,13 @@ import 'package:homelyvendor/components/model.dart';
 
 class RejectedProducts extends StatefulWidget {
   final String categoryId, vendorId;
+  final VendorModel vendorDetails;
+
+
   const RejectedProducts({
     Key key,
     this.categoryId,
-    this.vendorId,
+    this.vendorId, this.vendorDetails,
   }) : super(key: key);
 
   @override

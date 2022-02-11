@@ -7,15 +7,17 @@ import 'package:homelyvendor/product/Restaurant/pending_products.dart';
 import 'package:homelyvendor/product/Restaurant/rejected_products.dart';
 import 'package:homelyvendor/product/add_products.dart';
 
+import '../../components/model.dart';
+
 class Products extends StatefulWidget {
   final String businessName, categoryId, vendorId, vendorType;
-
+  final VendorModel vendorDetails;
   const Products({
     Key key,
     this.businessName,
     this.categoryId,
     this.vendorId,
-    this.vendorType,
+    this.vendorType, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -64,14 +66,17 @@ class _ProductsState extends State<Products> {
             AcceptedProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
+                vendorDetails:widget.vendorDetails
             ),
             RejectedProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
+                vendorDetails:widget.vendorDetails
             ),
             PendingProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
+                vendorDetails:widget.vendorDetails
             ),
           ],
         ),

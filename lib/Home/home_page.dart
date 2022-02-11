@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import 'package:homelyvendor/payment/orderhistory.dart';
 import 'package:homelyvendor/product/add_products.dart';
 import 'package:homelyvendor/product/category.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
   final VendorModel vendorDetails;
@@ -87,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     () => CategoryPage(
                                       vendorId: widget.vendorDetails.vendorId,
                                       vendorType: widget.vendorDetails.type,
+                                      vendorDetails :  widget.vendorDetails
                                     ),
                                   )
                                 },
@@ -229,23 +233,40 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       )
                       : Center(
-                          child: Card(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(30.0),
+                            child: Card(
+                              color: Colors.red.shade400,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
                               ),
-                            ),
-                            elevation: 5,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              padding: const EdgeInsets.all(12.0),
-                              child: const Center(
-                                child: Text(
-                                  'Your membership has expired',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                              elevation: 5,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height * 0.2,
+                                padding: const EdgeInsets.all(12.0),
+                                child:  Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        'Your membership is expired\n Please Renew it from Membership section',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all(Colors.white)
+                                        ),
+                                          onPressed: (){
+                                        Get.to(Membership(vendorDetails: widget.vendorDetails,));
+                                      }, child: Text('Continue',style: TextStyle(color: Colors.black),))
+                                    ],
                                   ),
                                 ),
                               ),
@@ -253,32 +274,53 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                 )
-              : Center(
-                  child: Card(
-                    child: Card(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                      ),
-                      elevation: 5,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        padding: const EdgeInsets.all(12.0),
-                        child: const Center(
-                          child: Text(
-                            'You have still not been verified.',
+              : Scaffold(
+                body: Center(
+            child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Card(
+                  color: Colors.red.shade400,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                  ),
+                  elevation: 5,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    padding: const EdgeInsets.all(12.0),
+                    child:  Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            'Your application is under verification\nPlease wait or Contact us',
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 16,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(Colors.green)
+                              ),
+                              onPressed: (){
+                                if (Platform.isIOS) {
+                                  return launch("whatsapp://wa.me/+919967706767/?text=${Uri.encodeFull('Query From ${widget.vendorDetails.email}')}");
+                                } else {
+                                  return launch("whatsapp://send?phone=+919967706767&text=${Uri.encodeFull("Query From ${widget.vendorDetails.email}")}");
+                                }
+                              }, child: Text('Connect on Whatsapp',style: TextStyle(color: Colors.white),))
+                        ],
                       ),
                     ),
                   ),
-                );
+                ),
+            ),
+          ),
+              );
         }
       },
     );

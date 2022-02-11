@@ -17,11 +17,12 @@ class CategoryPage extends StatefulWidget {
   final String businessName;
   final String vendorId;
   final String vendorType;
+  final VendorModel vendorDetails;
   const CategoryPage({
     Key key,
     this.businessName,
     this.vendorId,
-    this.vendorType,
+    this.vendorType, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -308,6 +309,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 categoryId: categoryId,
                                 vendorId: vendorId,
                                 vendorType: widget.vendorType,
+                                  vendorDetails:widget.vendorDetails
                               ),
                             );
                           } else {

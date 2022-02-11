@@ -316,9 +316,9 @@ class AllApi {
   Future<VendorModel> getVendor({@required String email}) async {
     var getVendorUrl = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getVendor?email=$email");
-    var response = await http.get(getVendorUrl);
+    var response = await http.get(getVendorUrl,headers: {'Content-Type': 'application/json'});
     if (response.body != "null") {
-      Map<String, dynamic> vendor = json.decode(response.body);
+      Map<String, dynamic> vendor = json.decode(utf8.decode(response.bodyBytes));
       VendorModel vendorDetails = VendorModel().fromJson(vendor);
       return vendorDetails;
     } else {
@@ -497,7 +497,9 @@ class AllApi {
     @required String category,
     @required String phoneNumber,
     @required String latitude,
-    @required String longitude
+    @required String longitude,
+    @required String country,
+    @required String symbol
 
   }) async {
     var date = DateFormat('dd-MM-yyyy').format(
@@ -521,10 +523,11 @@ class AllApi {
       'type': type,
       'rating': 'pending',
       'cuisine': '[cuisine]',
-      'category': '[category]',
       'verify': '0',
       'status': 'false',
       'last_payment_date': date,
+      'country': country,
+      'symbol':symbol
     });
     if(response.statusCode == 200){
 

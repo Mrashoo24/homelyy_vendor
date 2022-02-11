@@ -171,6 +171,8 @@ class VendorModel {
       rating,
       verify,
       token,
+      symbol,
+      country,
       lastPaymentDate;
   Map<String, dynamic> location;
   List cuisine, category;
@@ -195,6 +197,8 @@ class VendorModel {
     this.verify,
     this.lastPaymentDate,
     this.token,
+    this.symbol,
+    this.country
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -217,6 +221,8 @@ class VendorModel {
       verify: json['verify'],
       lastPaymentDate: json['last_payment_date'],
       token: json['token'],
+      symbol: json['symbol'],
+      country: json['country'],
     );
   }
 

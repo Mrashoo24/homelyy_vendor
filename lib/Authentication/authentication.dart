@@ -5,6 +5,7 @@ import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication extends StatefulWidget {
   const Authentication({Key key}) : super(key: key);
@@ -150,10 +151,15 @@ class _AuthenticationState extends State<Authentication> {
                                   setState(() {
                                     loading = false;
                                   });
+                                   SharedPreferences pref  = await SharedPreferences.getInstance();
+
+                                   pref.setString('email', vendorDetails.email);
+
                                   await allApi.putToken(
                                     vendorId: vendorDetails.vendorId,
                                     token: token,
                                   );
+
                                   Get.to(
                                     MyHomePage(
                                       vendorDetails: vendorDetails,

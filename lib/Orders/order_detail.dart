@@ -332,7 +332,7 @@ class _OrderTotalState extends State<OrderTotal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "\$",
+                "${widget.vendorDetails.symbol}",
                 style:
                     TextStyle(color: Colors.deepOrange.shade700, fontSize: 14),
               ),
@@ -469,7 +469,7 @@ class _OrderTotalState extends State<OrderTotal> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "\$${(int.parse(cutprice)).toString()}",
+                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -479,7 +479,7 @@ class _OrderTotalState extends State<OrderTotal> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "\$$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
@@ -517,7 +517,7 @@ class _OrderTotalState extends State<OrderTotal> {
                 height: 25,
                 child: Center(
                     child: Text(
-                  "\$ $discount OFF",
+                  "${widget.vendorDetails.symbol} $discount OFF",
                   style: GoogleFonts.arvo(fontSize: 12, color: Colors.white),
                 )),
                 decoration: const BoxDecoration(

@@ -26,8 +26,9 @@ class MapScreen extends StatefulWidget {
 
   final LatLng loc;
   final String userRef;
+  final String type;
 
-  const MapScreen({Key key, this.loc, this.userRef}) : super(key: key);
+  const MapScreen({Key key, this.loc, this.userRef, this.type}) : super(key: key);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -166,7 +167,7 @@ class _MapScreenState extends State<MapScreen> {
 
                         onPressed: (){
 
-                             Get.offAll(Registration(address:addressFull,latlng:latlng)) ;
+                             Get.off(Registration(address:addressFull,latlng:latlng,type: widget.type,)) ;
 
 
                     }, child: Text("Set Delivery Location"))
