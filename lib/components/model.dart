@@ -173,7 +173,7 @@ class VendorModel {
       token,
       symbol,
       country,
-      lastPaymentDate;
+      lastPaymentDate,commision;
   Map<String, dynamic> location;
   List cuisine, category;
   bool status;
@@ -198,7 +198,7 @@ class VendorModel {
     this.lastPaymentDate,
     this.token,
     this.symbol,
-    this.country
+    this.country,this.commision
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -223,6 +223,7 @@ class VendorModel {
       token: json['token'],
       symbol: json['symbol'],
       country: json['country'],
+        commision:json['commision']
     );
   }
 

@@ -90,24 +90,33 @@ class AllApi {
       print(DateFormat('yyyy-MM-dd HH:mm').parse(to));
 
 
+      print('got orfers $orderTotal');
 
-      List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
-        return element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now());
-      }).toList();
+     //  List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
+     //    print('datefilter ${element.date.substring(0,10)}');
+     //    print('datef ilter ${DateFormat('yyyy-MM-dd').format(DateTime.now())}');
+     //    print('boolwan ${element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now())}');
+     //
+     //    return element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now());
+     //
+     //  }).toList();
+     //
+     //  print('got orfersList $orderTotalList1');
+     //
+     //
+     //  print(DateFormat("yyyy-MM-dd HH:mm")
+     //      .parse(orderTotalList1[0].date));
+     //
+     //  print(DateFormat("yyyy-MM-dd HH:mm")
+     //      .parse(orderTotalList1[0].date)
+     //      .isAfter(DateFormat("yyyy-MM-dd HH:mm").parse(from)));
+     //
+     // print( DateFormat("yyyy-MM-dd HH:mm")
+     //      .parse(orderTotalList1[0].date)
+     //      .isBefore(DateFormat("yyyy-MM-dd HH:mm").parse(to)));
 
-      print(DateFormat("yyyy-MM-dd HH:mm")
-          .parse(orderTotalList1[0].date));
 
-      print(DateFormat("yyyy-MM-dd HH:mm")
-          .parse(orderTotalList1[0].date)
-          .isAfter(DateFormat("yyyy-MM-dd HH:mm").parse(from)));
-
-     print( DateFormat("yyyy-MM-dd HH:mm")
-          .parse(orderTotalList1[0].date)
-          .isBefore(DateFormat("yyyy-MM-dd HH:mm").parse(to)));
-
-
-      List<OrderTotalModel>   orderTotalList2 = orderTotalList1.where((element) {
+      List<OrderTotalModel>   orderTotalList2 = orderTotal.where((element) {
         return DateFormat("yyyy-MM-dd HH:mm")
             .parse(element.date)
             .isAfter(DateFormat("yyyy-MM-dd HH:mm").parse(from)) &&

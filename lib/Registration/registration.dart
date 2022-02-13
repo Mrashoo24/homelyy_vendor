@@ -161,6 +161,12 @@ class _RegistrationState extends State<Registration> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Please Note: A fee of \$2.99 is applicable on Approval of your Form',style: TextStyle(fontWeight: FontWeight.bold),),
+                        )
+                    ),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),

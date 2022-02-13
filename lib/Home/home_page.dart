@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homelyvendor/Authentication/authentication.dart';
 import 'package:homelyvendor/Membership/membership.dart';
 import 'package:homelyvendor/Orders/cancelled.dart';
 import 'package:homelyvendor/Orders/delivered.dart';
@@ -21,6 +22,7 @@ import 'package:homelyvendor/payment/orderhistory.dart';
 import 'package:homelyvendor/product/add_products.dart';
 import 'package:homelyvendor/product/category.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -110,11 +112,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 leading: const Icon(Icons.door_back_door),
                                 title: const Text('Logout'),
                                 onTap: () => {
-                                  // SharedPreferences.getInstance().then((value) {
-                                  //   value.clear().then((value) {
-                                  //     Get.offAll(FirstScreen());
-                                  //   });
-                                  // })
+                                  SharedPreferences.getInstance().then((value) {
+                                    value.clear().then((value) {
+                                      Get.offAll(Authentication());
+                                    });
+                                  })
                                 },
                               ),
                             ],
@@ -245,11 +247,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               elevation: 5,
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height * 0.2,
+
                                 padding: const EdgeInsets.all(12.0),
                                 child:  Center(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Your membership is expired\n Please Renew it from Membership section',
@@ -258,6 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                       ElevatedButton(
                                         style: ButtonStyle(
