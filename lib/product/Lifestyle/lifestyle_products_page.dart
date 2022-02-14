@@ -37,6 +37,7 @@ class _LifestyleProductsState extends State<LifestyleProducts> {
             Get.to(
               () => AddProductVarient(
                 productMainModel: widget.productMainModel,
+                vendorId: widget.vendorId,
               ),
             );
           },

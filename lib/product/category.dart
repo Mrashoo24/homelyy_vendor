@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:custom_switch/custom_switch.dart';
@@ -183,36 +184,24 @@ class _CategoryPageState extends State<CategoryPage> {
                         setState(() {
                           _isLoading = true;
                         });
+
+                      var iamge =  await _allApi.setImage(image);
+
                         await _allApi.addCategory(
                           name: _categoryName,
-                          image: image.path,
+                          image: jsonDecode(iamge),
                           type: _categoryType,
                           categoryId: _categoryId,
                           vendorId: widget.vendorId,
                         );
-                        await _allApi.setImage(image);
+
                         setState(() {
+
                           _isLoading = false;
                         });
+
                         Get.back();
-                        showDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return AlertDialog(
-                              title: const Text('Category Sent for Approval'),
-                              content: const Text(
-                                  'Your category will be added once admin approves it.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: const Text('Ok'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+
                       }
                     },
                     child: const Text('Add'),

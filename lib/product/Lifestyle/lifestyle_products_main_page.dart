@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/product/Lifestyle/add_product_main.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_products_page.dart';
@@ -24,9 +25,12 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Product List"),
+        backgroundColor: kgreen,
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -47,9 +51,9 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else {
+            }
               var productList = snapshot.data;
-              return ListView.builder(
+              return  productList.isEmpty ? Container() :ListView.builder(
                 itemCount: productList.length,
                 itemBuilder: (context, index) {
                   return Container(
@@ -75,7 +79,6 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                   );
                 },
               );
-            }
           },
         ),
       ),
@@ -132,7 +135,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
             child: Row(
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.only(
+                  margin:  EdgeInsets.only(
                     right: 8,
                     left: 8,
                     top: 8,
@@ -140,14 +143,14 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:   BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('https://thehomelyy.com/images/products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -237,31 +240,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
               ],
             ),
           ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );

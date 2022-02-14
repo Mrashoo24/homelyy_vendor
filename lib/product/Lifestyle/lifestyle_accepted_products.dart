@@ -24,7 +24,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder<List<ProductModel>>(
+      child: FutureBuilder(
         future: _allApi.getProductsVarient(
           varientId: widget.varientId,
           verify: 'Verified',
@@ -34,7 +34,9 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.data.isEmpty) {
+          }
+
+          if (snapshot.data.isEmpty) {
             return const Center(
               child: Text('No Products to show'),
             );
@@ -43,20 +45,22 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
             return ListView.builder(
               itemCount: productList.length,
               itemBuilder: (context, index) {
+
+
                 return Container(
                   margin: const EdgeInsets.only(
                     top: 10,
                     bottom: 10,
                   ),
                   child: createCartListItem(
-                    category: productList[index].category,
+                    category: productList[index]['category'],
                     context: context,
-                    cutprice: productList[index].cutprice,
-                    img: productList[index].image,
+                    cutprice: productList[index]['cutprice'],
+                    img: productList[index]['image'],
                     itemnumber: index.toString(),
-                    price: productList[index].price,
-                    stock: productList[index].status,
-                    title: productList[index].name,
+                    price: productList[index]['price'],
+                    stock: (productList[index]['status']).toString().toLowerCase() == 'true',
+                    title: productList[index]['name'],
                     discountVisibility: true,
                   ),
                 );

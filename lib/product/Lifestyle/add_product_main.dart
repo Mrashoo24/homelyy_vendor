@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -63,6 +66,7 @@ class _AddProductMainState extends State<AddProductMain> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Products'),
+        backgroundColor: kgreen,
       ),
       body: _isLoading
           ? const Center(
@@ -160,21 +164,21 @@ class _AddProductMainState extends State<AddProductMain> {
                             //     _productCategory = value;
                             //   },
                             // ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Sub Category'),
-                                hintText: 'Enter sub category of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter sub category of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productSubCategory = value;
-                              },
-                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Sub Category'),
+                            //     hintText: 'Enter sub category of the product',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter sub category of the product';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _productSubCategory = value;
+                            //   },
+                            // ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 label: Text('Description'),
@@ -248,6 +252,7 @@ class _AddProductMainState extends State<AddProductMain> {
                                 }
                                 return null;
                               },
+                              keyboardType: TextInputType.number,
                               onSaved: (value) {
                                 _productPrice = value;
                               },
@@ -307,6 +312,14 @@ class _AddProductMainState extends State<AddProductMain> {
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });
+
+
+
+                                 var image1 = await _allApi.setImageProduct(image);
+                                  setState(() {
+                                    _isLoading = !_isLoading;
+                                  });
+
                                   await _allApi.addProductMain(
                                     productName: _productName,
                                     productId: _productId,
@@ -314,42 +327,23 @@ class _AddProductMainState extends State<AddProductMain> {
                                     productSubCategory: _productSubCategory,
                                     productDescription: _productDescription,
                                     vendorId: widget.vendorId,
-                                    productImage: image.path,
+                                    productImage: jsonDecode(image1),
                                     productPrice: _productPrice,
                                     productVarient: _productVarient,
                                     varientId: _varientId,
                                     cutPrice: _cutPrice,
                                     requestDate:
-                                        DateFormat('dd-MM-yyyy hh:mm a')
-                                            .format(DateTime.now()),
+                                    DateFormat('dd-MM-yyyy hh:mm a')
+                                        .format(DateTime.now()),
                                   );
+
                                   await _allApi.putProductMainStatus(
                                     status: false,
                                     varientId: _varientId,
                                   );
-                                  await _allApi.setImageProduct(image);
-                                  setState(() {
-                                    _isLoading = !_isLoading;
-                                  });
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Product Sent for Approval'),
-                                        content: const Text(
-                                            'Your product will be added once admin approves it.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            child: const Text('Ok'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
+
+                                  Fluttertoast.showToast(msg: 'Product Sent for Approval');
+
                                 }
                               },
                               child: const Text('Add'),

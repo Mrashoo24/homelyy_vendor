@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +8,7 @@ import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Authentication extends StatefulWidget {
   const Authentication({Key key}) : super(key: key);
@@ -243,6 +246,23 @@ class _AuthenticationState extends State<Authentication> {
 
                     },
                     child: const Text('Register as a vendor'),
+                  ),
+
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+                      onPressed: () {
+                        if (Platform.isIOS) {
+                          return launch("whatsapp://wa.me/+919967706767/?text=${Uri.encodeFull('Query From Guest')}");
+                        } else {
+                          return launch("whatsapp://send?phone=+919967706767&text=${Uri.encodeFull("Query From Guest")}");
+                        }
+
+
+                      },
+                      child: const Text('Contact Us',style: TextStyle(color: Colors.black),),
+                    ),
                   ),
                 ],
               ),

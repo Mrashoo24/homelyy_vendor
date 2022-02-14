@@ -54,7 +54,7 @@
             android:value="high_importance_channel" />
 
        <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyDXJWSjuWFHIcN5UPXziATTzCc6mTvj8Sw"/>
+           android:value="AIzaSyC_c4I_uGb5OzVDwAmliHdjCEC_U2UGAJk"/>
 
         <service
             android:exported="true"

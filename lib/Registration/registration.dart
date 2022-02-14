@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:homelyvendor/Authentication/authentication.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/map.dart';
@@ -84,6 +85,7 @@ class _RegistrationState extends State<Registration> {
   String cuisine;
   String category;
   File image;
+  bool showCuisne =  true;
 
   var country;
   var symbol ;
@@ -367,7 +369,8 @@ class _RegistrationState extends State<Registration> {
                       },
                     ),
 
-                    Container(
+
+                      !showCuisne ? Container() :   Container(
                       width: MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                       padding: const EdgeInsets.all(8.0),
@@ -432,41 +435,131 @@ class _RegistrationState extends State<Registration> {
 
                         } else {
 
-                          setState(() {
-                            loading = true;
-                          });
+                          if(cuisine == 'Others'){
+                            showDialog(
+                              barrierDismissible: false,
+                                context: context, builder: (context){
+                              return AlertDialog(
+                                title: Text(
+                                'Please Name Your Cuisine'
+                                ),
+                                content: TextFormField(
+                                  onChanged: (value){
+                                    setState(() {
+                                      showCuisne = false;
+                                      cuisine = value;
+                                    });
+                                  },
+                                ),
+                                actions: [
+                                  ElevatedButton(onPressed: () async {
 
-                          await _allApi.addVendor(
+                                    Get.back();
+
+                                    setState(() {
+
+                                      loading = true;
+
+                                    });
+
+                                    await _allApi.putCuisine({'name':cuisine,'type':widget.type,'number':'1'});
+
+                                    await _allApi.addVendor(
 
 
-                            description: description,
-                            user: userName,
-                            image: image.path,
-                            name: shopName,
-                            address: address,
-                            email: email,
-                            password: password,
-                            type: widget.type == 'Restaurant' ? 'restro' : 'lifestyle',
-                            cuisine: cuisine,
-                            phoneNumber: phoneNumber,
-                            latitude: userLatitude,
-                            longitude: userLongitude,
-                            country: country,
-                            symbol: symbol
+                                        description: description,
+                                        user: userName,
+                                        image: image.path,
+                                        name: shopName,
+                                        address: address,
+                                        email: email,
+                                        password: password,
+                                        type: widget.type,
+                                        cuisine: cuisine,
+                                        phoneNumber: phoneNumber,
+                                        latitude: userLatitude,
+                                        longitude: userLongitude,
+                                        country: country,
+                                        symbol: symbol
 
-                          );
-                          var lastDigits = phoneNumber.substring(6);
-                          var vendorId = 'VENDOR' + lastDigits;
-                          await _allApi.putLocation(vendorId,userLatitude,
-                              userLongitude);
-                          await _allApi.putNewVendorStatus(vendorId, false);
-                          await _allApi.putNewVendorCuisCat(
-                              vendorId, cuisine, cuisine);
-                          setState(() {
-                            loading = false;
-                          });
-                          Get.back();
-                          Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+                                    );
+
+                                    var lastDigits = phoneNumber.substring(6);
+
+                                    var vendorId = 'VENDOR' + lastDigits;
+
+                                    await _allApi.putLocation(vendorId,userLatitude,
+                                        userLongitude);
+
+                                    await _allApi.putNewVendorStatus(vendorId, false);
+
+                                    await _allApi.putNewVendorCuisCat(
+                                        vendorId, cuisine, cuisine);
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                    Get.offAll(Authentication());
+                                    Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+
+
+                                  }, child: Text('Submit')),
+                                  ElevatedButton(
+
+                                      onPressed: (){
+                                    setState(() {
+                                      showCuisne = false;
+                                    });
+                                    Get.back();
+                                  }, child: Text('Cancel'),
+                                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+
+                                  )
+                                ],
+                              );
+                            });
+                          }else{
+
+                            setState(() {
+
+                              loading = true;
+
+                            });
+
+                            await _allApi.addVendor(
+
+
+                                description: description,
+                                user: userName,
+                                image: image.path,
+                                name: shopName,
+                                address: address,
+                                email: email,
+                                password: password,
+                                type: widget.type,
+                                cuisine: cuisine,
+                                phoneNumber: phoneNumber,
+                                latitude: userLatitude,
+                                longitude: userLongitude,
+                                country: country,
+                                symbol: symbol
+
+                            );
+                            var lastDigits = phoneNumber.substring(6);
+                            var vendorId = 'VENDOR' + lastDigits;
+                            await _allApi.putLocation(vendorId,userLatitude,
+                                userLongitude);
+                            await _allApi.putNewVendorStatus(vendorId, false);
+                            await _allApi.putNewVendorCuisCat(
+                                vendorId, cuisine, cuisine);
+                            setState(() {
+                              loading = false;
+                            });
+                            Get.back();
+                            Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+                          }
+
 
 
                         }
