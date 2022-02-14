@@ -157,430 +157,430 @@ class _RegistrationState extends State<Registration> {
             backgroundColor: kgreen,
           ),
           body: SingleChildScrollView(
-            child: loading ? Center(child: CircularProgressIndicator(color: Colors.green,)) : Container(
-              padding: const EdgeInsets.all(12.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Please Note: A fee of \$2.99 is applicable on Approval of your Form',style: TextStyle(fontWeight: FontWeight.bold),),
-                        )
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: InkWell(
-                        child: Row(
-                          children: [
-                            Icon(FontAwesomeIcons.mapMarkerAlt,color: kgreen,),
-                            SizedBox(width: 20),
-                            widget.address == null ? Text('Select Location') : Container(
-                                width: Get.width*0.6,
-                                child: Text(widget.address,overflow: TextOverflow.ellipsis,)
+            child: loading ? Center(child: CircularProgressIndicator(color: Colors.green,)) : Center(
+              child: Container(
+                width: Get.width*0.3,
+                padding: const EdgeInsets.all(12.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Please Note: A fee of \$2.99 is applicable on Approval of your Form',style: TextStyle(fontWeight: FontWeight.bold),),
+                          )
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(top: 0.0, bottom: 4.0),
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
                             ),
-                          ],
+                            borderRadius: BorderRadius.circular(12.0)),
+                        child: InkWell(
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.mapMarkerAlt,color: kgreen,),
+                              SizedBox(width: 20),
+                              widget.address == null ? Text('Select Location') : Text('Got Location')
+                            ],
+                          ),
+                          onTap: (){
+                            getLocation().then((value) {
+                              Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),type : widget.type));
+                            });
+                          },
                         ),
+                      ),
+                      InkWell(
                         onTap: (){
-                          getLocation().then((value) {
-                            Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),type : widget.type));
-                          });
+                          showCurrencyPicker(
+                            context: context,
+                            showFlag: true,
+                            showCurrencyName: true,
+                            showCurrencyCode: true,
+                            onSelect: (Currency currency) {
+                              print('Select currency: ${currency.name}');
+                              setState(() {
+
+                                country = currency.code;
+                                symbol = currency.symbol;
+                              });
+
+                            },
+                            favorite: ['INR'],
+                          );
+                        },
+                        child: Container(
+                          child: TextFormField(
+                            enabled: false,
+                            // The validator receives the text that the user has entered.
+                            decoration: InputDecoration(
+                              hintText:  country == "" || country == null ? "Your Country" : country,
+                              labelText: country == "" || country == null ? "Your Country" : country,
+                              // hintStyle: TextStyle(color: Colors.white30),
+                              labelStyle: TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              // errorText: isdiscountAvailable ? erroText : null
+                            ),
+                            validator: (value) {
+                              return null;
+                            },
+
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Username'),
+                          hintText: 'Enter your username',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter username';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          userName = value;
                         },
                       ),
-                    ),
-                    InkWell(
-                      onTap: (){
-                        showCurrencyPicker(
-                          context: context,
-                          showFlag: true,
-                          showCurrencyName: true,
-                          showCurrencyCode: true,
-                          onSelect: (Currency currency) {
-                            print('Select currency: ${currency.name}');
-                            setState(() {
-
-                              country = currency.code;
-                              symbol = currency.symbol;
-                            });
-
-                          },
-                          favorite: ['INR'],
-                        );
-                      },
-                      child: Container(
-                        child: TextFormField(
-                          enabled: false,
-                          // The validator receives the text that the user has entered.
-                          decoration: InputDecoration(
-                            hintText:  country == "" || country == null ? "Your Country" : country,
-                            labelText: country == "" || country == null ? "Your Country" : country,
-                            // hintStyle: TextStyle(color: Colors.white30),
-                            labelStyle: TextStyle(color: Colors.grey),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            // errorText: isdiscountAvailable ? erroText : null
-                          ),
-                          validator: (value) {
-                            return null;
-                          },
-
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Email'),
+                          hintText: 'Enter your email',
                         ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter email';
+                          } else if (!_emailRegExp.hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          email = value;
+                        },
                       ),
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Username'),
-                        hintText: 'Enter your username',
+                      TextFormField(
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          label: Text('Password'),
+                          hintText: 'Set up your password',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter password';
+                          } else if (value.length < 6) {
+                            return 'Password must be of minimum 6 characters';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          password = value;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter username';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        userName = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Email'),
-                        hintText: 'Enter your email',
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Shop Description'),
+                          hintText: 'Enter your description',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter description';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          description = value;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter email';
-                        } else if (!_emailRegExp.hasMatch(value)) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        email = value;
-                      },
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        label: Text('Password'),
-                        hintText: 'Set up your password',
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Address'),
+                          hintText: 'Enter your address',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter address';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          address = value;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter password';
-                        } else if (value.length < 6) {
-                          return 'Password must be of minimum 6 characters';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        password = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Shop Description'),
-                        hintText: 'Enter your description',
+                      // TextFormField(
+                      //   decoration: const InputDecoration(
+                      //     label: Text('Type'),
+                      //     hintText:
+                      //         'Enter your shop type Eg. Restaurant, Lifestyle',
+                      //   ),
+                      //   validator: (value) {
+                      //     if (value.isEmpty) {
+                      //       return 'Please enter shop type';
+                      //     }
+                      //     return null;
+                      //   },
+                      //   onSaved: (value) {
+                      //     type = value;
+                      //   },
+                      // ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Shop Name'),
+                          hintText: 'Enter your shop name',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your shop name';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          shopName = value;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        description = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Address'),
-                        hintText: 'Enter your address',
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          label: Text('Phone'),
+                          hintText: 'Enter your phone number',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter valid phone number';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          phoneNumber = value;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter address';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        address = value;
-                      },
-                    ),
-                    // TextFormField(
-                    //   decoration: const InputDecoration(
-                    //     label: Text('Type'),
-                    //     hintText:
-                    //         'Enter your shop type Eg. Restaurant, Lifestyle',
-                    //   ),
-                    //   validator: (value) {
-                    //     if (value.isEmpty) {
-                    //       return 'Please enter shop type';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onSaved: (value) {
-                    //     type = value;
-                    //   },
-                    // ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Shop Name'),
-                        hintText: 'Enter your shop name',
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter your shop name';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        shopName = value;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Phone'),
-                        hintText: 'Enter your phone number',
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter valid phone number';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        phoneNumber = value;
-                      },
-                    ),
 
 
-                      !showCuisne ? Container() :   Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          hint: widget.type == 'restro' ?Text('Select Cuisine') : Text('Select Parent Category'),
-                          value: cuisine,
-                          onChanged: (value) {
-                            setState(() {
-                              cuisine = value;
-                            });
-                          },
-                          isExpanded: true,
-                          items: cuisineList.map(
-                            (e) {
-                              return DropdownMenuItem(
-                                value: e.name,
-                                child: Text(e.name),
-                              );
+                        !showCuisne ? Container() :   Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(12.0)),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            hint: widget.type == 'restro' ?Text('Select Cuisine') : Text('Select Parent Category'),
+                            value: cuisine,
+                            onChanged: (value) {
+                              setState(() {
+                                cuisine = value;
+                              });
                             },
-                          ).toList(),
+                            isExpanded: true,
+                            items: cuisineList.map(
+                              (e) {
+                                return DropdownMenuItem(
+                                  value: e.name,
+                                  child: Text(e.name),
+                                );
+                              },
+                            ).toList(),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: InkWell(
-                        child: image != null
-                            ? Image.file(image)
-                            : const Text('Upload Logo'),
-                        onTap: _imagePicker,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final canSubmit = _trySubmit();
-                        if (canSubmit == false ||
-                            cuisine == null ||
-                            image == null || widget.latlng == null) {
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Please complete registration details.'),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
                             ),
-                          );
+                            borderRadius: BorderRadius.circular(12.0)),
+                        child: InkWell(
+                          child: image != null
+                              ? Text('Uploaded}')
+                              :  Text('Upload Logo'),
+                          onTap: _imagePicker,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final canSubmit = _trySubmit();
+                          if (canSubmit == false ||
+                              cuisine == null ||
+                              image == null || widget.latlng == null) {
 
-                        } else {
-
-                          if(cuisine == 'Others'){
-                            showDialog(
-                              barrierDismissible: false,
-                                context: context, builder: (context){
-                              return AlertDialog(
-                                title: Text(
-                                'Please Name Your Cuisine'
-                                ),
-                                content: TextFormField(
-                                  onChanged: (value){
-                                    setState(() {
-                                      showCuisne = false;
-                                      cuisine = value;
-                                    });
-                                  },
-                                ),
-                                actions: [
-                                  ElevatedButton(onPressed: () async {
-
-                                    Get.back();
-
-                                    setState(() {
-
-                                      loading = true;
-
-                                    });
-
-                                    await _allApi.putCuisine({'name':cuisine,'type':widget.type,'number':'1'});
-
-                                    await _allApi.addVendor(
-
-
-                                        description: description,
-                                        user: userName,
-                                        image: image.path,
-                                        name: shopName,
-                                        address: address,
-                                        email: email,
-                                        password: password,
-                                        type: widget.type,
-                                        cuisine: cuisine,
-                                        phoneNumber: phoneNumber,
-                                        latitude: userLatitude,
-                                        longitude: userLongitude,
-                                        country: country,
-                                        symbol: symbol
-
-                                    );
-
-                                    var lastDigits = phoneNumber.substring(6);
-
-                                    var vendorId = 'VENDOR' + lastDigits;
-
-                                    await _allApi.putLocation(vendorId,userLatitude,
-                                        userLongitude);
-
-                                    await _allApi.putNewVendorStatus(vendorId, false);
-
-                                    await _allApi.putNewVendorCuisCat(
-                                        vendorId, cuisine, cuisine);
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                    Get.offAll(Authentication());
-                                    Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
-
-
-
-                                  }, child: Text('Submit')),
-                                  ElevatedButton(
-
-                                      onPressed: (){
-                                    setState(() {
-                                      showCuisne = false;
-                                    });
-                                    Get.back();
-                                  }, child: Text('Cancel'),
-                                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
-
-                                  )
-                                ],
-                              );
-                            });
-                          }else{
-
-                            setState(() {
-
-                              loading = true;
-
-                            });
-
-                            await _allApi.addVendor(
-
-
-                                description: description,
-                                user: userName,
-                                image: image.path,
-                                name: shopName,
-                                address: address,
-                                email: email,
-                                password: password,
-                                type: widget.type,
-                                cuisine: cuisine,
-                                phoneNumber: phoneNumber,
-                                latitude: userLatitude,
-                                longitude: userLongitude,
-                                country: country,
-                                symbol: symbol
-
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Please complete registration details.'),
+                              ),
                             );
-                            var lastDigits = phoneNumber.substring(6);
-                            var vendorId = 'VENDOR' + lastDigits;
-                            await _allApi.putLocation(vendorId,userLatitude,
-                                userLongitude);
-                            await _allApi.putNewVendorStatus(vendorId, false);
-                            await _allApi.putNewVendorCuisCat(
-                                vendorId, cuisine, cuisine);
-                            setState(() {
-                              loading = false;
-                            });
-                            Get.back();
-                            Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+                          } else {
+
+                            if(cuisine == 'Others'){
+                              showDialog(
+                                barrierDismissible: false,
+                                  context: context, builder: (context){
+                                return AlertDialog(
+                                  title: Text(
+                                  'Please Name Your Cuisine'
+                                  ),
+                                  content: TextFormField(
+                                    onChanged: (value){
+                                      setState(() {
+                                        showCuisne = false;
+                                        cuisine = value;
+                                      });
+                                    },
+                                  ),
+                                  actions: [
+                                    ElevatedButton(onPressed: () async {
+
+                                      Get.back();
+
+                                      setState(() {
+
+                                        loading = true;
+
+                                      });
+
+                                      await _allApi.putCuisine({'name':cuisine,'type':widget.type,'number':'1'});
+
+                                      await _allApi.addVendor(
+
+
+                                          description: description,
+                                          user: userName,
+                                          image: image.path,
+                                          name: shopName,
+                                          address: address,
+                                          email: email,
+                                          password: password,
+                                          type: widget.type,
+                                          cuisine: cuisine,
+                                          phoneNumber: phoneNumber,
+                                          latitude: userLatitude,
+                                          longitude: userLongitude,
+                                          country: country,
+                                          symbol: symbol
+
+                                      );
+
+                                      var lastDigits = phoneNumber.substring(6);
+
+                                      var vendorId = 'VENDOR' + lastDigits;
+
+                                      await _allApi.putLocation(vendorId,userLatitude,
+                                          userLongitude);
+
+                                      await _allApi.putNewVendorStatus(vendorId, false);
+
+                                      await _allApi.putNewVendorCuisCat(
+                                          vendorId, cuisine, cuisine);
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      Get.offAll(Authentication());
+                                      Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+
+
+                                    }, child: Text('Submit')),
+                                    ElevatedButton(
+
+                                        onPressed: (){
+                                      setState(() {
+                                        showCuisne = false;
+                                      });
+                                      Get.back();
+                                    }, child: Text('Cancel'),
+                                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+
+                                    )
+                                  ],
+                                );
+                              });
+                            }else{
+
+                              setState(() {
+
+                                loading = true;
+
+                              });
+
+                              await _allApi.addVendor(
+
+
+                                  description: description,
+                                  user: userName,
+                                  image: image.path,
+                                  name: shopName,
+                                  address: address,
+                                  email: email,
+                                  password: password,
+                                  type: widget.type,
+                                  cuisine: cuisine,
+                                  phoneNumber: phoneNumber,
+                                  latitude: userLatitude,
+                                  longitude: userLongitude,
+                                  country: country,
+                                  symbol: symbol
+
+                              );
+                              var lastDigits = phoneNumber.substring(6);
+                              var vendorId = 'VENDOR' + lastDigits;
+                              await _allApi.putLocation(vendorId,userLatitude,
+                                  userLongitude);
+                              await _allApi.putNewVendorStatus(vendorId, false);
+                              await _allApi.putNewVendorCuisCat(
+                                  vendorId, cuisine, cuisine);
+                              setState(() {
+                                loading = false;
+                              });
+                              Get.back();
+                              Get.snackbar('Successful', 'Your Process is under verification you will notify once approved',backgroundColor: Colors.white,colorText: Colors.black);
+
+                            }
+
+
 
                           }
-
-
-
-                        }
-                      },
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(
-                          fontSize: 18,
+                        },
+                        child: const Text(
+                          'Sign up',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12.0),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

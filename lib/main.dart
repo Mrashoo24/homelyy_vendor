@@ -8,37 +8,13 @@ import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  description: 'This channel is used for important notifications.', // description
-  importance: Importance.max,
-  playSound: true,
-  sound: RawResourceAndroidNotificationSound('notification'),
-  enableLights: true,
-);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-Future<void> firebaseMessgaingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessgaingBackgroundHandler);
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true, // Required to display a heads up notification
-    badge: true,
-    sound: true,
-  );
+
  var pref = await SharedPreferences.getInstance();
 
   runApp( MyApp(pref:pref));
@@ -58,32 +34,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) {
-        RemoteNotification notification = message.notification;
-        AndroidNotification android = message.notification?.android;
 
-        if (notification != null && android != null) {
-          flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription:channel.description,
-                // icon: 'zayka_pizza_hub',
-                sound:
-                    const RawResourceAndroidNotificationSound('notification'),
-                // other properties...
-                importance: channel.importance,
-              ),
-            ),
-          );
-        }
-      },
-    );
   }
 
   @override

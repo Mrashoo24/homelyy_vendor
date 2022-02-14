@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                           return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: ListView(
+                              child: Wrap(
                                 children: <Widget>[
                                   buildDashCards(
                                       img: "assets/images/pending.png",
@@ -311,11 +311,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   backgroundColor: MaterialStateProperty.all(Colors.green)
                               ),
                               onPressed: (){
-                                if (Platform.isIOS) {
-                                  return launch("whatsapp://wa.me/+919967706767/?text=${Uri.encodeFull('Query From ${widget.vendorDetails.email}')}");
-                                } else {
-                                  return launch("whatsapp://send?phone=+919967706767&text=${Uri.encodeFull("Query From ${widget.vendorDetails.email}")}");
-                                }
+
+                                  return launch("https://api.whatsapp.com/send?phone=+919967706767&text=My%20Verification%20Is%20Pending}");
+
                               }, child: Text('Connect on Whatsapp',style: TextStyle(color: Colors.white),))
                         ],
                       ),
@@ -330,24 +328,24 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Container buildDashCards({String img, Function press, String count}) {
-    return Container(
-      child: InkWell(
-        child: Stack(
-          children: [
-            Image.asset(img),
-            Positioned(
-              right: 50,
-              top: 90,
-              child: Text(
-                count,
-                style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
-              ),
-            )
-          ],
-        ),
-        onTap: press,
+   buildDashCards({String img, Function press, String count}) {
+    return InkWell(
+      child: Stack(
+        children: [
+          Container(
+            width: Get.width*0.2,
+              child: ClipRect(child: Image.asset(img,width: Get.width,fit: BoxFit.fill,))),
+          Positioned(
+            right: 50,
+            top: 90,
+            child: Text(
+              count,
+              style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
+            ),
+          )
+        ],
       ),
+      onTap: press,
     );
   }
 }

@@ -178,8 +178,8 @@ class _OrderHistoryState extends State<OrderHistory> {
                   child: GridView.count(
                     mainAxisSpacing: 10,
                     shrinkWrap: true,
-                    crossAxisCount: 1,
-                    childAspectRatio: 3.5,
+                    crossAxisCount: 2,
+                    childAspectRatio: 5,
                     children: [
                       InkWell(
                         child: Container(

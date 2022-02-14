@@ -61,32 +61,24 @@ class _MapScreenState extends State<MapScreen> {
       );
 
     });
-    getAddress(latlng).then((value) {
-
-      setState(() {
-        addressArea = value.first.featureName;
-        addressFull = value.first.addressLine;
-      });
-
-    });
 
   }
 
-  Future<List<Address>>getAddress(LatLng locationdata) async {
-    // // From a query
-    // final query = "1600 Amphiteatre Parkway, Mountain View";
-    // var addresses = await Geocoder.local.findAddressesFromQuery(query);
-    // var first = addresses.first;
-    // print("${first.featureName} : ${first.coordinates}");
-
-// From coordinates
-    final coordinates =  coder.Coordinates(locationdata.latitude, locationdata.longitude);
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    var first = addresses.first;
-    print("${first.featureName} : ${first.addressLine}");
-    return addresses;
-
-  }
+//   Future<List<Address>>getAddress(LatLng locationdata) async {
+//     // // From a query
+//     // final query = "1600 Amphiteatre Parkway, Mountain View";
+//     // var addresses = await Geocoder.local.findAddressesFromQuery(query);
+//     // var first = addresses.first;
+//     // print("${first.featureName} : ${first.coordinates}");
+//
+// // From coordinates
+//     final coordinates =  coder.Coordinates(locationdata.latitude, locationdata.longitude);
+//     var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+//     var first = addresses.first;
+//     print("${first.featureName} : ${first.addressLine}");
+//     return addresses;
+//
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +159,7 @@ class _MapScreenState extends State<MapScreen> {
 
                         onPressed: (){
 
-                             Get.off(Registration(address:addressFull,latlng:latlng,type: widget.type,)) ;
+                             Get.off(Registration(address:'addressFull',latlng:latlng,type: widget.type,)) ;
 
 
                     }, child: Text("Set Delivery Location"))
