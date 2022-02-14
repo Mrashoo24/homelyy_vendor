@@ -1,24 +1,16 @@
 // @dart=2.9
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart' as coder;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geocoder/model.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:homelyvendor/Home/home_page.dart';
+
 import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/constants.dart';
-import 'package:location/location.dart';
-
-import 'model.dart';
 
 
 

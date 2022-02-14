@@ -222,7 +222,7 @@ class _AddProductState extends State<AddProduct> {
                                   borderRadius: BorderRadius.circular(12.0)),
                               child: InkWell(
                                 child: image != null
-                                    ? Image.file(image)
+                                    ? const Text('Uploaded')
                                     : const Text('Upload Image'),
                                 onTap: _imagePicker,
                               ),

@@ -107,7 +107,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               borderRadius: BorderRadius.circular(12.0)),
                           child: InkWell(
                             child: image != null
-                                ? Image.file(image)
+                                ? Text('Uploaded')
                                 : const Text('Upload Image'),
                             onTap: _imagePicker,
                           ),
