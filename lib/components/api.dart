@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'dart:math';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homelyvendor/components/model.dart';
@@ -136,7 +137,7 @@ class AllApi {
 
       return orderTotalList2;
     } else {
-      return null;
+      return [];
     }
   }
 
@@ -625,7 +626,7 @@ class AllApi {
     }
   }
 
-  Future<String> setImage(File file) async {
+  Future<String> setImage(PlatformFile file) async {
 
     print('its working $file');
 
@@ -636,8 +637,15 @@ class AllApi {
     var request = http.MultipartRequest('POST', url);
 
     request.files.add(http.MultipartFile(
-        'image', file.readAsBytes().asStream(), file.lengthSync(),
-        filename: file.path));
+        'image', file.readStream, file.size,
+        filename: file.name));
+
+    // request.headers.addAll({
+    //   "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    //   "Access-Control-Allow-Credentials": 'true', // Required for cookies, authorization headers with HTTPS
+    //   "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+    //   "Access-Control-Allow-Methods": "POST, OPTIONS"
+    // });
 
 
     await request.send().then((response) async {
@@ -655,52 +663,62 @@ class AllApi {
       }
     });
     return value1;
+  }
+
+  Future<String> setImageVendor(PlatformFile file) async {
+
+
+
+      print('its working $file');
+
+      var url = Uri.parse("https://thehomelyy.com/vendor-post.php");
+
+      String value1 = "";
+
+      var request = http.MultipartRequest('POST', url);
+
+      request.files.add(http.MultipartFile(
+          'image', file.readStream, file.size,
+          filename: file.name));
+
+      // request.headers.addAll({
+      //   "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+      //   "Access-Control-Allow-Credentials": 'true', // Required for cookies, authorization headers with HTTPS
+      //   "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+      //   "Access-Control-Allow-Methods": "POST, OPTIONS"
+      // });
+
+
+      await request.send().then((response) async {
+        if (response.statusCode == 200) {
+          response.stream.transform(utf8.decoder).listen((value) {
+            print(value);
+          }).onData((data) {
+            print("future $data");
+            value1 = data;
+            return data;
+          });
+        } else {
+          value1 = "Error";
+          return value1;
+        }
+      });
+      return value1;
+
+
+
+
+
+  }
     //     url, body: {
     //   "image": file
     // });
     //
     // return response.body;
-  }
-
-  Future<String> setImageVendor(File file) async {
-
-    print('its working $file');
-
-    var url = Uri.parse("https://thehomelyy.com/vendor-post.php");
-
-    String value1 = "";
-
-    var request = http.MultipartRequest('POST', url);
-
-    request.files.add(http.MultipartFile(
-        'image', file.readAsBytes().asStream(), file.lengthSync(),
-        filename: file.path));
 
 
-    await request.send().then((response) async {
-      if (response.statusCode == 200) {
-        response.stream.transform(utf8.decoder).listen((value) {
-          print(value);
-        }).onData((data) {
-          print("future $data");
-          value1 = data;
-          return data;
-        });
-      } else {
-        value1 = "Error";
-        return value1;
-      }
-    });
-    return value1;
-    //     url, body: {
-    //   "image": file
-    // });
-    //
-    // return response.body;
-  }
 
-
-  Future<String> setImageProduct(File file) async {
+  Future<String> setImageProduct(PlatformFile file) async {
     var url = Uri.parse("https://thehomelyy.com/product-post.php");
 
     String value1 = "";
@@ -708,8 +726,16 @@ class AllApi {
     var request = http.MultipartRequest('POST', url);
 
     request.files.add(http.MultipartFile(
-        'image', file.readAsBytes().asStream(), file.lengthSync(),
-        filename: file.path));
+        'image', file.readStream, file.size,
+        filename: file.name));
+
+    // request.headers.addAll({
+    //   "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    //   "Access-Control-Allow-Credentials": 'true', // Required for cookies, authorization headers with HTTPS
+    //   "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+    //   "Access-Control-Allow-Methods": "POST, OPTIONS"
+    // });
+
 
     await request.send().then((response) async {
       if (response.statusCode == 200) {
@@ -717,21 +743,15 @@ class AllApi {
           print(value);
         }).onData((data) {
           print("future $data");
-
           value1 = data;
+          return data;
         });
-        return value1;
       } else {
         value1 = "Error";
         return value1;
       }
     });
     return value1;
-    //     url, body: {
-    //   "image": file
-    // });
-    //
-    // return response.body;
   }
 
   Future<List<ProductMainModel>> getProductMain({
@@ -755,4 +775,8 @@ class AllApi {
       return [];
     }
   }
-}
+
+
+  }
+
+

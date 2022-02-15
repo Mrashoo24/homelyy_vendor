@@ -61,14 +61,14 @@ class _MapScreenState extends State<MapScreen> {
       );
 
     });
-    getAddress(latlng).then((value) {
-
-      setState(() {
-        addressArea = value.first.featureName;
-        addressFull = value.first.addressLine;
-      });
-
-    });
+    // getAddress(latlng).then((value) {
+    //
+    //   setState(() {
+    //     addressArea = value.first.featureName;
+    //     addressFull = value.first.addressLine;
+    //   });
+    //
+    // });
 
   }
 
@@ -122,8 +122,8 @@ class _MapScreenState extends State<MapScreen> {
                     setState(()  {
 
                       latlng = currentlatlng;
-                      addressArea = addresses.first.featureName;
-                      addressFull = addresses.first.addressLine;
+                      addressArea = '';
+                      addressFull = 'Full address';
 
                     });
 

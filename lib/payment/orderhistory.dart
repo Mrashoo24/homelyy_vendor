@@ -129,6 +129,8 @@ class _OrderHistoryState extends State<OrderHistory> {
               var  totalEarningsOld = 0.0;
               var  totalEarningsNew = 0.0;
 
+              print(deliveredorders.length);
+
               deliveredorders.forEach((element) {
                 totalEarningsNew += double.parse(element.total) ;
               });
@@ -178,11 +180,12 @@ class _OrderHistoryState extends State<OrderHistory> {
                   child: GridView.count(
                     mainAxisSpacing: 10,
                     shrinkWrap: true,
-                    crossAxisCount: 1,
-                    childAspectRatio: 3.5,
+                    crossAxisCount: 2,
+                    childAspectRatio: 5.5,
                     children: [
                       InkWell(
                         child: Container(
+
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(20.0),

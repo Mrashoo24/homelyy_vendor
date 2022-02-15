@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +29,7 @@ class _AddProductState extends State<AddProduct> {
   final _formKey = GlobalKey<FormState>();
   final _allApi = AllApi();
 
-  File image;
+  PlatformFile image;
 
   var _productName = '';
   final _foodId = 'FOOD' + DateTime.now().microsecond.toString();
@@ -53,7 +54,12 @@ class _AddProductState extends State<AddProduct> {
       if (image == null) {
         return;
       }
-      final imageTemporary = File(image.path);
+
+      var sizeimage = await image.length();
+      var iamgebyte =await image.readAsBytes();
+
+      var imageTemporary = PlatformFile(path:image.path,name: image.name, size: sizeimage,bytes: iamgebyte,readStream: image.readAsBytes().asStream());
+
       setState(() {
         this.image = imageTemporary;
       });
@@ -223,7 +229,7 @@ class _AddProductState extends State<AddProduct> {
                                   borderRadius: BorderRadius.circular(12.0)),
                               child: InkWell(
                                 child: image != null
-                                    ? Image.file(image)
+                                    ? Text('Uploaded')
                                     : const Text('Upload Image'),
                                 onTap: _imagePicker,
                               ),

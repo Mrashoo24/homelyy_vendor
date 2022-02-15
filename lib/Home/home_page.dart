@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                           return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: ListView(
+                              child: Wrap(
                                 children: <Widget>[
                                   buildDashCards(
                                       img: "assets/images/pending.png",
@@ -332,16 +332,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Container buildDashCards({String img, Function press, String count}) {
     return Container(
+      width: Get.width > 400 ? Get.width * 0.3 : 0.6,
       child: InkWell(
         child: Stack(
           children: [
-            Image.asset(img),
-            Positioned(
-              right: 50,
-              top: 90,
-              child: Text(
-                count,
-                style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
+            ClipRect(child: Image.asset(img,fit: BoxFit.fill,)),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0,),
+                child: Text(
+                  count,
+                  style: GoogleFonts.basic(color: Colors.white, fontSize: 18),
+                ),
               ),
             )
           ],

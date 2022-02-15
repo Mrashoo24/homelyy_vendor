@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:html' as html;
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_picker/currency_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -86,7 +88,7 @@ class _RegistrationState extends State<Registration> {
 
   String cuisine;
   String category;
-  File image;
+  PlatformFile image;
   bool showCuisne =  true;
 
   var country;
@@ -116,7 +118,12 @@ class _RegistrationState extends State<Registration> {
       if (image == null) {
         return;
       }
-      final imageTemporary = File(image.path);
+
+      var sizeimage = await image.length();
+      var iamgebyte =await image.readAsBytes();
+
+      var imageTemporary = PlatformFile(path:image.path,name: image.name, size: sizeimage,bytes: iamgebyte,readStream: image.readAsBytes().asStream());
+
       setState(() {
         this.image = imageTemporary;
       });
@@ -413,7 +420,7 @@ class _RegistrationState extends State<Registration> {
                           borderRadius: BorderRadius.circular(12.0)),
                       child: InkWell(
                         child: image != null
-                            ? Image.file(image)
+                            ? const Text('Uploaded')
                             : const Text('Upload Logo'),
                         onTap: _imagePicker,
                       ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:custom_switch/custom_switch.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +40,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
 
   bool _isLoading = false;
-  File image;
+  PlatformFile image;
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -56,7 +57,12 @@ class _CategoryPageState extends State<CategoryPage> {
       if (image == null) {
         return;
       }
-      final imageTemporary = File(image.path);
+
+      var sizeimage = await image.length();
+      var iamgebyte =await image.readAsBytes();
+
+      var imageTemporary = PlatformFile(path:image.path,name: image.name, size: sizeimage,bytes: iamgebyte,readStream: image.readAsBytes().asStream());
+
       setState(() {
         this.image = imageTemporary;
       });
@@ -110,7 +116,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                   borderRadius: BorderRadius.circular(12.0)),
                               child: InkWell(
                                 child: image != null
-                                    ? Image.file(image)
+                                    ? Text('Uplaoded')
                                     : const Text('Upload Image'),
                                 onTap: _imagePicker,
                               ),

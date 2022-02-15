@@ -53,6 +53,10 @@ class _AuthenticationState extends State<Authentication> {
               key: _formKey,
               child: Column(
                 children: [
+                  Container(
+                    width: 100,
+                      height: 100,
+                      child: ClipRect(child: Image.asset('assets/images/homelyy.png'))),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -139,9 +143,7 @@ class _AuthenticationState extends State<Authentication> {
                             backgroundColor: MaterialStateProperty.all(kdarkgreen)
                           ),
                           onPressed: () async {
-                            var token =
-                                await FirebaseMessaging.instance.getToken();
-                            print('token: $token');
+
                             final canSignIn = _trySubmit();
                             if (canSignIn) {
                               setState(() {
@@ -160,7 +162,7 @@ class _AuthenticationState extends State<Authentication> {
 
                                   await allApi.putToken(
                                     vendorId: vendorDetails.vendorId,
-                                    token: token,
+                                    token: 'token',
                                   );
 
                                   Get.to(

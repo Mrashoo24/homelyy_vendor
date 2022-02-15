@@ -72,6 +72,10 @@ dependencies:
   google_maps_flutter: ^2.0.6
   currency_picker: ^2.0.6
   forex_conversion: ^0.0.3
+  google_maps_flutter_web: ^0.3.2+1
+  image_picker_web: ^2.1.0
+  file_picker: ^4.4.0
+
 
 dependency_overrides:
   platform: ^3.1.0
