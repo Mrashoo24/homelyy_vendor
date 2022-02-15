@@ -2,6 +2,7 @@ import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
 class LifestylePendingProducts extends StatefulWidget {
@@ -104,25 +105,25 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
             ),
             child: Row(
               children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.only(
-                    right: 8,
-                    left: 8,
-                    top: 8,
-                    bottom: 8,
-                  ),
-                  width: 80,
-                  height: 80,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(14),
-                    ),
-                    color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
-                  ),
-                ),
+                // Container(
+                //   margin:  EdgeInsets.only(
+                //     right: 8,
+                //     left: 8,
+                //     top: 8,
+                //     bottom: 8,
+                //   ),
+                //   width: 80,
+                //   height: 80,
+                //   decoration:  BoxDecoration(
+                //     borderRadius: BorderRadius.all(
+                //       Radius.circular(14),
+                //     ),
+                //     color: Colors.white,
+                //     image: DecorationImage(
+                //       image: NetworkImage('${imgurl}/products$img'),
+                //     ),
+                //   ),
+                // ),
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(8.0),

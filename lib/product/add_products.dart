@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
@@ -341,25 +342,8 @@ class _AddProductState extends State<AddProduct> {
                                       _isLoading = !_isLoading;
                                     });
                                     Get.back();
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Product Sent for Approval'),
-                                          content: const Text(
-                                              'Your product will be added once admin approves it.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              child: const Text('Ok'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                    Fluttertoast.showToast(msg: 'Product Sent for Approval\nYour product will be added once admin approves it');
+
 
 
                                   });

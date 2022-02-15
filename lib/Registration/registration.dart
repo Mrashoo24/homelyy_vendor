@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_picker/currency_picker.dart';
@@ -462,14 +464,24 @@ class _RegistrationState extends State<Registration> {
 
                                     });
 
+                                    int min = 100000; //min and max values act as your 6 digit range
+                                    int max = 999999;
+                                    var randomizer = new Random();
+                                    var rNum = min + randomizer.nextInt(max - min);
+
+                                    var lastDigits = rNum;
+
                                     await _allApi.putCuisine({'name':cuisine,'type':widget.type,'number':'1'});
+
+
+                                    var iamge =  await _allApi.setImageVendor(image);
 
                                     await _allApi.addVendor(
 
 
                                         description: description,
                                         user: userName,
-                                        image: image.path,
+                                        image: jsonDecode(iamge),
                                         name: shopName,
                                         address: address,
                                         email: email,
@@ -480,13 +492,12 @@ class _RegistrationState extends State<Registration> {
                                         latitude: userLatitude,
                                         longitude: userLongitude,
                                         country: country,
-                                        symbol: symbol
+                                        symbol: symbol,lastDigits: lastDigits
 
                                     );
 
-                                    var lastDigits = phoneNumber.substring(6);
 
-                                    var vendorId = 'VENDOR' + lastDigits;
+                                    var vendorId = 'VENDOR$lastDigits';
 
                                     await _allApi.putLocation(vendorId,userLatitude,
                                         userLongitude);
@@ -526,12 +537,23 @@ class _RegistrationState extends State<Registration> {
 
                             });
 
+                            int min = 100000; //min and max values act as your 6 digit range
+                            int max = 999999;
+                            var randomizer = new Random();
+                            var rNum = min + randomizer.nextInt(max - min);
+
+                            var lastDigits = rNum;
+
+                            var iamge =  await _allApi.setImageVendor(image);
+
+                            print('iamge = $iamge');
+
                             await _allApi.addVendor(
 
 
                                 description: description,
                                 user: userName,
-                                image: image.path,
+                                image: jsonDecode(iamge),
                                 name: shopName,
                                 address: address,
                                 email: email,
@@ -542,14 +564,18 @@ class _RegistrationState extends State<Registration> {
                                 latitude: userLatitude,
                                 longitude: userLongitude,
                                 country: country,
-                                symbol: symbol
+                                symbol: symbol,lastDigits: lastDigits
 
                             );
-                            var lastDigits = phoneNumber.substring(6);
-                            var vendorId = 'VENDOR' + lastDigits;
+
+                            var vendorId = 'VENDOR$lastDigits';
+
                             await _allApi.putLocation(vendorId,userLatitude,
                                 userLongitude);
+
                             await _allApi.putNewVendorStatus(vendorId, false);
+
+
                             await _allApi.putNewVendorCuisCat(
                                 vendorId, cuisine, cuisine);
                             setState(() {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,15 @@ class AllApi {
 
       print(DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
 
-      print(DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
+
+
+      print('response of ordderlist ${orderTotal}');
 
       List<OrderTotalModel> orderTotalList1 =  orderTotal.toList().where((element) {
         return element.date.substring(0,10) ==  DateFormat('yyyy-MM-dd').format(DateTime.now());
       }).toList();
+
+
 
 
       // orderTotal.toList().where((element) {
@@ -377,7 +382,7 @@ class AllApi {
       });
       return category.toList();
     } else {
-      return null;
+      return [];
     }
   }
 
@@ -448,7 +453,7 @@ class AllApi {
     var response = await http.post(addCategoryUrl, body: {
       'name': name,
       'image': image,
-      'type': type,
+      // 'type': type,
       'catid': categoryId,
       'vendorid': vendorId,
       'status': 'Pending',
@@ -533,17 +538,23 @@ class AllApi {
     @required String latitude,
     @required String longitude,
     @required String country,
-    @required String symbol
+    @required String symbol,
+    lastDigits,
 
   }) async {
+    print('image aagyai');
+
     var date = DateFormat('dd-MM-yyyy').format(
       DateTime.now().subtract(
         const Duration(days: 30),
       ),
     );
-    var lastDigits = phoneNumber.substring(6);
+
+
+
     var url = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/newVendor");
+
 
     var response = await http.post(url, body: {
       'description': description,
@@ -556,8 +567,9 @@ class AllApi {
       'email': email,
       'password': password,
       'type': type,
-      'rating': 'pending',
+      'rating': '0',
       'cuisine': '[cuisine]',
+      'phoneNumber':phoneNumber,
       'verify': '0',
       'status': 'false',
       'last_payment_date': '31-03-2022',
@@ -614,6 +626,9 @@ class AllApi {
   }
 
   Future<String> setImage(File file) async {
+
+    print('its working $file');
+
     var url = Uri.parse("https://thehomelyy.com/category-post.php");
 
     String value1 = "";
@@ -631,7 +646,6 @@ class AllApi {
           print(value);
         }).onData((data) {
           print("future $data");
-
           value1 = data;
           return data;
         });
@@ -640,13 +654,51 @@ class AllApi {
         return value1;
       }
     });
-    // return value1;
+    return value1;
     //     url, body: {
     //   "image": file
     // });
     //
     // return response.body;
   }
+
+  Future<String> setImageVendor(File file) async {
+
+    print('its working $file');
+
+    var url = Uri.parse("https://thehomelyy.com/vendor-post.php");
+
+    String value1 = "";
+
+    var request = http.MultipartRequest('POST', url);
+
+    request.files.add(http.MultipartFile(
+        'image', file.readAsBytes().asStream(), file.lengthSync(),
+        filename: file.path));
+
+
+    await request.send().then((response) async {
+      if (response.statusCode == 200) {
+        response.stream.transform(utf8.decoder).listen((value) {
+          print(value);
+        }).onData((data) {
+          print("future $data");
+          value1 = data;
+          return data;
+        });
+      } else {
+        value1 = "Error";
+        return value1;
+      }
+    });
+    return value1;
+    //     url, body: {
+    //   "image": file
+    // });
+    //
+    // return response.body;
+  }
+
 
   Future<String> setImageProduct(File file) async {
     var url = Uri.parse("https://thehomelyy.com/product-post.php");

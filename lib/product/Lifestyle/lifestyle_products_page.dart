@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/product/Lifestyle/add_product_varient.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_accepted_products.dart';
@@ -43,6 +44,7 @@ class _LifestyleProductsState extends State<LifestyleProducts> {
           },
         ),
         appBar: AppBar(
+          backgroundColor: kgreen,
           title: const Text("Product List"),
           bottom: const TabBar(
             tabs: [

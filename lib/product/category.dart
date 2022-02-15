@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,7 +36,7 @@ class _CategoryPageState extends State<CategoryPage> {
   final _formKey = GlobalKey<FormState>();
   var _categoryName = '';
   var _categoryType = '';
-  final _categoryId = 'CAT' + DateTime.now().microsecond.toString();
+
 
   bool _isLoading = false;
   File image;
@@ -73,146 +74,159 @@ class _CategoryPageState extends State<CategoryPage> {
           context: context,
           builder: (ctx) {
             return SingleChildScrollView(
-              child: AlertDialog(
-                title: const Text('Add Category'),
-                content: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Name'),
-                            hintText: 'Enter name of the category',
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name of the category';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _categoryName = value;
-                          },
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
+              child: StatefulBuilder(
+                builder: (context, setState1) {
+                  return AlertDialog(
+                    title: const Text('Add Category'),
+                    content: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                label: Text('Name'),
+                                hintText: 'Enter name of the category',
                               ),
-                              borderRadius: BorderRadius.circular(12.0)),
-                          child: InkWell(
-                            child: image != null
-                                ? Image.file(image)
-                                : const Text('Upload Image'),
-                            onTap: _imagePicker,
-                          ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter name of the category';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _categoryName = value;
+                              },
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              child: InkWell(
+                                child: image != null
+                                    ? Image.file(image)
+                                    : const Text('Upload Image'),
+                                onTap: _imagePicker,
+                              ),
+                            ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Image'),
+                            //     hintText: 'Upload image of the category',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please upload image of the category';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _categoryImage = value;
+                            //   },
+                            // ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Type'),
+                            //     hintText: 'Enter type of the category',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter type of the category';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _categoryType = value;
+                            //   },
+                            // ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Category Id'),
+                            //     hintText: 'Enter id of the category',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter id of the category';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _categoryId = value;
+                            //   },
+                            // ),
+                            // TextFormField(
+                            //   decoration: const InputDecoration(
+                            //     label: Text('Vendor Id'),
+                            //     hintText: 'Enter id of the vendor',
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value.isEmpty) {
+                            //       return 'Please enter id of the vendor';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onSaved: (value) {
+                            //     _vendorId = value;
+                            //   },
+                            // ),
+                          ],
                         ),
-                        // TextFormField(
-                        //   decoration: const InputDecoration(
-                        //     label: Text('Image'),
-                        //     hintText: 'Upload image of the category',
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Please upload image of the category';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (value) {
-                        //     _categoryImage = value;
-                        //   },
-                        // ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Type'),
-                            hintText: 'Enter type of the category',
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter type of the category';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _categoryType = value;
-                          },
-                        ),
-                        // TextFormField(
-                        //   decoration: const InputDecoration(
-                        //     label: Text('Category Id'),
-                        //     hintText: 'Enter id of the category',
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Please enter id of the category';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (value) {
-                        //     _categoryId = value;
-                        //   },
-                        // ),
-                        // TextFormField(
-                        //   decoration: const InputDecoration(
-                        //     label: Text('Vendor Id'),
-                        //     hintText: 'Enter id of the vendor',
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Please enter id of the vendor';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (value) {
-                        //     _vendorId = value;
-                        //   },
-                        // ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () async {
-                      final canSumbit = _trySubmit();
-                      if (canSumbit && image != null) {
-                        setState(() {
-                          _isLoading = true;
-                        });
+                    actions: [
+                     _isLoading ? CircularProgressIndicator(color: kgreen,)  : TextButton(
+                        onPressed: () async {
+                          final canSumbit = _trySubmit();
+                          if (canSumbit && image != null) {
+                            setState(() {
+                              _isLoading = true;
+                            });
 
-                      var iamge =  await _allApi.setImage(image);
+                          var iamge =  await _allApi.setImage(image);
 
-                        await _allApi.addCategory(
-                          name: _categoryName,
-                          image: jsonDecode(iamge),
-                          type: _categoryType,
-                          categoryId: _categoryId,
-                          vendorId: widget.vendorId,
-                        );
+                            int min = 100000; //min and max values act as your 6 digit range
+                            int max = 999999;
+                            var randomizer = new Random();
+                            var rNum = min + randomizer.nextInt(max - min);
 
-                        setState(() {
+                            var lastDigits = rNum;
 
-                          _isLoading = false;
-                        });
+                            final _categoryId = 'CAT' + lastDigits.toString();
 
-                        Get.back();
+                            await _allApi.addCategory(
+                              name: _categoryName,
+                              image: jsonDecode(iamge),
+                              type: _categoryType,
+                              categoryId: _categoryId,
+                              vendorId: widget.vendorId,
+                            );
 
-                      }
-                    },
-                    child: const Text('Add'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                ],
+                            setState(() {
+
+                              _isLoading = false;
+                            });
+
+                            Get.back();
+
+                          }
+                        },
+                        child: const Text('Add'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                    ],
+                  );
+                }
               ),
             );
           },
@@ -236,8 +250,8 @@ class _CategoryPageState extends State<CategoryPage> {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
-            );
-          } else {
+            );}
+
             var _categoryList = snapshot.data;
             return ListView.builder(
               shrinkWrap: true,
@@ -253,7 +267,6 @@ class _CategoryPageState extends State<CategoryPage> {
                 );
               },
             );
-          }
         },
       ),
     );

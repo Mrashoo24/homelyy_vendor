@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
 class AddProductVarient extends StatefulWidget {
@@ -38,6 +39,7 @@ class _AddProductVarientState extends State<AddProductVarient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kgreen,
         title: const Text('Add Product Varient'),
         centerTitle: true,
       ),
