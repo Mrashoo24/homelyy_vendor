@@ -1,17 +1,13 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
-import 'lifestyle_products_page.dart';
-
 class LifestylePendingProducts extends StatefulWidget {
   final String categoryId, vendorId, varientId;
   final VendorModel vendorDetails;
-
   const LifestylePendingProducts({
     Key key,
     this.categoryId,
@@ -67,11 +63,8 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                     price: productList[index]['price'],
                     stock: (productList[index]['status']).toString().toLowerCase() == 'true',
                     title: productList[index]['name'],
-                    discountVisibility: productList[index].cutprice != '0',
-                    varientId: productList[index].varientId,
-                    description: productList[index].description,
-                    subCategory: productList[index].subCategory,
-                    varient: productList[index].varient,
+                    discountVisibility: productList[index]['cutprice'] != '0',
+                    productId: productList[index]['productid']
                   ),
                 );
               },
@@ -96,24 +89,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
     BuildContext context,
     bool stock,
     String productId,
-    String varientId,
-    String description,
-    String subCategory,
-    String varient,
   }) {
-    ProductMainModel productMainModel = ProductMainModel(
-      category: category,
-      cutprice: cutprice,
-      description: description,
-      image: img,
-      name: title,
-      price: price,
-      status: stock,
-      subCategory: subCategory,
-      varient: varient,
-      varientId: varientId,
-      vendorId: widget.vendorId,
-    );
     return Card(
       child: Stack(
         children: <Widget>[
@@ -131,25 +107,25 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
             ),
             child: Row(
               children: <Widget>[
-                Container(
-                  margin:  EdgeInsets.only(
-                    right: 8,
-                    left: 8,
-                    top: 8,
-                    bottom: 8,
-                  ),
-                  width: 80,
-                  height: 80,
-                  decoration:   BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(14),
-                    ),
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: NetworkImage('https://thehomelyy.com/images/products/$img'),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   margin: const EdgeInsets.only(
+                //     right: 8,
+                //     left: 8,
+                //     top: 8,
+                //     bottom: 8,
+                //   ),
+                //   width: 80,
+                //   height: 80,
+                //   decoration: const BoxDecoration(
+                //     borderRadius: BorderRadius.all(
+                //       Radius.circular(14),
+                //     ),
+                //     color: Colors.white,
+                //     // image: DecorationImage(
+                //     //   image: NetworkImage(img),
+                //     // ),
+                //   ),
+                // ),
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(8.0),
@@ -183,7 +159,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                       Visibility(
                                         visible: discountVisibility,
                                         child: Text(
-                                          "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
+                                           "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.purple.shade400,
@@ -211,17 +187,14 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      child: const Text('View Products'),
-                                      onPressed: () {
-                                        Get.to(
-                                              () => LifestyleProducts(
-                                            vendorId: widget.vendorId,
-                                            categoryId: widget.categoryId,
-                                            varientId: varientId,
-                                            productMainModel: productMainModel,
-                                            vendorDetails: widget.vendorDetails,
-                                          ),
+                                    child: CustomSwitch(
+                                      value: stock,
+                                      activeColor: Colors.blue,
+                                      onChanged: (value) async {
+                                        stock = !stock;
+                                        await _allApi.putProductStatus(
+                                          productId: productId,
+                                          status: stock,
                                         );
                                       },
                                     ),

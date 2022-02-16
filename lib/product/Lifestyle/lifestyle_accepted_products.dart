@@ -1,8 +1,11 @@
 import 'package:custom_switch/custom_switch.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 
 import 'lifestyle_products_page.dart';
@@ -25,14 +28,21 @@ class LifestyleAcceptedProducts extends StatefulWidget {
 class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
   final _allApi = AllApi();
 
+  var editedCutprice = '';
+  var editedprice = '';
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder(
-        future: _allApi.getProductsVarient(
-          varientId: widget.varientId,
-          verify: 'Verified',
+      child:
+
+      FutureBuilder<List<ProductMainModel>>(
+        future: _allApi.getProductMain(
+            vendorId: widget.vendorId,
+            verify: 'Verified',
+          category: widget.categoryId
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -40,42 +50,33 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
               child: CircularProgressIndicator(),
             );
           }
-
-          if (snapshot.data.isEmpty) {
-            return const Center(
-              child: Text('No Products to show'),
-            );
-          } else {
-            var productList = snapshot.data;
-            return ListView.builder(
-              itemCount: productList.length,
-              itemBuilder: (context, index) {
-
-
-                return Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: createCartListItem(
-                    category: productList[index]['category'],
-                    context: context,
-                    cutprice: productList[index]['cutprice'],
-                    img: productList[index]['image'],
-                    itemnumber: index.toString(),
-                    price: productList[index]['price'],
-                    stock: (productList[index]['status']).toString().toLowerCase() == 'true',
-                    title: productList[index]['name'],
-                    discountVisibility: productList[index].cutprice != '0',
-                    varientId: productList[index].varientId,
-                    description: productList[index].description,
-                    subCategory: productList[index].subCategory,
-                    varient: productList[index].varient,
-                  ),
-                );
-              },
-            );
-          }
+          var productList = snapshot.data;
+          return  productList.isEmpty ? Container() :ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: createCartListItem(
+                  category: productList[index].category,
+                  context: context,
+                  cutprice: productList[index].cutprice,
+                  img: productList[index].image,
+                  itemnumber: index.toString(),
+                  price: productList[index].price,
+                  stock: productList[index].status,
+                  title: productList[index].name,
+                  discountVisibility: productList[index].cutprice != '0',
+                  varientId: productList[index].varientId,
+                  description: productList[index].description,
+                  subCategory: productList[index].subCategory,
+                  varient: productList[index].varient,
+                ),
+              );
+            },
+          );
         },
       ),
     );
@@ -100,6 +101,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
     String subCategory,
     String varient,
   }) {
+
     ProductMainModel productMainModel = ProductMainModel(
       category: category,
       cutprice: cutprice,
@@ -113,6 +115,9 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
       varientId: varientId,
       vendorId: widget.vendorId,
     );
+
+
+    print('vid $discountVisibility');
     return Card(
       child: Stack(
         children: <Widget>[
@@ -182,7 +187,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                                       Visibility(
                                         visible: discountVisibility,
                                         child: Text(
-                                          "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
+                                           "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.purple.shade400,
@@ -234,7 +239,114 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                     ),
                   ),
                   flex: 100,
-                )
+                ),
+                // Column(
+                //   children: [
+                //     IconButton(onPressed: (){
+                //
+                //
+                //     }, icon:Icon(FontAwesomeIcons.trash)),
+                //     IconButton(onPressed: () async {
+                //
+                //       showDialog(context: context, builder: (context){
+                //         return AlertDialog(
+                //           title: Text('Edit Price'),
+                //           content: Column(
+                //             children: [
+                //               TextFormField(
+                //                 onChanged: (value){
+                //                   setState(() {
+                //                     editedCutprice = value;
+                //                   });
+                //                 },
+                //                 decoration: InputDecoration(
+                //                     hintText: cutprice,
+                //                     label: Text('Cut Price')
+                //                 ),
+                //                 keyboardType: TextInputType.number,
+                //               ),
+                //               TextFormField(
+                //
+                //                 onChanged: (value){
+                //                   setState(() {
+                //                     editedprice = value;
+                //                   });
+                //                 },
+                //                 decoration: InputDecoration(
+                //                   hintText: price,
+                //                   label: Text('Price'),
+                //                 ),
+                //                 keyboardType: TextInputType.number,
+                //               )
+                //             ],
+                //           ),
+                //           actions: [
+                //             ElevatedButton(onPressed: (){
+                //               Get.back();
+                //             }, child: Text('Cancel'),
+                //               style: ButtonStyle(
+                //                   backgroundColor: MaterialStateProperty.all(Colors.grey)
+                //               ),
+                //
+                //             ),
+                //             ElevatedButton(
+                //                 onPressed: () async {
+                //
+                //                   if(editedCutprice != '' ){
+                //
+                //                     if(editedprice != '' ){
+                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: editedprice,type: 'lifestyle');
+                //                       Get.back();
+                //                       setState(() {
+                //
+                //                       });
+                //                     }else{
+                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: price,type: 'lifestyle');
+                //                       Get.back();
+                //                       setState(() {
+                //
+                //                       });
+                //                     }
+                //
+                //
+                //                   }
+                //
+                //                   if(editedprice != '' ){
+                //
+                //                     if(editedCutprice != '' ){
+                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: editedprice,type: 'lifestyle');
+                //                       Get.back();
+                //                       setState(() {
+                //
+                //                       });
+                //                     }else{
+                //                       await AllApi().putCutprice(foodId: productId,cutprice: cutprice,price: editedprice,type: 'lifestyle'); Get.back();
+                //                       setState(() {
+                //
+                //                       });
+                //
+                //                     }
+                //
+                //
+                //
+                //                   }
+                //
+                //
+                //             }, child: Text('Continue'),
+                //               style: ButtonStyle(
+                //                 backgroundColor: MaterialStateProperty.all(kgreen)
+                //               ),
+                //             )
+                //           ],
+                //         );
+                //       });
+                //
+                //
+                //
+                //
+                //     }, icon:Icon(FontAwesomeIcons.penAlt)),
+                //   ],
+                // )
               ],
             ),
           ),

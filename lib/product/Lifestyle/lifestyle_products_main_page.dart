@@ -7,15 +7,15 @@ import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/product/Lifestyle/add_product_main.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_accepted_products.dart';
-import 'package:homelyvendor/product/Lifestyle/lifestyle_pending_products.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_products_page.dart';
+import 'package:homelyvendor/product/Lifestyle/lifestyle_rejected_products.dart';
 
 import '../Restaurant/accepted_products.dart';
 import '../Restaurant/pending_products.dart';
 import '../Restaurant/rejected_products.dart';
-import '../add_products.dart';
 
 class LifestyleProductsMain extends StatefulWidget {
+
   final String categoryId, vendorId;
   final VendorModel vendorDetails;
 
@@ -61,24 +61,123 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
             );
           },
         ),
-        body: TabBarView(
-            children: [
-              LifestyleAcceptedProducts(
-                  vendorId: widget.vendorId,
-                  categoryId: widget.categoryId,
-                  vendorDetails:widget.vendorDetails
-              ),
-              LifestylePendingProducts(
-                  vendorId: widget.vendorId,
-                  categoryId: widget.categoryId,
-                  vendorDetails:widget.vendorDetails
-              ),
-            ],
-          ),
+        body:   TabBarView(
+          children: [
+            LifestyleAcceptedProducts(
+                vendorId: widget.vendorId,
+                categoryId: widget.categoryId,
+                vendorDetails:widget.vendorDetails
+            ),
+
+            LifestyleRejectedProducts(
+                vendorId: widget.vendorId,
+                categoryId: widget.categoryId,
+                vendorDetails:widget.vendorDetails
+            ),
+          ],
+        ),
+
 
       ),
     );
   }
+
+
+  // acceptedProject(){
+  //   Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child:
+  //
+  //     FutureBuilder<List<ProductMainModel>>(
+  //       future: _allApi.getProductMain(
+  //           vendorId: widget.vendorId,
+  //           verify: 'Verified'
+  //       ),
+  //       builder: (context, snapshot) {
+  //         if (!snapshot.hasData) {
+  //           return const Center(
+  //             child: CircularProgressIndicator(),
+  //           );
+  //         }
+  //         var productList = snapshot.data;
+  //         return  productList.isEmpty ? Container() :ListView.builder(
+  //           itemCount: productList.length,
+  //           itemBuilder: (context, index) {
+  //             return Container(
+  //               margin: const EdgeInsets.only(
+  //                 top: 10,
+  //                 bottom: 10,
+  //               ),
+  //               child: createCartListItem(
+  //                 category: productList[index].category,
+  //                 context: context,
+  //                 cutprice: productList[index].cutprice,
+  //                 img: productList[index].image,
+  //                 itemnumber: index.toString(),
+  //                 price: productList[index].price,
+  //                 stock: productList[index].status,
+  //                 title: productList[index].name,
+  //                 discountVisibility: true,
+  //                 varientId: productList[index].varientId,
+  //                 description: productList[index].description,
+  //                 subCategory: productList[index].subCategory,
+  //                 varient: productList[index].varient,
+  //               ),
+  //             );
+  //           },
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
+  //
+  // pendingProject(){
+  //   Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child:
+  //
+  //     FutureBuilder<List<ProductMainModel>>(
+  //       future: _allApi.getProductMain(
+  //           vendorId: widget.vendorId,
+  //           verify: 'pending'
+  //       ),
+  //       builder: (context, snapshot) {
+  //         if (!snapshot.hasData) {
+  //           return const Center(
+  //             child: CircularProgressIndicator(),
+  //           );
+  //         }
+  //         var productList = snapshot.data;
+  //         return  productList.isEmpty ? Container() :ListView.builder(
+  //           itemCount: productList.length,
+  //           itemBuilder: (context, index) {
+  //             return Container(
+  //               margin: const EdgeInsets.only(
+  //                 top: 10,
+  //                 bottom: 10,
+  //               ),
+  //               child: createCartListItem(
+  //                 category: productList[index].category,
+  //                 context: context,
+  //                 cutprice: productList[index].cutprice,
+  //                 img: productList[index].image,
+  //                 itemnumber: index.toString(),
+  //                 price: productList[index].price,
+  //                 stock: productList[index].status,
+  //                 title: productList[index].name,
+  //                 discountVisibility: true,
+  //                 varientId: productList[index].varientId,
+  //                 description: productList[index].description,
+  //                 subCategory: productList[index].subCategory,
+  //                 varient: productList[index].varient,
+  //               ),
+  //             );
+  //           },
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   createCartListItem({
     String img,
@@ -232,7 +331,11 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                     ),
                   ),
                   flex: 100,
-                )
+                ),
+                // IconButton(onPressed: (){
+                //
+                //
+                // }, icon:Icon(CupertinoIcons.trash))
               ],
             ),
           ),

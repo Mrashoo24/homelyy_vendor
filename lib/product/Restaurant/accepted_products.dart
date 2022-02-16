@@ -1,12 +1,9 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
-
-import '../Lifestyle/lifestyle_products_page.dart';
 
 class AcceptedProducts extends StatefulWidget {
   final String categoryId, vendorId;
@@ -26,23 +23,26 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
-           return   Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
       child: FutureBuilder<List<FoodModel>>(
         future: _allApi.getProducts(
-            vendorId: widget.vendorId,
-            categoryId: widget.categoryId,
-            verify: 'pending'
+          vendorId: widget.vendorId,
+          categoryId: widget.categoryId,
+          verify: 'Verified',
         ),
-
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }
+          } else if (snapshot.data.isEmpty) {
+            return const Center(
+              child: Text('No products to show'),
+            );
+          } else {
             var productList = snapshot.data;
-            return  productList.isEmpty ? Container() :ListView.builder(
+            return ListView.builder(
               itemCount: productList.length,
               itemBuilder: (context, index) {
                 return Container(
@@ -59,11 +59,18 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                     price: productList[index].price,
                     stock: productList[index].status,
                     title: productList[index].name,
-                    discountVisibility: productList[index].cutprice != '0',
+                    discountVisibility: productList[index].cutprice == '0' ? false : true ,
+                    discount: (int.parse(
+                        productList[index].price) -
+                        int.parse(
+                            productList[index].cutprice))
+                        .toString(),
+                    productId: productList[index].productId,
                   ),
                 );
               },
             );
+          }
         },
       ),
     );
@@ -110,14 +117,14 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('${imgurl}products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -151,7 +158,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                   Row(
                                     children: [
                                       Text(
-                                        cutprice == ""
+                                        cutprice == "0"
                                             ? ""
                                             : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
@@ -166,15 +173,15 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                         "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.blueGrey,
-                                          decoration:
-                                          TextDecoration.lineThrough,
-                                        )
+                                                fontSize: 14,
+                                                color: Colors.blueGrey,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              )
                                             : TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.purple.shade400,
-                                        ),
+                                                fontSize: 16,
+                                                color: Colors.purple.shade400,
+                                              ),
                                       ),
                                     ],
                                   ),
@@ -182,11 +189,11 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: CustomSwitch(
                                       value: stock,
-                                      activeColor: Colors.blue,
+                                      activeColor: kgreen,
                                       onChanged: (value) async {
                                         stock = !stock;
-                                        await _allApi.putProductStatus(
-                                          productId: productId,
+                                        await _allApi.putProductFoodStatus(
+                                          foodId: productId,
                                           status: stock,
                                         );
                                       },
@@ -205,6 +212,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
               ],
             ),
           ),
+
         ],
       ),
     );

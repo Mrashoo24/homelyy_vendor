@@ -757,10 +757,10 @@ class AllApi {
 
   Future<List<ProductMainModel>> getProductMain({
     @required String vendorId,
-    String verify
+    String verify,String category
   }) async {
     var url = Uri.parse(
-        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/productsvendorget?vendorid=$vendorId&verify=$verify");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/productsvendorget?vendorid=$vendorId&verify=$verify&category=$category");
 
     var response = await http.get(url);
     print('url ${url}');

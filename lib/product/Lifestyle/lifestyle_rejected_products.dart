@@ -1,13 +1,15 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 
+import 'lifestyle_products_page.dart';
+
 class LifestyleRejectedProducts extends StatefulWidget {
   final String categoryId, vendorId, varientId;
   final VendorModel vendorDetails;
-
   const LifestyleRejectedProducts({
     Key key,
     this.categoryId,
@@ -26,10 +28,13 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder(
-        future: _allApi.getProductsVarient(
-          varientId: widget.varientId,
-          verify: 'pending',
+      child:
+
+      FutureBuilder<List<ProductMainModel>>(
+        future: _allApi.getProductMain(
+            vendorId: widget.vendorId,
+            verify: 'pending',
+            category: widget.categoryId
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -37,38 +42,33 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
               child: CircularProgressIndicator(),
             );
           }
-
-          if (snapshot.data.isEmpty) {
-            return const Center(
-              child: Text('No Products to show'),
-            );
-          } else {
-            var productList = snapshot.data;
-            return ListView.builder(
-              itemCount: productList.length,
-              itemBuilder: (context, index) {
-
-
-                return Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: createCartListItem(
-                    category: productList[index]['category'],
-                    context: context,
-                    cutprice: productList[index]['cutprice'],
-                    img: productList[index]['image'],
-                    itemnumber: index.toString(),
-                    price: productList[index]['price'],
-                    stock: (productList[index]['status']).toString().toLowerCase() == 'true',
-                    title: productList[index]['name'],
-                    discountVisibility: true,
-                  ),
-                );
-              },
-            );
-          }
+          var productList = snapshot.data;
+          return  productList.isEmpty ? Container() :ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: createCartListItem(
+                  category: productList[index].category,
+                  context: context,
+                  cutprice: productList[index].cutprice,
+                  img: productList[index].image,
+                  itemnumber: index.toString(),
+                  price: productList[index].price,
+                  stock: productList[index].status,
+                  title: productList[index].name,
+                  discountVisibility: productList[index].cutprice != '0',
+                  varientId: productList[index].varientId,
+                  description: productList[index].description,
+                  subCategory: productList[index].subCategory,
+                  varient: productList[index].varient,
+                ),
+              );
+            },
+          );
         },
       ),
     );
@@ -88,7 +88,26 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
     BuildContext context,
     bool stock,
     String productId,
+    String varientId,
+    String description,
+    String subCategory,
+    String varient,
   }) {
+    ProductMainModel productMainModel = ProductMainModel(
+      category: category,
+      cutprice: cutprice,
+      description: description,
+      image: img,
+      name: title,
+      price: price,
+      status: stock,
+      subCategory: subCategory,
+      varient: varient,
+      varientId: varientId,
+      vendorId: widget.vendorId,
+    );
+
+    print('vid $discountVisibility');
     return Card(
       child: Stack(
         children: <Widget>[
@@ -107,7 +126,7 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
             child: Row(
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.only(
+                  margin:  EdgeInsets.only(
                     right: 8,
                     left: 8,
                     top: 8,
@@ -115,14 +134,14 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:   BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('https://thehomelyy.com/images/products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -155,13 +174,14 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        cutprice == ""
-                                            ? ""
-                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.purple.shade400,
+                                      Visibility(
+                                        visible: discountVisibility,
+                                        child: Text(
+                                          "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.purple.shade400,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(
@@ -171,28 +191,31 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                                         "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              )
+                                          fontSize: 14,
+                                          color: Colors.blueGrey,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                        )
                                             : TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.purple.shade400,
-                                              ),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
                                     ],
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: CustomSwitch(
-                                      value: stock,
-                                      activeColor: Colors.blue,
-                                      onChanged: (value) async {
-                                        stock = !stock;
-                                        await _allApi.putProductStatus(
-                                          productId: productId,
-                                          status: stock,
+                                    child: ElevatedButton(
+                                      child: const Text('View Products'),
+                                      onPressed: () {
+                                        Get.to(
+                                              () => LifestyleProducts(
+                                            vendorId: widget.vendorId,
+                                            categoryId: widget.categoryId,
+                                            varientId: varientId,
+                                            productMainModel: productMainModel,
+                                            vendorDetails: widget.vendorDetails,
+                                          ),
                                         );
                                       },
                                     ),
@@ -206,10 +229,15 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                     ),
                   ),
                   flex: 100,
-                )
+                ),
+                // IconButton(onPressed: (){
+                //
+                //
+                // }, icon:Icon(CupertinoIcons.trash))
               ],
             ),
           ),
+
         ],
       ),
     );

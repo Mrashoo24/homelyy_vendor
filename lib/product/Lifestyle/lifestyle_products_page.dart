@@ -30,31 +30,29 @@ class LifestyleProducts extends StatefulWidget {
 class _LifestyleProductsState extends State<LifestyleProducts> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            Get.to(
-              () => AddProductVarient(
-                productMainModel: widget.productMainModel,
-                vendorId: widget.vendorId,
-              ),
-            );
-          },
-        ),
-        appBar: AppBar(
-          backgroundColor: kgreen,
-          title: const Text("Product List"),
-        ),
-        body:   LifestyleRejectedProducts(
-            vendorId: widget.vendorId,
-            categoryId: widget.categoryId,
-            varientId: widget.varientId,
-            vendorDetails: widget.vendorDetails
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Get.to(
+            () => AddProductVarient(
+              productMainModel: widget.productMainModel,
+              vendorId: widget.vendorId,
+            ),
+          );
+        },
+      ),
+      appBar: AppBar(
+        backgroundColor: kgreen,
+        title: const Text("Product Varients"),
 
-        ),
+      ),
+      body: LifestylePendingProducts(
+        vendorId: widget.vendorId,
+        categoryId: widget.categoryId,
+        varientId: widget.varientId,
+          vendorDetails:widget.vendorDetails
+
       ),
     );
   }
