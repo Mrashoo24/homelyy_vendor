@@ -1,9 +1,12 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
+
+import '../Lifestyle/lifestyle_products_page.dart';
 
 class AcceptedProducts extends StatefulWidget {
   final String categoryId, vendorId;
@@ -23,26 +26,23 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
-    return Padding(
+           return   Padding(
       padding: const EdgeInsets.all(8.0),
       child: FutureBuilder<List<FoodModel>>(
         future: _allApi.getProducts(
-          vendorId: widget.vendorId,
-          categoryId: widget.categoryId,
-          verify: 'Verified',
+            vendorId: widget.vendorId,
+            categoryId: widget.categoryId,
+            verify: 'pending'
         ),
+
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.data.isEmpty) {
-            return const Center(
-              child: Text('No products to show'),
-            );
-          } else {
+          }
             var productList = snapshot.data;
-            return ListView.builder(
+            return  productList.isEmpty ? Container() :ListView.builder(
               itemCount: productList.length,
               itemBuilder: (context, index) {
                 return Container(
@@ -59,18 +59,11 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                     price: productList[index].price,
                     stock: productList[index].status,
                     title: productList[index].name,
-                    discountVisibility: productList[index].cutprice == '0' ? false : true ,
-                    discount: (int.parse(
-                        productList[index].price) -
-                        int.parse(
-                            productList[index].cutprice))
-                        .toString(),
-                    productId: productList[index].productId,
+                    discountVisibility: productList[index].cutprice != '0',
                   ),
                 );
               },
             );
-          }
         },
       ),
     );
@@ -117,14 +110,14 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration:  BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    image: DecorationImage(
-                      image: NetworkImage('${imgurl}products/$img'),
-                    ),
+                    // image: DecorationImage(
+                    //   image: NetworkImage(img),
+                    // ),
                   ),
                 ),
                 Expanded(
@@ -173,15 +166,15 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                         "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              )
+                                          fontSize: 14,
+                                          color: Colors.blueGrey,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                        )
                                             : TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.purple.shade400,
-                                              ),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -189,7 +182,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: CustomSwitch(
                                       value: stock,
-                                      activeColor: kgreen,
+                                      activeColor: Colors.blue,
                                       onChanged: (value) async {
                                         stock = !stock;
                                         await _allApi.putProductStatus(
@@ -210,31 +203,6 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                   flex: 100,
                 )
               ],
-            ),
-          ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
             ),
           ),
         ],

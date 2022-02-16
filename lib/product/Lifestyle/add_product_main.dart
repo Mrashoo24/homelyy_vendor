@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -25,15 +26,13 @@ class _AddProductMainState extends State<AddProductMain> {
   final _allApi = AllApi();
 
   var _productName = '';
-  final _productId = 'PRODUCT' + DateTime.now().microsecond.toString();
   String _productCategory;
   var _productSubCategory = '';
   var _productDescription = '';
   var _vendorId = '';
   var _productPrice = '';
   var _productVarient = '';
-  final _varientId = 'VAR' + DateTime.now().microsecond.toString();
-  var _cutPrice = '';
+  var _cutPrice = '0';
   var _isLoading = false;
   PlatformFile image;
 
@@ -262,21 +261,6 @@ class _AddProductMainState extends State<AddProductMain> {
                                 _productPrice = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Varient'),
-                                hintText: 'Enter varient of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter varient of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productVarient = value;
-                              },
-                            ),
                             // TextFormField(
                             //   decoration: const InputDecoration(
                             //     label: Text('Vareint Id'),
@@ -294,11 +278,11 @@ class _AddProductMainState extends State<AddProductMain> {
                             // ),
                             TextFormField(
                               decoration: const InputDecoration(
-                                label: Text('Cut Price'),
-                                hintText: 'Enter cut price of the product',
+                                label: Text('Cut Price(Enter 0 if no discount available)'),
+                                hintText: 'Enter 0 if no discount available',
                               ),
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (!value.isNum) {
                                   return 'Please enter cut price of the product';
                                 }
                                 return null;
@@ -325,6 +309,21 @@ class _AddProductMainState extends State<AddProductMain> {
                                     _isLoading = !_isLoading;
                                   });
 
+
+
+
+                                  int min = 100000; //min and max values act as your 6 digit range
+                                  int max = 999999;
+                                  var randomizer = new Random();
+                                  var rNum = min + randomizer.nextInt(max - min);
+
+                                  var lastDigits = rNum;
+
+                                  final _productId = 'PRODUCT' + lastDigits.toString();
+
+                                  final _varientId = 'VAR' + lastDigits.toString();
+
+
                                   await _allApi.addProductMain(
                                     productName: _productName,
                                     productId: _productId,
@@ -334,7 +333,7 @@ class _AddProductMainState extends State<AddProductMain> {
                                     vendorId: widget.vendorId,
                                     productImage: jsonDecode(image1),
                                     productPrice: _productPrice,
-                                    productVarient: _productVarient,
+                                    productVarient: _varientId,
                                     varientId: _varientId,
                                     cutPrice: _cutPrice,
                                     requestDate:

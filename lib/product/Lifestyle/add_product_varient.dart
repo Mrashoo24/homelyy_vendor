@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
@@ -24,7 +26,6 @@ class _AddProductVarientState extends State<AddProductVarient> {
   var _size = '';
   var _color = '';
   var _isLoading = false;
-  final productId = 'PRODUCT' + DateTime.now().microsecond.toString();
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -87,10 +88,21 @@ class _AddProductVarientState extends State<AddProductVarient> {
                       setState(() {
                         _isLoading = !_isLoading;
                       });
+
+
+                      int min = 100000; //min and max values act as your 6 digit range
+                      int max = 999999;
+                      var randomizer = new Random();
+                      var rNum = min + randomizer.nextInt(max - min);
+
+                      var lastDigits = rNum;
+
+                      final _productId = 'PRODUCT' + lastDigits.toString();
+
                       await _allApi.addProductVarient(
                         productName:
                             widget.productMainModel.name + _size + _color,
-                        productId: productId,
+                        productId: _productId,
                         productCategory: widget.productMainModel.category,
                         productSubCategory: widget.productMainModel.subCategory,
                         productDescription: widget.productMainModel.description,
@@ -100,29 +112,14 @@ class _AddProductVarientState extends State<AddProductVarient> {
                         varientId: widget.productMainModel.varientId,
                         cutPrice: widget.productMainModel.cutprice,
                       );
+
                       await _allApi.putProductVarientStatus(
-                        productId: productId,
+                        productId: _productId,
                         status: false,
                         varientId: widget.productMainModel.varientId,
                       );
-                      showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: const Text('Product Sent for Approval'),
-                            content: const Text(
-                                'Your product will be added once admin approves it.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: const Text('Ok'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      Get.snackbar('Success', 'Varient Added');
+
                     }
                   },
                   child: const Text('Add'),

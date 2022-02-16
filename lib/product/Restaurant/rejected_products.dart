@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
 import 'package:homelyvendor/components/model.dart';
+
+import '../Lifestyle/lifestyle_products_page.dart';
 
 class RejectedProducts extends StatefulWidget {
   final String categoryId, vendorId;
@@ -23,54 +26,47 @@ class _RejectedProductsState extends State<RejectedProducts> {
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return   Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder<List<FoodModel>>(
-        future: _allApi.getProducts(
-          vendorId: widget.vendorId,
-          categoryId: widget.categoryId,
-          verify: '0',
+      child: FutureBuilder<List<ProductMainModel>>(
+        future: _allApi.getProductMain(
+            vendorId: widget.vendorId,
+            verify: 'rejected'
         ),
+
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.data.isEmpty) {
-            return const Center(
-              child: Text("No products to show."),
-            );
-          } else {
-            var productList = snapshot.data;
-            return ListView.builder(
-              itemCount: productList.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: createCartListItem(
-                    category: productList[index].category,
-                    context: context,
-                    cutprice: productList[index].cutprice,
-                    img: productList[index].image,
-                    itemnumber: index.toString(),
-                    price: productList[index].price,
-                    stock: productList[index].status,
-                    title: productList[index].name,
-                    discountVisibility: productList[index].cutprice == '0' ? false : true ,
-                    discount: (int.parse(
-                        productList[index].price) -
-                        int.parse(
-                            productList[index].cutprice))
-                        .toString(),
-                    productId: productList[index].productId,
-                  ),
-                );
-              },
-            );
           }
+          var productList = snapshot.data;
+          return  productList.isEmpty ? Container() :ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: createCartListItem(
+                  category: productList[index].category,
+                  context: context,
+                  cutprice: productList[index].cutprice,
+                  img: productList[index].image,
+                  itemnumber: index.toString(),
+                  price: productList[index].price,
+                  stock: productList[index].status,
+                  title: productList[index].name,
+                  discountVisibility: true,
+                  varientId: productList[index].varientId,
+                  description: productList[index].description,
+                  subCategory: productList[index].subCategory,
+                  varient: productList[index].varient,
+                ),
+              );
+            },
+          );
         },
       ),
     );
@@ -90,7 +86,24 @@ class _RejectedProductsState extends State<RejectedProducts> {
     BuildContext context,
     bool stock,
     String productId,
+    String varientId,
+    String description,
+    String subCategory,
+    String varient,
   }) {
+    ProductMainModel productMainModel = ProductMainModel(
+      category: category,
+      cutprice: cutprice,
+      description: description,
+      image: img,
+      name: title,
+      price: price,
+      status: stock,
+      subCategory: subCategory,
+      varient: varient,
+      varientId: varientId,
+      vendorId: widget.vendorId,
+    );
     return Card(
       child: Stack(
         children: <Widget>[
@@ -109,7 +122,7 @@ class _RejectedProductsState extends State<RejectedProducts> {
             child: Row(
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.only(
+                  margin:  EdgeInsets.only(
                     right: 8,
                     left: 8,
                     top: 8,
@@ -117,13 +130,13 @@ class _RejectedProductsState extends State<RejectedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration:  BoxDecoration(
+                  decoration:   BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
                     image: DecorationImage(
-                      image: NetworkImage('${imgurl}products/$img'),
+                      image: NetworkImage('https://thehomelyy.com/images/products/$img'),
                     ),
                   ),
                 ),
@@ -173,32 +186,35 @@ class _RejectedProductsState extends State<RejectedProducts> {
                                         "Rs.$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              )
+                                          fontSize: 14,
+                                          color: Colors.blueGrey,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                        )
                                             : TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.purple.shade400,
-                                              ),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(8.0),
-                                  //   child: CustomSwitch(
-                                  //     value: stock,
-                                  //     activeColor: Colors.blue,
-                                  //     onChanged: (value) async {
-                                  //       stock = !stock;
-                                  //       await _allApi.putProductStatus(
-                                  //         productId: productId,
-                                  //         status: stock,
-                                  //       );
-                                  //     },
-                                  //   ),
-                                  // )
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      child: const Text('View Products'),
+                                      onPressed: () {
+                                        Get.to(
+                                              () => LifestyleProducts(
+                                            vendorId: widget.vendorId,
+                                            categoryId: widget.categoryId,
+                                            varientId: varientId,
+                                            productMainModel: productMainModel,
+                                            vendorDetails: widget.vendorDetails,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
                                 ],
                               ),
                             ],
@@ -212,31 +228,7 @@ class _RejectedProductsState extends State<RejectedProducts> {
               ],
             ),
           ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );

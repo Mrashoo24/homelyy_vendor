@@ -12,6 +12,7 @@ import 'package:homelyvendor/product/add_products.dart';
 class LifestyleProducts extends StatefulWidget {
   final String businessName, categoryId, vendorId, varientId;
   final ProductMainModel productMainModel;
+  final VendorModel vendorDetails;
 
   const LifestyleProducts({
     Key key,
@@ -19,7 +20,7 @@ class LifestyleProducts extends StatefulWidget {
     this.categoryId,
     this.vendorId,
     this.varientId,
-    this.productMainModel,
+    this.productMainModel, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -46,38 +47,13 @@ class _LifestyleProductsState extends State<LifestyleProducts> {
         appBar: AppBar(
           backgroundColor: kgreen,
           title: const Text("Product List"),
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'Accepted',
-              ),
-              Tab(
-                text: 'Rejected',
-              ),
-              Tab(
-                text: 'Pending',
-              ),
-            ],
-          ),
         ),
-        body: TabBarView(
-          children: [
-            LifestyleAcceptedProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-            ),
-            LifestyleRejectedProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-            ),
-            LifestylePendingProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-            ),
-          ],
+        body:   LifestyleRejectedProducts(
+            vendorId: widget.vendorId,
+            categoryId: widget.categoryId,
+            varientId: widget.varientId,
+            vendorDetails: widget.vendorDetails
+
         ),
       ),
     );

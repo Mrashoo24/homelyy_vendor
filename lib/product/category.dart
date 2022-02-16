@@ -325,6 +325,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               LifestyleProductsMain(
                                 categoryId: categoryId,
                                 vendorId: vendorId,
+                                vendorDetails: widget.vendorDetails,
                               ),
                             );
                           }

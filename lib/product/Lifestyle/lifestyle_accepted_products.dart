@@ -1,16 +1,20 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 
+import 'lifestyle_products_page.dart';
+
 class LifestyleAcceptedProducts extends StatefulWidget {
   final String categoryId, vendorId, varientId;
+  final VendorModel vendorDetails;
   const LifestyleAcceptedProducts({
     Key key,
     this.categoryId,
     this.vendorId,
-    this.varientId,
+    this.varientId, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -20,6 +24,7 @@ class LifestyleAcceptedProducts extends StatefulWidget {
 
 class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
   final _allApi = AllApi();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -61,7 +66,11 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                     price: productList[index]['price'],
                     stock: (productList[index]['status']).toString().toLowerCase() == 'true',
                     title: productList[index]['name'],
-                    discountVisibility: true,
+                    discountVisibility: productList[index].cutprice != '0',
+                    varientId: productList[index].varientId,
+                    description: productList[index].description,
+                    subCategory: productList[index].subCategory,
+                    varient: productList[index].varient,
                   ),
                 );
               },
@@ -86,7 +95,24 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
     BuildContext context,
     bool stock,
     String productId,
+    String varientId,
+    String description,
+    String subCategory,
+    String varient,
   }) {
+    ProductMainModel productMainModel = ProductMainModel(
+      category: category,
+      cutprice: cutprice,
+      description: description,
+      image: img,
+      name: title,
+      price: price,
+      status: stock,
+      subCategory: subCategory,
+      varient: varient,
+      varientId: varientId,
+      vendorId: widget.vendorId,
+    );
     return Card(
       child: Stack(
         children: <Widget>[
@@ -105,7 +131,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
             child: Row(
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.only(
+                  margin:  EdgeInsets.only(
                     right: 8,
                     left: 8,
                     top: 8,
@@ -113,14 +139,14 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                   ),
                   width: 80,
                   height: 80,
-                  decoration: const BoxDecoration(
+                  decoration:   BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: NetworkImage(img),
-                    // ),
+                    image: DecorationImage(
+                      image: NetworkImage('https://thehomelyy.com/images/products/$img'),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -153,44 +179,48 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        cutprice == ""
-                                            ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.purple.shade400,
+                                      Visibility(
+                                        visible: discountVisibility,
+                                        child: Text(
+                                          "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.purple.shade400,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              )
+                                          fontSize: 14,
+                                          color: Colors.blueGrey,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                        )
                                             : TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.purple.shade400,
-                                              ),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
                                     ],
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: CustomSwitch(
-                                      value: stock,
-                                      activeColor: Colors.blue,
-                                      onChanged: (value) async {
-                                        stock = !stock;
-                                        await _allApi.putProductStatus(
-                                          productId: productId,
-                                          status: stock,
+                                    child: ElevatedButton(
+                                      child: const Text('View Products'),
+                                      onPressed: () {
+                                        Get.to(
+                                              () => LifestyleProducts(
+                                            vendorId: widget.vendorId,
+                                            categoryId: widget.categoryId,
+                                            varientId: varientId,
+                                            productMainModel: productMainModel,
+                                            vendorDetails: widget.vendorDetails,
+                                          ),
                                         );
                                       },
                                     ),
@@ -208,31 +238,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
               ],
             ),
           ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );

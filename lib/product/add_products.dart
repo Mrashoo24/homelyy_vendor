@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -320,6 +321,15 @@ class _AddProductState extends State<AddProduct> {
                                     _isLoading = !_isLoading;
                                   });
 
+                                  int min = 100000; //min and max values act as your 6 digit range
+                                  int max = 999999;
+                                  var randomizer = new Random();
+                                  var rNum = min + randomizer.nextInt(max - min);
+
+                                  var lastDigits = rNum;
+
+                                  final _foodId = 'FOOD' + lastDigits.toString();
+
                                   await _allApi.setImageProduct(image).then((value) async {
 
 
@@ -347,7 +357,9 @@ class _AddProductState extends State<AddProduct> {
                                     setState(() {
                                       _isLoading = !_isLoading;
                                     });
+
                                     Get.back();
+
                                     Fluttertoast.showToast(msg: 'Product Sent for Approval\nYour product will be added once admin approves it');
 
 

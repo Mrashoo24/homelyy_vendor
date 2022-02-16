@@ -198,7 +198,7 @@ class AllApi {
     @required String requestDate,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/foodsadd");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/foodsadd");
     var response = await http.post(
       addProductUrl,
       body: {
@@ -235,7 +235,7 @@ class AllApi {
     @required String cutPrice,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/addProductVendor");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/addProductVendor");
     var bo = {
       "category": productCategory,
       "subcategory": productSubCategory,
@@ -302,7 +302,7 @@ class AllApi {
     @required String requestDate,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/addProductMain");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyyadd/addProductMain");
     var response = await http.post(
       addProductUrl,
       body: {
@@ -575,7 +575,8 @@ class AllApi {
       'status': 'false',
       'last_payment_date': '31-03-2022',
       'country': country,
-      'symbol':symbol
+      'symbol':symbol,
+      'commision':'0.10'
     });
 
     if(response.statusCode == 200){
@@ -756,10 +757,13 @@ class AllApi {
 
   Future<List<ProductMainModel>> getProductMain({
     @required String vendorId,
+    String verify
   }) async {
     var url = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/productsvendorget?vendorid=$vendorId");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/productsvendorget?vendorid=$vendorId&verify=$verify");
+
     var response = await http.get(url);
+    print('url ${url}');
     print('gotres ${response.body}');
 
     if (response.body != "[]") {

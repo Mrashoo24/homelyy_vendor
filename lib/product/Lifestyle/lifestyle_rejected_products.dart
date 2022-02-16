@@ -6,11 +6,13 @@ import 'package:homelyvendor/components/model.dart';
 
 class LifestyleRejectedProducts extends StatefulWidget {
   final String categoryId, vendorId, varientId;
+  final VendorModel vendorDetails;
+
   const LifestyleRejectedProducts({
     Key key,
     this.categoryId,
     this.vendorId,
-    this.varientId,
+    this.varientId, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
       child: FutureBuilder(
         future: _allApi.getProductsVarient(
           varientId: widget.varientId,
-          verify: '0',
+          verify: 'pending',
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -156,7 +158,7 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
+                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -166,7 +168,7 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
@@ -206,31 +208,6 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                   flex: 100,
                 )
               ],
-            ),
-          ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
             ),
           ),
         ],
