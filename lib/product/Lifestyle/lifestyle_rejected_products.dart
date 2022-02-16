@@ -33,7 +33,8 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
       FutureBuilder<List<ProductMainModel>>(
         future: _allApi.getProductMain(
             vendorId: widget.vendorId,
-            verify: 'pending'
+            verify: 'pending',
+          category: widget.categoryId
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

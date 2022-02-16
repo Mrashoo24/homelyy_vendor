@@ -264,6 +264,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   indexcat: "0",
                   categoryId: _categoryList[index].catId,
                   vendorId: _categoryList[index].vendorId,
+                  categoryName: _categoryList[index].name
                 );
               },
             );
@@ -278,6 +279,7 @@ class _CategoryPageState extends State<CategoryPage> {
     String indexcat,
     String categoryId,
     String vendorId,
+    String categoryName,
   }) {
     return Stack(
       children: [
@@ -317,7 +319,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           } else {
                             Get.to(
                               LifestyleProductsMain(
-                                categoryId: categoryId,
+                                categoryId: categoryName,
                                 vendorId: vendorId,
                                 vendorDetails:widget.vendorDetails
                               ),
