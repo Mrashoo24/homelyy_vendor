@@ -12,6 +12,7 @@ import 'package:homelyvendor/product/add_products.dart';
 class LifestyleProducts extends StatefulWidget {
   final String businessName, categoryId, vendorId, varientId;
   final ProductMainModel productMainModel;
+  final VendorModel vendorDetails;
 
   const LifestyleProducts({
     Key key,
@@ -19,7 +20,7 @@ class LifestyleProducts extends StatefulWidget {
     this.categoryId,
     this.vendorId,
     this.varientId,
-    this.productMainModel,
+    this.productMainModel, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -66,16 +67,21 @@ class _LifestyleProductsState extends State<LifestyleProducts> {
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
               varientId: widget.varientId,
+              vendorDetails:widget.vendorDetails
             ),
             LifestyleRejectedProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
               varientId: widget.varientId,
+                vendorDetails:widget.vendorDetails
+
             ),
             LifestylePendingProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
               varientId: widget.varientId,
+                vendorDetails:widget.vendorDetails
+
             ),
           ],
         ),

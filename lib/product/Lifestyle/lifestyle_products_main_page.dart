@@ -9,12 +9,14 @@ import 'package:homelyvendor/product/Lifestyle/add_product_main.dart';
 import 'package:homelyvendor/product/Lifestyle/lifestyle_products_page.dart';
 
 class LifestyleProductsMain extends StatefulWidget {
+
   final String categoryId, vendorId;
+  final VendorModel vendorDetails;
 
   const LifestyleProductsMain({
     Key key,
     this.categoryId,
-    this.vendorId,
+    this.vendorId, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -186,7 +188,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
+                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -196,7 +198,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
@@ -222,6 +224,7 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                                             categoryId: widget.categoryId,
                                             varientId: varientId,
                                             productMainModel: productMainModel,
+                                            vendorDetails: widget.vendorDetails,
                                           ),
                                         );
                                       },
@@ -236,7 +239,11 @@ class _LifestyleProductsMainState extends State<LifestyleProductsMain> {
                     ),
                   ),
                   flex: 100,
-                )
+                ),
+                // IconButton(onPressed: (){
+                //
+                //
+                // }, icon:Icon(CupertinoIcons.trash))
               ],
             ),
           ),

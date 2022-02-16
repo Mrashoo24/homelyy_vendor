@@ -302,6 +302,7 @@ class AllApi {
   }) async {
     var addProductUrl = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/addProductMain");
+
     var response = await http.post(
       addProductUrl,
       body: {
@@ -542,21 +543,28 @@ class AllApi {
     lastDigits,
 
   }) async {
+
     print('image aagyai');
 
     var date = DateFormat('dd-MM-yyyy').format(
+
       DateTime.now().subtract(
         const Duration(days: 30),
       ),
+
     );
 
 
 
     var url = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/newVendor");
+
+        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/newVendor"
+
+    );
 
 
     var response = await http.post(url, body: {
+
       'description': description,
       'user': user,
       'inPromotion': '0',
@@ -574,12 +582,17 @@ class AllApi {
       'status': 'false',
       'last_payment_date': '31-03-2022',
       'country': country,
-      'symbol':symbol
-    });
+      'symbol':symbol,
+      'commision':'0.10'
+
+    }
+    );
 
     if(response.statusCode == 200){
 
-    }
+
+      }
+
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
     }

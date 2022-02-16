@@ -7,6 +7,7 @@ import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/Registration/registration.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
+import 'package:homelyvendor/components/contactus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -253,11 +254,8 @@ class _AuthenticationState extends State<Authentication> {
                     child: ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
                       onPressed: () {
-                        if (Platform.isIOS) {
-                          return launch("whatsapp://wa.me/+919967706767/?text=${Uri.encodeFull('Query From Guest')}");
-                        } else {
-                          return launch("whatsapp://send?phone=+919967706767&text=${Uri.encodeFull("Query From Guest")}");
-                        }
+
+                        Get.to(MyContactUs());
 
 
                       },

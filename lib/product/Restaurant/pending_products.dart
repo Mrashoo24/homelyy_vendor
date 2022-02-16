@@ -159,7 +159,7 @@ class _PendingProductsState extends State<PendingProducts> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
+                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -169,7 +169,7 @@ class _PendingProductsState extends State<PendingProducts> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
@@ -210,33 +210,7 @@ class _PendingProductsState extends State<PendingProducts> {
                 )
               ],
             ),
-          ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
-            ),
-          ),
-        ],
+          ),],
       ),
     );
   }

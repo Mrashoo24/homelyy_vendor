@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:homelyvendor/components/api.dart';
@@ -24,7 +26,6 @@ class _AddProductVarientState extends State<AddProductVarient> {
   var _size = '';
   var _color = '';
   var _isLoading = false;
-  final productId = 'PRODUCT' + DateTime.now().microsecond.toString();
 
   bool _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -87,6 +88,17 @@ class _AddProductVarientState extends State<AddProductVarient> {
                       setState(() {
                         _isLoading = !_isLoading;
                       });
+
+                      int min = 100000; //min and max values act as your 6 digit range
+                      int max = 999999;
+                      var randomizer = new Random();
+                      var rNum = min + randomizer.nextInt(max - min);
+
+                      var lastDigits = rNum;
+
+                      final productId = 'PRODUCT' + lastDigits.toString();
+
+
                       await _allApi.addProductVarient(
                         productName:
                             widget.productMainModel.name + _size + _color,

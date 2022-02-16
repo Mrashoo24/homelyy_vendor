@@ -212,31 +212,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
               ],
             ),
           ),
-          Visibility(
-            visible: discountVisibility,
-            child: Positioned(
-              top: 10,
-              left: 20,
-              child: Container(
-                width: 60,
-                height: 25,
-                child: Center(
-                    child: Text(
-                  "₹ $discount OFF",
-                  style: GoogleFonts.arvo(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                )),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6),
-                  ),
-                  color: Colors.green,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );

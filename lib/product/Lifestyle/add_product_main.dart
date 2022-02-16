@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,7 @@ class _AddProductMainState extends State<AddProductMain> {
   var _vendorId = '';
   var _productPrice = '';
   var _productVarient = '';
-  final _varientId = 'VAR' + DateTime.now().microsecond.toString();
+
   var _cutPrice = '';
   var _isLoading = false;
   File image;
@@ -257,21 +258,7 @@ class _AddProductMainState extends State<AddProductMain> {
                                 _productPrice = value;
                               },
                             ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Varient'),
-                                hintText: 'Enter varient of the product',
-                              ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter varient of the product';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _productVarient = value;
-                              },
-                            ),
+
                             // TextFormField(
                             //   decoration: const InputDecoration(
                             //     label: Text('Vareint Id'),
@@ -287,6 +274,7 @@ class _AddProductMainState extends State<AddProductMain> {
                             //     _varientId = value;
                             //   },
                             // ),
+
                             TextFormField(
                               decoration: const InputDecoration(
                                 label: Text('Cut Price'),
@@ -307,13 +295,24 @@ class _AddProductMainState extends State<AddProductMain> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
+
                                 final canSubmit = _trySubmit();
+
                                 if (canSubmit && image != null) {
+
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });
 
+                                  int min = 100000; //min and max values act as your 6 digit range
+                                  int max = 999999;
+                                  var randomizer = new Random();
+                                  var rNum = min + randomizer.nextInt(max - min);
 
+                                  var lastDigits = rNum;
+
+
+                                  final _varientId = 'VAR' + lastDigits.toString();
 
                                  var image1 = await _allApi.setImageProduct(image);
                                   setState(() {
@@ -329,7 +328,7 @@ class _AddProductMainState extends State<AddProductMain> {
                                     vendorId: widget.vendorId,
                                     productImage: jsonDecode(image1),
                                     productPrice: _productPrice,
-                                    productVarient: _productVarient,
+                                    productVarient: _varientId,
                                     varientId: _varientId,
                                     cutPrice: _cutPrice,
                                     requestDate:

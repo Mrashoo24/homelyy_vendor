@@ -7,11 +7,12 @@ import 'package:homelyvendor/components/model.dart';
 
 class LifestylePendingProducts extends StatefulWidget {
   final String categoryId, vendorId, varientId;
+  final VendorModel vendorDetails;
   const LifestylePendingProducts({
     Key key,
     this.categoryId,
     this.vendorId,
-    this.varientId,
+    this.varientId, this.vendorDetails,
   }) : super(key: key);
 
   @override
@@ -157,7 +158,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                       Text(
                                         cutprice == ""
                                             ? ""
-                                            : "Rs.${(int.parse(cutprice)).toString()}",
+                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.purple.shade400,
@@ -167,7 +168,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Rs.$price",
+                                        "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
                                                 fontSize: 14,
