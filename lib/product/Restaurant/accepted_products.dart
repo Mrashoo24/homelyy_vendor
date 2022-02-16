@@ -158,7 +158,7 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                   Row(
                                     children: [
                                       Text(
-                                        cutprice == ""
+                                        cutprice == "0"
                                             ? ""
                                             : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(
@@ -192,8 +192,8 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                       activeColor: kgreen,
                                       onChanged: (value) async {
                                         stock = !stock;
-                                        await _allApi.putProductStatus(
-                                          productId: productId,
+                                        await _allApi.putProductFoodStatus(
+                                          foodId: productId,
                                           status: stock,
                                         );
                                       },

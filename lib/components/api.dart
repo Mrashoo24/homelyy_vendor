@@ -197,7 +197,7 @@ class AllApi {
     @required String requestDate,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/foodsadd");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/foodsadd");
     var response = await http.post(
       addProductUrl,
       body: {
@@ -234,7 +234,7 @@ class AllApi {
     @required String cutPrice,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/addProductVendor");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/addProductVendor");
     var bo = {
       "category": productCategory,
       "subcategory": productSubCategory,
@@ -301,7 +301,7 @@ class AllApi {
     @required String requestDate,
   }) async {
     var addProductUrl = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/addProductMain");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyyadd/addProductMain");
 
     var response = await http.post(
       addProductUrl,
@@ -341,6 +341,18 @@ class AllApi {
     var url = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyyadd/incoming_webhook/putProductFoodStatus?foodId=$foodId&status=$status");
     var response = await http.put(url);
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+
+
+  Future<void> putCutprice({String foodId, String cutprice ,String price, String type}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/putCutprice?foodId=$foodId&cutprice=$cutprice&price=$price&type=$type");
+    var response = await http.put(url);
+    print('responmse of cutupdate ${response.statusCode}');
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
     }
@@ -441,6 +453,8 @@ class AllApi {
       print(response.reasonPhrase);
     }
   }
+
+
 
   Future<void> addCategory({
     @required String name,
@@ -748,10 +762,10 @@ class AllApi {
   }
 
   Future<List<ProductMainModel>> getProductMain({
-    @required String vendorId,
+    @required String vendorId,String verify
   }) async {
     var url = Uri.parse(
-        "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/productsvendorget?vendorid=$vendorId");
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/Homelyy/productsvendorget?vendorid=$vendorId&verify=$verify");
     var response = await http.get(url);
     print('gotres ${response.body}');
 

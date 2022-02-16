@@ -30,61 +30,29 @@ class LifestyleProducts extends StatefulWidget {
 class _LifestyleProductsState extends State<LifestyleProducts> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            Get.to(
-              () => AddProductVarient(
-                productMainModel: widget.productMainModel,
-                vendorId: widget.vendorId,
-              ),
-            );
-          },
-        ),
-        appBar: AppBar(
-          backgroundColor: kgreen,
-          title: const Text("Product List"),
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'Accepted',
-              ),
-              Tab(
-                text: 'Rejected',
-              ),
-              Tab(
-                text: 'Pending',
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            LifestyleAcceptedProducts(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Get.to(
+            () => AddProductVarient(
+              productMainModel: widget.productMainModel,
               vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-              vendorDetails:widget.vendorDetails
             ),
-            LifestyleRejectedProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-                vendorDetails:widget.vendorDetails
+          );
+        },
+      ),
+      appBar: AppBar(
+        backgroundColor: kgreen,
+        title: const Text("Product List"),
 
-            ),
-            LifestylePendingProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-              varientId: widget.varientId,
-                vendorDetails:widget.vendorDetails
+      ),
+      body: LifestylePendingProducts(
+        vendorId: widget.vendorId,
+        categoryId: widget.categoryId,
+        varientId: widget.varientId,
+          vendorDetails:widget.vendorDetails
 
-            ),
-          ],
-        ),
       ),
     );
   }

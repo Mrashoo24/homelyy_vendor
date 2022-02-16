@@ -157,7 +157,7 @@ class _PendingProductsState extends State<PendingProducts> {
                                   Row(
                                     children: [
                                       Text(
-                                        cutprice == ""
+                                        cutprice == "0"
                                             ? ""
                                             : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
                                         style: TextStyle(

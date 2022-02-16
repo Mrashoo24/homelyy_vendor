@@ -471,7 +471,7 @@ class FoodModel {
       image: json['image'],
       name: json['name'],
       price: json['price'],
-      productId: json['productid'],
+      productId: json['foodid'],
       status: json['status'],
       subCategory: json['subcategory'],
       recommended: json['recommended'],

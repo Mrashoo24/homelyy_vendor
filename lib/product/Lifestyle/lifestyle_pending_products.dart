@@ -63,7 +63,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                     price: productList[index]['price'],
                     stock: (productList[index]['status']).toString().toLowerCase() == 'true',
                     title: productList[index]['name'],
-                    discountVisibility: true,
+                    discountVisibility: productList[index]['cutprice'] != '0',
                   ),
                 );
               },
@@ -107,7 +107,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
             child: Row(
               children: <Widget>[
                 // Container(
-                //   margin:  EdgeInsets.only(
+                //   margin: const EdgeInsets.only(
                 //     right: 8,
                 //     left: 8,
                 //     top: 8,
@@ -115,14 +115,14 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                 //   ),
                 //   width: 80,
                 //   height: 80,
-                //   decoration:  BoxDecoration(
+                //   decoration: const BoxDecoration(
                 //     borderRadius: BorderRadius.all(
                 //       Radius.circular(14),
                 //     ),
                 //     color: Colors.white,
-                //     image: DecorationImage(
-                //       image: NetworkImage('${imgurl}/products$img'),
-                //     ),
+                //     // image: DecorationImage(
+                //     //   image: NetworkImage(img),
+                //     // ),
                 //   ),
                 // ),
                 Expanded(
@@ -155,13 +155,14 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        cutprice == ""
-                                            ? ""
-                                            : "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.purple.shade400,
+                                      Visibility(
+                                        visible: discountVisibility,
+                                        child: Text(
+                                           "${widget.vendorDetails.symbol}${(int.parse(cutprice)).toString()}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.purple.shade400,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(
@@ -171,15 +172,15 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                         "${widget.vendorDetails.symbol}$price",
                                         style: discountVisibility
                                             ? const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              )
+                                          fontSize: 14,
+                                          color: Colors.blueGrey,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                        )
                                             : TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.purple.shade400,
-                                              ),
+                                          fontSize: 16,
+                                          color: Colors.purple.shade400,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -210,31 +211,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
               ],
             ),
           ),
-          // Visibility(
-          //   visible: discountVisibility,
-          //   child: Positioned(
-          //     top: 10,
-          //     left: 20,
-          //     child: Container(
-          //       width: 60,
-          //       height: 25,
-          //       child: Center(
-          //           child: Text(
-          //         "₹ $discount OFF",
-          //         style: GoogleFonts.arvo(
-          //           fontSize: 12,
-          //           color: Colors.white,
-          //         ),
-          //       )),
-          //       decoration: const BoxDecoration(
-          //         borderRadius: BorderRadius.all(
-          //           Radius.circular(6),
-          //         ),
-          //         color: Colors.green,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+
         ],
       ),
     );

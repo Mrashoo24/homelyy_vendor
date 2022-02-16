@@ -36,7 +36,7 @@ class _AddProductState extends State<AddProduct> {
   final _productSubCategory = 'SUBCAT' + DateTime.now().microsecond.toString();
   var _productDescription = '';
   var _productPrice = '';
-  var _cutPrice = '';
+  var _cutPrice = '0';
   var _isLoading = false;
 
   bool _trySubmit() {
@@ -291,8 +291,8 @@ class _AddProductState extends State<AddProduct> {
                             // ),
                             TextFormField(
                               decoration: const InputDecoration(
-                                label: Text('Cut Price'),
-                                hintText: 'Enter cut price of the product',
+                                label: Text('Cut Price (Add 0 if no Discount)'),
+                                hintText: 'Enter cut price of the product Add 0 if no Discount',
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
