@@ -268,7 +268,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   title: _categoryList[index].name,
                   stock: true,
                   indexcat: "0",
-                  categoryId: _categoryList[index].name,
+                  categoryId: _categoryList[index].catId,
                   vendorId: _categoryList[index].vendorId,
                     categoryId1:_categoryList[index].name
                 );
@@ -316,7 +316,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             Get.to(
                               Products(
                                 businessName: widget.businessName,
-                                categoryId: categoryId1,
+                                categoryId: categoryId,
                                 vendorId: vendorId,
                                 vendorType: widget.vendorType,
                                   vendorDetails:widget.vendorDetails
@@ -325,7 +325,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           } else {
                             Get.to(
                               LifestyleProductsMain(
-                                categoryId: categoryId,
+                                categoryId: categoryId1,
                                 vendorId: vendorId,
                                 vendorDetails: widget.vendorDetails,
                               ),

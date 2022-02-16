@@ -250,7 +250,18 @@ class _AuthenticationState extends State<Authentication> {
                     },
                     child: const Text('Register as a vendor'),
                   ),
-
+                  // Align(
+                  //   alignment: Alignment.bottomRight,
+                  //   child: ElevatedButton(
+                  //     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                  //     onPressed: () {
+                  //       launch('')
+                  //
+                  //
+                  //     },
+                  //     child: const Text('Forgot Password ?',style: TextStyle(color: Colors.black),),
+                  //   ),
+                  // ),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
