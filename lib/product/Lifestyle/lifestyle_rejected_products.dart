@@ -1,10 +1,12 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/model.dart';
 
+import '../../components/constants.dart';
 import 'lifestyle_products_page.dart';
 
 class LifestyleRejectedProducts extends StatefulWidget {
@@ -23,6 +25,8 @@ class LifestyleRejectedProducts extends StatefulWidget {
 }
 
 class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
+  var editedCutprice = '';
+  var editedprice = '';
   final _allApi = AllApi();
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,7 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
         future: _allApi.getProductMain(
             vendorId: widget.vendorId,
             verify: 'pending',
-            category: widget.categoryId
+          category: widget.categoryId
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -230,10 +234,161 @@ class _LifestyleRejectedProductsState extends State<LifestyleRejectedProducts> {
                   ),
                   flex: 100,
                 ),
-                // IconButton(onPressed: (){
-                //
-                //
-                // }, icon:Icon(CupertinoIcons.trash))
+                Column(
+                  children: [
+                    IconButton(onPressed: (){
+                      Get.defaultDialog(title: 'Are you sure you want to delete this product ?',onConfirm:() async {
+                        await  AllApi().removeProduct(foodId: productId,type: 'lifestyle',vendorid: widget.vendorDetails.vendorId);
+                        Get.back();
+                        setState(() {
+
+                        });
+                      },onCancel: (){
+                        Get.back();
+                      } );
+
+                    }, icon:Icon(FontAwesomeIcons.trash)),
+
+                    IconButton(onPressed: () async {
+
+                      showDialog(context: context, builder: (context){
+                        bool isloading = false;
+                        return StatefulBuilder(
+
+                            builder: (context, setState1) {
+                              return  AlertDialog(
+                                title: Text('Edit Price'),
+                                content: Column(
+                                  children: [
+                                    TextFormField(
+
+                                      onChanged: (value){
+                                        setState(() {
+                                          editedprice = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: price,
+                                        label: Text('Price'),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                    TextFormField(
+                                      onChanged: (value){
+                                        setState(() {
+                                          editedCutprice = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                          hintText: cutprice,
+                                          label: Text('Cut Price')
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+
+                                  ],
+                                ),
+                                actions: [
+                                  isloading ? CircularProgressIndicator(color: kgreen,):  ElevatedButton(onPressed: (){
+                                    Get.back();
+                                  }, child: Text('Cancel'),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(Colors.grey)
+                                    ),
+
+                                  ),
+                                  isloading ? CircularProgressIndicator(color: kgreen,) :   ElevatedButton(
+                                    onPressed: () async {
+                                      setState1(() {
+                                        isloading = true;
+                                      });
+                                      if(editedCutprice != '' ){
+
+                                        if(editedprice != '' ){
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': editedprice
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+
+                                        }else{
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': price
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+                                        }
+
+
+                                      }
+
+                                      if(editedprice != '' ){
+
+                                        if(editedCutprice != '' ){
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': editedprice
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+                                        }else{
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': cutprice,'price': editedprice
+                                          });
+
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+
+                                        }
+
+
+
+                                      }
+
+
+                                    }, child: Text('Continue'),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(kgreen)
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                        );
+                      });
+
+
+
+
+                    }, icon:Icon(FontAwesomeIcons.penAlt)),
+                  ],
+                )
               ],
             ),
           ),

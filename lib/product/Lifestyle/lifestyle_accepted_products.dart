@@ -73,6 +73,7 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                   description: productList[index].description,
                   subCategory: productList[index].subCategory,
                   varient: productList[index].varient,
+                  productId: productList[index].productid,
                 ),
               );
             },
@@ -240,113 +241,20 @@ class _LifestyleAcceptedProductsState extends State<LifestyleAcceptedProducts> {
                   ),
                   flex: 100,
                 ),
-                // Column(
-                //   children: [
-                //     IconButton(onPressed: (){
-                //
-                //
-                //     }, icon:Icon(FontAwesomeIcons.trash)),
-                //     IconButton(onPressed: () async {
-                //
-                //       showDialog(context: context, builder: (context){
-                //         return AlertDialog(
-                //           title: Text('Edit Price'),
-                //           content: Column(
-                //             children: [
-                //               TextFormField(
-                //                 onChanged: (value){
-                //                   setState(() {
-                //                     editedCutprice = value;
-                //                   });
-                //                 },
-                //                 decoration: InputDecoration(
-                //                     hintText: cutprice,
-                //                     label: Text('Cut Price')
-                //                 ),
-                //                 keyboardType: TextInputType.number,
-                //               ),
-                //               TextFormField(
-                //
-                //                 onChanged: (value){
-                //                   setState(() {
-                //                     editedprice = value;
-                //                   });
-                //                 },
-                //                 decoration: InputDecoration(
-                //                   hintText: price,
-                //                   label: Text('Price'),
-                //                 ),
-                //                 keyboardType: TextInputType.number,
-                //               )
-                //             ],
-                //           ),
-                //           actions: [
-                //             ElevatedButton(onPressed: (){
-                //               Get.back();
-                //             }, child: Text('Cancel'),
-                //               style: ButtonStyle(
-                //                   backgroundColor: MaterialStateProperty.all(Colors.grey)
-                //               ),
-                //
-                //             ),
-                //             ElevatedButton(
-                //                 onPressed: () async {
-                //
-                //                   if(editedCutprice != '' ){
-                //
-                //                     if(editedprice != '' ){
-                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: editedprice,type: 'lifestyle');
-                //                       Get.back();
-                //                       setState(() {
-                //
-                //                       });
-                //                     }else{
-                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: price,type: 'lifestyle');
-                //                       Get.back();
-                //                       setState(() {
-                //
-                //                       });
-                //                     }
-                //
-                //
-                //                   }
-                //
-                //                   if(editedprice != '' ){
-                //
-                //                     if(editedCutprice != '' ){
-                //                       await AllApi().putCutprice(foodId: productId,cutprice: editedCutprice,price: editedprice,type: 'lifestyle');
-                //                       Get.back();
-                //                       setState(() {
-                //
-                //                       });
-                //                     }else{
-                //                       await AllApi().putCutprice(foodId: productId,cutprice: cutprice,price: editedprice,type: 'lifestyle'); Get.back();
-                //                       setState(() {
-                //
-                //                       });
-                //
-                //                     }
-                //
-                //
-                //
-                //                   }
-                //
-                //
-                //             }, child: Text('Continue'),
-                //               style: ButtonStyle(
-                //                 backgroundColor: MaterialStateProperty.all(kgreen)
-                //               ),
-                //             )
-                //           ],
-                //         );
-                //       });
-                //
-                //
-                //
-                //
-                //     }, icon:Icon(FontAwesomeIcons.penAlt)),
-                //   ],
-                // )
+
+                IconButton(onPressed: (){
+                  Get.defaultDialog(title: 'Are you sure you want to delete this product ?',onConfirm:() async {
+                    await  AllApi().removeProduct(foodId: productId,type: 'lifestyle',vendorid: widget.vendorDetails.vendorId);
+                    Get.back();
+                    setState(() {
+
+                    });
+                  },onCancel: (){
+                    Get.back();
+                  } );
+
+                }, icon:Icon(FontAwesomeIcons.trash)),
+
               ],
             ),
           ),

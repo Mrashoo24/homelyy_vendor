@@ -1,5 +1,7 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
@@ -22,6 +24,11 @@ class LifestylePendingProducts extends StatefulWidget {
 
 class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
   final _allApi = AllApi();
+
+
+  var editedCutprice = '';
+  var editedprice = '';
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,6 +51,8 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
             );
           } else {
             var productList = snapshot.data;
+
+
             return ListView.builder(
               itemCount: productList.length,
               itemBuilder: (context, index) {
@@ -64,6 +73,7 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                     stock: (productList[index]['status']).toString().toLowerCase() == 'true',
                     title: productList[index]['name'],
                     discountVisibility: productList[index]['cutprice'] != '0',
+                    recommendation: productList[index]['recommendation'] == '1',
                     productId: productList[index]['productid']
                   ),
                 );
@@ -89,7 +99,12 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
     BuildContext context,
     bool stock,
     String productId,
+    bool recommendation
+
   }) {
+
+    print('productid = $productId');
+
     return Card(
       child: Stack(
         children: <Widget>[
@@ -198,6 +213,34 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                                         );
                                       },
                                     ),
+                                  ),
+                                  Divider(),
+                                  Column(
+
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CustomSwitch(
+                                          value: recommendation,
+                                          activeColor: kgreen,
+                                          onChanged: (value) async {
+                                            recommendation = !recommendation;
+                                            print('rec value = $recommendation');
+
+                                            var newvalue = recommendation ? '1' : '0';
+                                            print('rec value = $newvalue');
+                                            await _allApi.putCutprice(
+                                                foodId: productId,
+                                                body: {
+                                                  'recommendation' : newvalue
+                                                },
+                                                type: 'lifestyle'
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      Text('Set Recommended',style: TextStyle(fontWeight: FontWeight.bold),),
+                                    ],
                                   )
                                 ],
                               ),
@@ -208,7 +251,163 @@ class _LifestylePendingProductsState extends State<LifestylePendingProducts> {
                     ),
                   ),
                   flex: 100,
+                ),
+                Column(
+                  children: [
+                    IconButton(onPressed: (){
+                      Get.defaultDialog(title: 'Are you sure you want to delete this product ?',onConfirm:() async {
+                        await  AllApi().removeVarient(foodId: productId,vendorid: widget.vendorDetails.vendorId);
+                        Get.back();
+                        setState(() {
+
+                        });
+                      },onCancel: (){
+                        Get.back();
+                      } );
+
+                    }, icon:Icon(FontAwesomeIcons.trash)),
+
+                    IconButton(onPressed: () async {
+
+                      showDialog(context: context, builder: (context){
+                        bool isloading = false;
+                        return StatefulBuilder(
+
+                            builder: (context, setState1) {
+                              return  AlertDialog(
+                                title: Text('Edit Price'),
+                                content: Column(
+                                  children: [
+                                    TextFormField(
+
+                                      onChanged: (value){
+                                        setState(() {
+                                          editedprice = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: price,
+                                        label: Text('Price'),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                    TextFormField(
+                                      onChanged: (value){
+                                        setState(() {
+                                          editedCutprice = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                          hintText: cutprice,
+                                          label: Text('Cut Price')
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+
+                                  ],
+                                ),
+                                actions: [
+                                  isloading ? CircularProgressIndicator(color: kgreen,):  ElevatedButton(onPressed: (){
+                                    Get.back();
+                                  }, child: Text('Cancel'),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(Colors.grey)
+                                    ),
+
+                                  ),
+                                  isloading ? CircularProgressIndicator(color: kgreen,) :   ElevatedButton(
+                                    onPressed: () async {
+                                      setState1(() {
+                                        isloading = true;
+                                      });
+                                      if(editedCutprice != '' ){
+
+                                        if(editedprice != '' ){
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': editedprice
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+
+                                        }else{
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': price
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+                                        }
+
+
+                                      }
+
+                                      if(editedprice != '' ){
+
+                                        if(editedCutprice != '' ){
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': editedCutprice,'price': editedprice
+                                          });
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+                                        }else{
+
+                                          await AllApi().putCutprice(foodId: productId,type: 'lifestyle',body: {
+                                            'cutprice': cutprice,'price': editedprice
+                                          });
+
+                                          setState1(() {
+                                            isloading = false;
+                                          });
+                                          Get.back();
+
+                                          setState(() {
+
+                                          });
+
+                                        }
+
+
+
+                                      }
+
+
+                                    }, child: Text('Continue'),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(kgreen)
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                        );
+                      });
+
+
+
+
+                    }, icon:Icon(FontAwesomeIcons.penAlt)),
+                  ],
                 )
+
               ],
             ),
           ),

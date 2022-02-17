@@ -781,6 +781,46 @@ class AllApi {
   }
 
 
+
+
+
+  Future<void> putCutprice({String foodId, String type,body}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/putCutprice?foodId=$foodId&type=$type");
+    var response = await http.put(url,body: body);
+    print('responmse of cutupdate ${response.statusCode}');
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
   }
+
+  Future<void> removeProduct({String foodId, String type,String vendorid}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/removeProduct?foodid=$foodId&type=$type&vendorid=$vendorid");
+
+    var response = await http.get(url);
+
+    print('responmse of remove ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> removeVarient({String foodId,String vendorid}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/removevarient?foodid=$foodId&vendorid=$vendorid");
+
+    var response = await http.get(url);
+
+    print('responmse of remove ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+
+}
 
 
