@@ -383,7 +383,7 @@ class ProductMainModel {
       price,
       varient,
       cutprice,
-      varientId;
+      varientId,productid;
 
   bool status;
 
@@ -399,6 +399,7 @@ class ProductMainModel {
     this.varient,
     this.varientId,
     this.vendorId,
+    this.productid
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -414,6 +415,7 @@ class ProductMainModel {
       varient: json['varient'],
       varientId: json['varientid'],
       vendorId: json['vendorid'],
+      productid: json['productid'],
     );
   }
 
@@ -444,8 +446,9 @@ class FoodModel {
       image,
       price,
       cutprice,
-      recommended,
+
       verify;
+  String recommendation;
   bool status;
 
   FoodModel({
@@ -458,7 +461,7 @@ class FoodModel {
     this.productId,
     this.status,
     this.subCategory,
-    this.recommended,
+    this.recommendation,
     this.vendorId,
     this.verify,
   });
@@ -474,7 +477,7 @@ class FoodModel {
       productId: json['foodid'],
       status: json['status'],
       subCategory: json['subcategory'],
-      recommended: json['recommended'],
+      recommendation: json['recommendation'],
       vendorId: json['vendorid'],
       verify: json['verify'],
     );
@@ -491,7 +494,7 @@ class FoodModel {
     data['productid'] = productId;
     data['status'] = status;
     data['subcategory'] = subCategory;
-    data['recommended'] = recommended;
+    data['recommended'] = recommendation;
     data['vendorid'] = vendorId;
     data['verify'] = verify;
     return data;

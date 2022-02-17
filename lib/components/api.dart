@@ -348,19 +348,47 @@ class AllApi {
 
 
 
-  Future<void> putCutprice({String foodId, String cutprice ,String price, String type}) async {
+  Future<void> putCutprice({String foodId, String type,body}) async {
     var url = Uri.parse(
-        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/putCutprice?foodId=$foodId&cutprice=$cutprice&price=$price&type=$type");
-    var response = await http.put(url);
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/putCutprice?foodId=$foodId&type=$type");
+    var response = await http.put(url,body: body);
     print('responmse of cutupdate ${response.statusCode}');
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
     }
   }
 
+  Future<void> removeProduct({String foodId, String type,String vendorid}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/removeProduct?foodid=$foodId&type=$type&vendorid=$vendorid");
+
+    var response = await http.get(url);
+
+    print('responmse of remove ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> removeVarient({String foodId,String vendorid}) async {
+    var url = Uri.parse(
+        "https://data.mongodb-api.com/app/application-0-aveoz/endpoint/removevarient?foodid=$foodId&vendorid=$vendorid");
+
+    var response = await http.get(url);
+
+    print('responmse of remove ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
+
+
   Future<VendorModel> getVendor({@required String email}) async {
     var getVendorUrl = Uri.parse(
         "https://webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-aveoz/service/Homelyy/incoming_webhook/getVendor?email=$email");
+
     var response = await http.get(getVendorUrl,headers: {'Content-Type': 'application/json'});
     if (response.body != "null") {
       Map<String, dynamic> vendor = json.decode(utf8.decode(response.bodyBytes));

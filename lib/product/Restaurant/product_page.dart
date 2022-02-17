@@ -28,7 +28,7 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: kgreen,
@@ -53,9 +53,6 @@ class _ProductsState extends State<Products> {
                 text: 'Accepted',
               ),
               Tab(
-                text: 'Rejected',
-              ),
-              Tab(
                 text: 'Pending',
               ),
             ],
@@ -64,11 +61,6 @@ class _ProductsState extends State<Products> {
         body: TabBarView(
           children: [
             AcceptedProducts(
-              vendorId: widget.vendorId,
-              categoryId: widget.categoryId,
-                vendorDetails:widget.vendorDetails
-            ),
-            RejectedProducts(
               vendorId: widget.vendorId,
               categoryId: widget.categoryId,
                 vendorDetails:widget.vendorDetails
