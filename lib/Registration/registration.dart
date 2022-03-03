@@ -50,20 +50,22 @@ class _RegistrationState extends State<Registration> {
 
 
   Future<LocationData> getLocation() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
         Get.snackbar("Error",
             "'Location service is disabled. Please enable it to check-in.'");
         return null;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
         Get.snackbar("Error",
             "'Location service is disabled. Please enable it to check-in.'");
         return null;
@@ -192,9 +194,18 @@ class _RegistrationState extends State<Registration> {
                           ],
                         ),
                         onTap: (){
-                          getLocation().then((value) {
-                            Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),type : widget.type));
+                          setState(() {
+                            loading = true;
                           });
+                          getLocation().then((value) {
+                            setState(() {
+                              loading = false;
+                            });
+                            Get.to(MapScreen(loc: LatLng(value.latitude,value.longitude),type : widget.type));
+
+                          });
+
+
                         },
                       ),
                     ),

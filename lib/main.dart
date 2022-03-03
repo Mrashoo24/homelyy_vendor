@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:homelyvendor/Authentication/authentication.dart';
 import 'package:homelyvendor/Home/home_page.dart';
 import 'package:homelyvendor/components/api.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -55,6 +56,40 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  Location location = Location();
+
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+  Future<LocationData> getLocation() async {
+
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        Get.snackbar("Error",
+            "'Location service is disabled. Please enable it to check-in.'");
+        return null;
+      }
+    }
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        Get.snackbar("Error",
+            "'Location service is disabled. Please enable it to check-in.'");
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    print('location inti = _$_locationData');
+    return _locationData;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +123,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    getLocation();
     return GetMaterialApp(
       title: 'Homelyy Vendor',
       debugShowCheckedModeBanner: false,
