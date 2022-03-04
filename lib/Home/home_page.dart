@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,6 +15,7 @@ import 'package:homelyvendor/Orders/preparing.dart';
 import 'package:homelyvendor/Orders/ready.dart';
 import 'package:homelyvendor/components/api.dart';
 import 'package:homelyvendor/components/constants.dart';
+import 'package:homelyvendor/components/customswitch.dart';
 import 'package:homelyvendor/components/model.dart';
 import 'package:homelyvendor/notifications/notifications.dart';
 import 'package:homelyvendor/payment/orderhistory.dart';
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: CustomSwitch(
                             value: _shopStatus,
-                            activeColor: Colors.red,
+                            activeColor: Colors.green,
                             onChanged: (value) async {
                               setState(() {
                                 _shopStatus = value;

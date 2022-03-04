@@ -140,8 +140,12 @@ class _AuthenticationState extends State<Authentication> {
                             backgroundColor: MaterialStateProperty.all(kdarkgreen)
                           ),
                           onPressed: () async {
+                          var firebase =  FirebaseMessaging.instance;
                             var token =
-                                await FirebaseMessaging.instance.getToken();
+                                await firebase.getToken();
+
+
+
                             print('token: $token');
                             final canSignIn = _trySubmit();
                             if (canSignIn) {

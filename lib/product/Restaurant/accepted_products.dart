@@ -193,6 +193,8 @@ class _AcceptedProductsState extends State<AcceptedProducts> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10,),
+                                  Text('Set Stock',style: TextStyle(fontWeight: FontWeight.bold),),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: CustomSwitch(

@@ -35,6 +35,24 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print('User declined or has not accepted permission');
+  }
+
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true, // Required to display a heads up notification
     badge: true,
@@ -108,11 +126,15 @@ class _MyAppState extends State<MyApp> {
                 channel.id,
                 channel.name,
                 channelDescription:channel.description,
-                // icon: 'zayka_pizza_hub',
+                icon: 'launcher_icon',
                 sound:
                     const RawResourceAndroidNotificationSound('notification'),
                 // other properties...
                 importance: channel.importance,
+              ),
+              iOS: IOSNotificationDetails(
+                presentSound: true,
+                sound: 'notification.wav',
               ),
             ),
           );
